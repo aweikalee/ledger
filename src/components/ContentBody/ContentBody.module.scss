@@ -1,0 +1,14 @@
+@import '@/style/index.scss';
+
+.content-body {
+    margin: 0 auto;
+}
+.max-sm {
+    max-width: screen-boundary(sm-md);
+}
+.max-md {
+    max-width: screen-boundary(md-lg);
+}
+.max-lg {
+    max-width: screen-boundary(lg-xl);
+}

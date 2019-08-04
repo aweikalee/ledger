@@ -1,0 +1,95 @@
+@import '@/style/index.scss';
+
+.container,.item {
+    display: flex;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.container {
+    width: 100%;
+}
+.item {
+    margin: 0;
+}
+.block {
+    display: block;
+}
+
+.gap {
+    @each $size in 1, 2, 3, 4, 5, 6 {
+        $_gap: $size * $gap * 0.25;
+        &-#{$size} {
+            padding: $_gap / 2;
+            & .item {
+                padding: $_gap;
+                &.gap {
+                    padding: 0;
+                }
+            }
+        }
+    }
+}
+
+.direction-- {
+    @each $var in row, row-reverse, column, column-reverse {
+        &#{$var} {
+            flex-direction: $var;
+        }
+    }
+}
+.wrap-- {
+    @each $var in nowrap, wrap, wrap-reverse {
+        &#{$var} {
+            flex-wrap: $var;
+        }
+    }
+}
+.justify-- {
+    @each $var in flex-start, flex-end, center, space-between, space-around {
+        &#{$var} {
+            justify-content: $var;
+        }
+    }
+}
+.align-items-- {
+    @each $var in flex-start, flex-end, center, baseline, stretch {
+        &#{$var} {
+            align-items: $var;
+        }
+    }
+}
+.align-content-- {
+    @each $var in flex-start, flex-end, center, space-between, space-around,
+        stretch
+    {
+        &#{$var} {
+            align-content: $var;
+        }
+    }
+}
+
+/* .sm .md .lg .xl */
+@each $size in sm, md, lg, xl {
+    @media #{screen-media-min($size)} {
+        .#{$size}-auto {
+            max-width: none;
+            flex-basis: auto;
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+        .#{$size}-true {
+            max-width: 100%;
+            flex-basis: 0;
+            flex-grow: 1;
+            flex-shrink: 1;
+        }
+        @each $grid in 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 {
+            $width: ($grid / 12) * 100%;
+            .#{$size}-#{$grid} {
+                max-width: $width;
+                flex-basis: $width;
+                flex-grow: 0;
+            }
+        }
+    }
+}

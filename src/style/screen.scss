@@ -1,0 +1,52 @@
+/**
+ * sm: mobile
+ * md: tablet
+ * lg: desktop
+ * xl: desktop hd
+ */
+
+$screen-boundary-map: (
+    sm-md: 520px,
+    md-lg: 1088px,
+    lg-xl: 1280px
+);
+
+@function screen-boundary($type) {
+    @return map-get($screen-boundary-map, $type);
+}
+
+/* prettier-ignore */
+$screen-media-min-map: (
+    sm: all,
+    md: "(min-width: #{screen-boundary(sm-md) + 1px})",
+    lg: "(min-width: #{screen-boundary(md-lg) + 1px})",
+    xl: "(min-width: #{screen-boundary(lg-xl) + 1px})"
+);
+
+/* prettier-ignore */
+$screen-media-max-map: (
+    sm: "(max-width: #{screen-boundary(sm-md)})",
+    md: "(max-width: #{screen-boundary(md-lg)})",
+    lg: "(max-width: #{screen-boundary(lg-xl)})",
+    xl: all
+);
+
+@function screen-media-max($size) {
+    @return map-get($screen-media-max-map, $size);
+}
+
+@function screen-media-min($size) {
+    @return map-get($screen-media-min-map, $size);
+}
+
+/* prettier-ignore */
+$screen-media-map: (
+    sm: "#{screen-media-max(sm)}",
+    md: "#{screen-media-min(md)} and #{screen-media-max(md)}",
+    lg: "#{screen-media-min(lg)} and #{screen-media-max(lg)}",
+    xl: "#{screen-media-min(xl)}"
+);
+
+@function screen-media($size) {
+    @return map-get($screen-media-map, $size);
+}

@@ -1,0 +1,51 @@
+$color-palette-map: (
+    primary: hsl(170, 79%, 60%),
+    turquoise: hsl(170, 79%, 60%),
+    red: hsl(7, 85%, 60%),
+    yellow: hsl(41, 100%, 60%),
+    green: hsl(150, 65%, 60%),
+    blue: hsl(185, 70%, 60%),
+    purple: hsl(284, 37%, 60%),
+    grey: #000000
+);
+
+$color-map: (
+    black: #000000,
+    white: #ffffff,
+    darkblue: #282c34
+);
+
+/**
+ * $min 最暗的程度
+ * $max 最亮的程度
+ */
+@function color-lightness($x, $min, $max) {
+    /* options */
+    $t: 20; // 顶点横坐标
+    $maxLevel: 10; // $level最大档位
+
+    $a: ($min - $max) /
+        ($maxLevel * $maxLevel - 2 * $maxLevel * $t + 2 * $t - 1);
+    $b: -2 * $a * $t;
+    $c: $max - $a - $b;
+
+    @return $a * $x * $x + $b * $x + $c;
+}
+
+// TODO: 尝试改用hsv
+@function color-palette($color, $level) {
+    $hue: hue($color);
+    $saturation: saturation($color);
+    $lightness: color-lightness($level, 15, 95);
+
+    @return hsl($hue, $saturation, $lightness);
+}
+
+@function color($name, $level: 5) {
+    $color: map-get($color-palette-map, $name);
+    @if ($color) {
+        @return color-palette($color, $level);
+    } @else {
+        @return map-get($color-map, $name);
+    }
+}

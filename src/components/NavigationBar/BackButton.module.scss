@@ -1,0 +1,12 @@
+@import '@/style/index.scss';
+
+.back {
+    @include font(body);
+}
+.back-icon {
+    font-size: 1.6em;
+    margin-right: 0.2em;
+}
+.back-text {
+    transform-origin: left;
+}

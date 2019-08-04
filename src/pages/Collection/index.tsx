@@ -1,24 +1,31 @@
-import React from 'react';
-import './style/index.scss';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import NavigationBar from '@/components/NavigationBar'
+import ContentBody from '@/components/ContentBody'
+import ToolBar from '@/components/ToolBar'
+import Grid from '@/components/Grid'
+import Ledger from './components/Ledger'
+import styles from './Index.module.scss'
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const CollectionIndex: React.FC = () => {
+    const ledgerItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(id => (
+        <Grid item sm={12} md={6} key={id}>
+            <Link to="/ledger/1" className={styles['ledger-link']}>
+                <Ledger />
+            </Link>
+        </Grid>
+    ))
+    return (
+        <>
+            <NavigationBar title="账簿盒" />
+            <ContentBody>
+                <Grid container gap={2}>
+                    {ledgerItems}
+                </Grid>
+            </ContentBody>
+            <ToolBar />
+        </>
+    )
 }
 
-export default App;
+export default CollectionIndex

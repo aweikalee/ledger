@@ -1,0 +1,191 @@
+@import '@/style/index.scss';
+
+/* ======= button ======= */
+.button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    background-color: transparent;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+    touch-action: manipulation;
+    user-select: none;
+    transition: color 0.3s $ease-out, background-color 0.3s $ease-out, border 0.3s $ease-out,
+        transform 0.3s $ease-out;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+    box-shadow: none;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+
+    &[disabled] {
+        color: rgba(color(grey, 10), 0.5);
+        background-color: color(grey, 1);
+        border-color: color(grey, 3);
+        cursor: not-allowed;
+    }
+}
+
+/* type */
+.text {
+    &.default {
+        color: color(grey, 6);
+    }
+    &.primary {
+        color: color(primary, 6);
+    }
+    &.warn {
+        color: color(yellow, 6);
+    }
+    &.error {
+        color: color(red, 6);
+    }
+    &:hover {
+        opacity: 0.7;
+    }
+    &:active {
+        opacity: 0.4;
+    }
+}
+.contained,
+.outlined {
+    &:not([disabled]) {
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: block;
+            border-radius: inherit;
+            z-index: z-index(1);
+            opacity: 0;
+            transition: opacity 0.3s $ease-out;
+            background-color: color(white);
+        }
+        &:hover::before {
+            opacity: 0.2;
+        }
+        &:active::before {
+            opacity: 0.5;
+        }
+    }
+}
+.contained {
+    &.default {
+        color: color(grey, 9);
+        background-color: color(grey, 2);
+    }
+    &.primary {
+        color: color(primary, 9);
+        background-color: color(primary, 2);
+    }
+    &.warn {
+        color: color(yellow, 9);
+        background-color: color(yellow, 2);
+    }
+    &.error {
+        color: color(red, 9);
+        background-color: color(red, 2);
+    }
+}
+.outlined {
+    &.default {
+        color: color(grey, 6);
+        border-color: color(grey, 3);
+        &:not([disabled]) {
+            &::before {
+                background-color: color(grey, 3);
+            }
+        }
+    }
+    &.primary {
+        color: color(primary, 6);
+        border-color: color(primary, 5);
+        &:not([disabled]) {
+            &::before {
+                background-color: color(primary, 3);
+            }
+        }
+    }
+    &.warn {
+        color: color(yellow, 6);
+        border-color: color(yellow, 5);
+        &:not([disabled]) {
+            &::before {
+                background-color: color(yellow, 3);
+            }
+        }
+    }
+    &.error {
+        color: color(red, 6);
+        border-color: color(red, 5);
+        &:not([disabled]) {
+            &::before {
+                background-color: color(red, 3);
+            }
+        }
+    }
+}
+
+.block {
+    display: flex;
+    width: 100%;
+}
+
+/* border */
+.round {
+    border-radius: $border-radius;
+}
+
+/* size */
+$_button-size: (
+    small: rem(27),
+    medium: rem(40),
+    large: rem(50)
+);
+$_button-font-size: (
+    small: rem(13),
+    medium: rem(16),
+    large: rem(17)
+);
+$_button-padding: (
+    small: rem(3),
+    medium: rem(7),
+    large: rem(13)
+);
+@each $size in small, medium, large {
+    $_size: map-get($_button-size, $size);
+    .#{$size} {
+        font-size: map-get($_button-font-size, $size);
+        height: $_size;
+        min-width: $_size;
+        padding: 0 map-get($_button-padding, $size);
+        &.full {
+            border-radius: $_size / 2;
+        }
+    }
+}
+
+/* ======= button-group ======= */
+.group {
+    & .button {
+        &:not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-left: -1px;
+        }
+        &:not(:last-child) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+}

@@ -1,0 +1,38 @@
+$font-family: Pingfang SC, Microsoft Yahei, sans-serif;
+
+@mixin font($type) {
+    /* prettier-ignore */
+    $font-size: rem(1) * map-get((
+        bold-title:   34,
+        large-title:  34,
+        title-1:      28,
+        title-2:      22,
+        title-3:      20,
+        headline:     17,
+        body:         17,
+        callout:      16,
+        subhead:      15,
+        footnote:     13,
+        caption-1:    12,
+        caption-2:    11
+    ), $type);
+
+    /* prettier-ignore */
+    $font-weight: 100 * map-get((
+        bold-title:   7,
+        large-title: 4,
+        title-1:      4,
+        title-2:      4,
+        title-3:      4,
+        headline:     6,
+        body:         4,
+        callout:      4,
+        subhead:      4,
+        footnote:     4,
+        caption-1:    4,
+        caption-2:    4
+    ), $type);
+
+    font-size: $font-size;
+    font-weight: $font-weight;
+}

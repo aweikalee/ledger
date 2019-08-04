@@ -1,0 +1,20 @@
+@import '@/style/index.scss';
+
+.record {
+    background: color(white);
+    margin: $gap * 2 auto;
+    position: relative;
+    z-index: z-index(2);
+    box-shadow: shadow(10);
+    width: calc(100% - #{$gap * 4});
+    max-width: screen-boundary(sm-md);
+    padding: $gap;
+}
+.mask {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(color(black), 0.3);
+}

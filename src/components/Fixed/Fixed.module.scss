@@ -1,0 +1,19 @@
+.origin,
+.faker {
+    left: 0;
+    right: 0;
+}
+.origin {
+    position: fixed;
+}
+.faker {
+    position: relative;
+    z-index: -10;
+    visibility: hidden;
+}
+.top {
+    top: 0;
+}
+.bottom {
+    bottom: 0;
+}

@@ -3,5 +3,6 @@
     "stylelintIntegration": true,
     "tabWidth": 4,
     "singleQuote": true,
-    "semi": false
+    "semi": false,
+    "proseWrap": "always"
 }

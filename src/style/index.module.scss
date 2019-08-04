@@ -1,0 +1,9 @@
+/**
+ * 将 sass 变量导出，供 js 使用
+ */
+
+@import './index.scss';
+
+:export {
+    fontFamily: $font-family
+}

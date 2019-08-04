@@ -1,0 +1,12 @@
+/* prettier-ignore */
+$z-index-map: (
+    1:    1, // document
+    2: 1000, // content
+    3: 2000, // bar
+    4: 3000, // modal
+    5: 4000, // tip
+);
+
+@function z-index($level) {
+    @return map-get($z-index-map, $level);
+}

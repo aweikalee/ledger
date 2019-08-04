@@ -1,0 +1,52 @@
+@import '@/style/index.scss';
+
+.button {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+    @include font(title-2);
+}
+
+.icon {
+    display: block;
+}
+
+.text {
+    display: none;
+    @include font(caption-2);
+}
+
+.primary {
+    width: rem(40);
+    height: rem(40);
+    line-height: rem(20);
+    border: none;
+    border-radius: rem(20);
+    background-color: color(grey, 4);
+    color: color(white);
+    transform: scale(0.75);
+    &[data-active='true'] {
+        background-color: color(primary, 2);
+        transform: scale(1);
+        box-shadow: shadow(2);
+        text-shadow: 1px 1px 1px color(primary, 7);
+    }
+    &:not([data-active='true']) {
+        &:hover {
+            transform: scale(0.85);
+        }
+        &:active {
+            transform: scale(0.9);
+        }
+    }
+}
+.default {
+    color: color(grey, 4);
+    &[data-active='true'] {
+        color: color(primary, 3);
+    }
+    &:hover {
+        transform: translateY(rem(-2));
+    }
+}

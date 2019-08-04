@@ -1,0 +1,18 @@
+@import '@/style/index.scss';
+
+
+.record-link {
+    position: relative;
+    display: block;
+    & + & {
+        &:after {
+            content: '';
+            position: absolute;
+            border-bottom: 1px color(grey, 2) solid;
+            width: calc(100% - #{$gap * 2});
+            top: 0;
+            left: $gap;
+            transform: scale(1, 0.5);
+        }
+    }
+}

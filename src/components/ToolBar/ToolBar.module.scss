@@ -1,0 +1,37 @@
+@import '@/style/index.scss';
+
+.toolbar {
+    background-color: color(white);
+    &:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        border-top: 1px solid color(grey, 3);
+        transform: scaleY(0.5);
+    }
+    @media #{screen-media-min(lg)} {
+        max-width: calc(#{screen-boundary(md-lg)} - #{$gap});
+        margin: 0 auto;
+        border-top-left-radius: $border-radius * 2;
+        border-top-right-radius: $border-radius * 2;
+    }
+    &[data-role='fixed-origin'] {
+        z-index: z-index(3);
+    }
+}
+
+.toolbar-grid {
+    height: rem(44);
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+    & [data-role='grid'] {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    & > [data-role="grid"] {
+        overflow: initial;
+    }
+}

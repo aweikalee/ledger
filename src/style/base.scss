@@ -1,0 +1,7 @@
+@function rem($rem) {
+    @return 0.02rem * $rem;
+}
+
+$gap: rem(16);
+
+$border-radius: rem(4);

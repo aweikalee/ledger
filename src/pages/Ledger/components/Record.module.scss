@@ -1,0 +1,44 @@
+@import '@/style/index.scss';
+
+.record {
+    background-color: color(white);
+}
+.icon {
+    width: rem(34);
+    height: rem(34);
+    color: color(white);
+    background-color: color(blue, 3);
+    border-radius: 50%;
+    margin: $gap;
+}
+.main {
+    margin-right: $gap;
+}
+.time {
+    @include font(footnote);
+    color: color(grey, 3);
+    margin-right: $gap;
+}
+.amount {
+    @include font(body);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+}
+.outgoing{ 
+    color: color(grey, 7);
+}
+.income {
+    color: color(red, 5);
+}
+.detail {
+    @include font(callout);
+    color: color(grey, 6);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.currency {
+    @include font(footnote);
+    color: color(grey, 6);
+    margin-left: $gap;
+}
