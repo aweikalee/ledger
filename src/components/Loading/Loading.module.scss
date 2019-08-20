@@ -1,0 +1,54 @@
+@import '@/style/index.scss';
+
+@keyframes loading-rotate {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes loading-dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -40px;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -120px;
+    }
+}
+
+.loading {
+    position: relative;
+    & [data-role='loading-svg'] {
+        height: 1em;
+        width: 1em;
+        animation: loading-rotate 2s linear infinite;
+        border-radius: 50%;
+    }
+    & [data-role='loading-circle'] {
+        animation: loading-dash 1.5s $ease-in-out infinite;
+        stroke-width: 0.15em;
+        stroke: color(primary, 2);
+        stroke-linecap: round;
+    }
+}
+
+.block {
+    display: block;
+}
+
+.loading-block {
+    padding: $gap;
+    text-align: center;
+    & [data-role="loading"] {
+        font-size: rem(44);
+    }
+    & [data-role="loading-text"] {
+        @include font(body);
+        color: color(grey, 5);
+    }
+}

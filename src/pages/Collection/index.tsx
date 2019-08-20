@@ -1,27 +1,44 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useQuery } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 import NavigationBar from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
-import Ledger from './components/Ledger'
-import styles from './Index.module.scss'
+import Ledger, { ILedger } from './components/Ledger'
+import { LoadingBlock } from '@/components/Loading'
 
 const CollectionIndex: React.FC = () => {
-    const ledgerItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(id => (
-        <Grid item sm={12} md={6} key={id}>
-            <Link to="/ledger/1" className={styles['ledger-link']}>
-                <Ledger />
-            </Link>
-        </Grid>
-    ))
+    const { loading, data } = useQuery<{
+        ledgers: ILedger[]
+    }>(gql`
+        query {
+            ledgers {
+                id
+                title
+            }
+        }
+    `)
+
+    const ledgerItems =
+        data &&
+        data.ledgers &&
+        data.ledgers.map(item => (
+            <Grid item sm={12} md={6} key={item.id}>
+                <Ledger {...item} />
+            </Grid>
+        ))
     return (
         <>
             <NavigationBar title="账簿盒" />
             <ContentBody>
-                <Grid container gap={2}>
-                    {ledgerItems}
-                </Grid>
+                {loading ? (
+                    <LoadingBlock />
+                ) : (
+                    <Grid container gap={2}>
+                        {ledgerItems}
+                    </Grid>
+                )}
             </ContentBody>
             <ToolBar />
         </>
