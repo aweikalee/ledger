@@ -26,7 +26,7 @@ const recordType = () => recordTypes[Mock.mock('@integer(0,2)')]
 const mocks = {
     String: () => Mock.mock('@csentence'),
     Query: () => ({
-        ledgers: () => new MockList([3, 6]),
+        ledgers: () => new MockList([15, 20]),
         records: () => new MockList([2, 10]),
         recordType: () => recordType(),
         recordTypes: () => recordTypes

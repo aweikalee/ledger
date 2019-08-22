@@ -1,0 +1,20 @@
+@import '@/style/index.scss';
+
+.item-enter {
+    opacity: 0;
+    transform:  translateX(#{rem(375)});
+}
+.item-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 400ms $ease-in, transform 400ms;
+}
+.item-exit {
+    opacity: 1;
+    transform:  translateX(0);
+}
+.item-exit-active {
+    opacity: 0;
+    transform: translateX(-#{rem(375)});
+    transition: opacity 400ms $ease-in, transform 400ms $ease-out;
+}
