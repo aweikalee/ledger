@@ -5,10 +5,14 @@ module.exports = gql`
         ledger(id: ID!): Ledger
         ledgers: [Ledger]
         record(id: ID!): Record
-        records(pid: ID!): [Record]
+        records(pid: ID!, date: String, cursor: ID, limit: Int): Records
         recordType(id: ID!): RecordType
         recordTypes(pid: ID!): [RecordType]
         user(id: ID!): User
+    }
+
+    interface BasePagination {
+        next: ID
     }
 
     type Ledger {
@@ -19,9 +23,16 @@ module.exports = gql`
     type Record {
         id: ID!
         type: ID!
+        timezone: Int
+        datetime: String
         detail: String
         amount: Float
         currency: String!
+    }
+
+    type Records implements BasePagination {
+        next: ID
+        content: [Record]
     }
 
     type RecordType {

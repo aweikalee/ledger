@@ -1,5 +1,8 @@
 export type ILedgerClass = {
-    'record-link': string
+    'item-enter': string
+    'item-enter-active': string
+    'item-exit': string
+    'item-exit-active': string
 }
 
 const styles: ILedgerClass

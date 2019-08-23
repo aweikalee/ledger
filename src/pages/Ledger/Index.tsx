@@ -1,28 +1,147 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import gql from 'graphql-tag'
+import { useQuery } from '@apollo/react-hooks'
+import { TransitionGroup } from 'react-transition-group'
+import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
-import Record, { IRecordProps } from './components/Record'
+import { DelayCSSTransition } from '@/components/Animation'
+import { LoadingBlock } from '@/components/Loading'
+import Record, { IRecord, IRecordType } from './components/Record'
 import styles from './Index.module.scss'
+import { format } from 'date-fns'
+import config from '@/config'
 
-const LedgerIndex: React.FC = () => {
-    const List = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(id => {
-        const prop: IRecordProps = {
-            amount: (Math.random() - 0.5) * 1000,
-            currency: 'CNY',
-            type: 'traffic',
-            timestamp: 1390000000,
-            detail: '机票 温州到上海'
+const LedgerIndex: React.FC = props => {
+    const {
+        params: { id }
+    } = (props as any).match as {
+        params: {
+            id: string
         }
+    }
+    const [hasMore, setHasMore] = useState(true)
+    useEffect(() => {})
 
+    const [cursor, setCursor] = useState('')
+    useEffect(() => {})
+
+    const [date] = useState(format(new Date(), config.datetimeFormat))
+    useEffect(() => {})
+
+    /* Records */
+    const { loading, fetchMore, data } = useQuery<{
+        records: {
+            next: string
+            content: IRecord[]
+            __typename: string
+        }
+    }>(
+        gql`
+            query($pid: ID!, $date: String, $cursor: ID) {
+                records(pid: $pid, date: $date, cursor: $cursor, limit: 10) {
+                    next
+                    content {
+                        id
+                        type
+                        timezone
+                        datetime
+                        detail
+                        amount
+                        currency
+                    }
+                }
+            }
+        `,
+        {
+            variables: {
+                pid: id,
+                date
+            }
+        }
+    )
+
+    useEffect(() => {
+        if (data && data.records) {
+            if (!data.records.next) {
+                setHasMore(false)
+            } else {
+                setCursor(data.records.next)
+            }
+        }
+    }, [data])
+
+    function fetchMoreFn() {
+        if (!hasMore) {
+            return
+        }
+        fetchMore({
+            variables: {
+                pid: id,
+                date,
+                cursor
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+                if (fetchMoreResult) {
+                    const records = fetchMoreResult.records
+                    return {
+                        records: {
+                            next: fetchMoreResult.records.next,
+                            content: [
+                                ...prev.records.content,
+                                ...records.content
+                            ],
+                            __typename: records.__typename
+                        }
+                    }
+                } else {
+                    return prev
+                }
+            }
+        })
+    }
+
+    /* Types */
+    const { loading: loadingTypes, data: dataTypes } = useQuery<{
+        recordTypes: IRecordType[]
+    }>(
+        gql`
+            query($pid: ID!) {
+                recordTypes(pid: $pid) {
+                    id
+                    text
+                    icon
+                    color
+                }
+            }
+        `,
+        {
+            variables: {
+                pid: id
+            }
+        }
+    )
+
+    const classnamesItem: CSSTransitionClassNames = {
+        enter: styles['item-enter'],
+        enterActive: styles['item-enter-active'],
+        exit: styles['item-exit'],
+        exitActive: styles['item-exit-active']
+    }
+    const types = (dataTypes && dataTypes.recordTypes) || []
+    const getType = (id: string) => {
         return (
-            <Link to="/record/1" className={styles["record-link"]} key={id}>
-                <Record {...prop} />
-            </Link>
+            types.find(v => v.id === id) || {
+                id: '',
+                text: '未分类',
+                icon: 'image',
+                color: 'grey'
+            }
         )
-    })
+    }
+
     return (
         <>
             <NavigationBar
@@ -31,9 +150,37 @@ const LedgerIndex: React.FC = () => {
                 left={<BackButton text="账簿盒" href="/" />}
             />
             <ContentBody maxWidth="sm">
-                <Grid container direction="column">
-                    {List}
-                </Grid>
+                <TransitionGroup component={Grid} container direction="column">
+                    {data &&
+                        data.records &&
+                        (data.records.content || []).map((item, index) => {
+                            const type = getType(item.type)
+                            return (
+                                <DelayCSSTransition
+                                    timeout={400}
+                                    enterDelay={index * 100}
+                                    exitDelay={0}
+                                    classNames={classnamesItem}
+                                    key={item.id}
+                                >
+                                    <Record {...item} recordType={type} />
+                                </DelayCSSTransition>
+                            )
+                        })}
+                </TransitionGroup>
+                {((loading || loadingTypes) && <LoadingBlock />) || (
+                    <div
+                        style={{
+                            textAlign: 'center',
+                            padding: '0.5rem'
+                        }}
+                        onClick={() => {
+                            fetchMoreFn()
+                        }}
+                    >
+                        {hasMore ? '点击加载更多' : '没有更多了'}
+                    </div>
+                )}
             </ContentBody>
             <ToolBar />
         </>
