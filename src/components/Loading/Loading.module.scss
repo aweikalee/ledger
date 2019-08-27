@@ -40,7 +40,8 @@
 .loading {
     padding: $gap;
     text-align: center;
-    & [data-role="loading"] {
+    & [data-role="loading-spinner"] {
+        display: block;
         font-size: rem(44);
     }
     & [data-role="loading-text"] {
