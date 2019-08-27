@@ -21,7 +21,7 @@
     }
 }
 
-.loading {
+.spinner {
     position: relative;
     & [data-role='loading-svg'] {
         height: 1em;
@@ -37,11 +37,7 @@
     }
 }
 
-.block {
-    display: block;
-}
-
-.loading-block {
+.loading {
     padding: $gap;
     text-align: center;
     & [data-role="loading"] {

@@ -1,7 +1,6 @@
 export type ILoadingClass = {
     loading: string
-    block: string
-    'loading-block': string
+    spinner: string
 }
 
 const styles: ILoadingClass

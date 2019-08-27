@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { Button } from '../Button'
-import Loading from './Loading'
-import styles from './More.module.scss'
+import Spinner from './Spinner'
+import styles from './Loading.module.scss'
 import { throttle } from '@/utils/throttle'
 
 type IStatus = 'ready' | 'loading' | 'complete' | 'error'
@@ -82,7 +82,7 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
         }
     }, [status, handler, screen, el])
 
-    const className = clsx(styles['load-more'], classNameProp)
+    const className = clsx(styles.loading, classNameProp)
     const bindProps = {
         className,
         ref: el,
@@ -93,7 +93,7 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
         [key in IStatus]: JSX.Element
     } = {
         ready: <div data-role="loading-text">加载更多</div>,
-        loading: <Loading block />,
+        loading: <Spinner />,
         complete: <div data-role="loading-text">没有更多了</div>,
         error: (
             <>
