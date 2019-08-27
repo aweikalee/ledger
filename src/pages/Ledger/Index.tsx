@@ -8,11 +8,12 @@ import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
 import { DelayCSSTransition } from '@/components/Animation'
-import { LoadingBlock } from '@/components/Loading'
+import { LoadMore } from '@/components/Loading'
 import Record, { IRecord, IRecordType } from './components/Record'
 import styles from './Index.module.scss'
 import { format } from 'date-fns'
 import config from '@/config'
+import { ILoadMoreProps } from '@/components/Loading/LoadMore'
 
 const LedgerIndex: React.FC = props => {
     const {
@@ -22,11 +23,8 @@ const LedgerIndex: React.FC = props => {
             id: string
         }
     }
-    const [hasMore, setHasMore] = useState(true)
-    useEffect(() => {})
 
     const [cursor, setCursor] = useState('')
-    useEffect(() => {})
 
     const [date] = useState(format(new Date(), config.datetimeFormat))
     useEffect(() => {})
@@ -64,17 +62,13 @@ const LedgerIndex: React.FC = props => {
     )
 
     useEffect(() => {
-        if (data && data.records) {
-            if (!data.records.next) {
-                setHasMore(false)
-            } else {
-                setCursor(data.records.next)
-            }
+        if (data && data.records && data.records.next) {
+            setCursor(data.records.next)
         }
     }, [data])
 
-    function fetchMoreFn() {
-        if (!hasMore) {
+    const fetchMoreFn: ILoadMoreProps['handler'] = cb => {
+        if (loading) {
             return
         }
         fetchMore({
@@ -100,11 +94,17 @@ const LedgerIndex: React.FC = props => {
                     return prev
                 }
             }
+        }).then(res => {
+            if (res.errors) {
+                cb(res.errors[0])
+            } else {
+                cb(null, !res.data.records.next)
+            }
         })
     }
 
     /* Types */
-    const { loading: loadingTypes, data: dataTypes } = useQuery<{
+    const { data: dataTypes } = useQuery<{
         recordTypes: IRecordType[]
     }>(
         gql`
@@ -168,19 +168,7 @@ const LedgerIndex: React.FC = props => {
                             )
                         })}
                 </TransitionGroup>
-                {((loading || loadingTypes) && <LoadingBlock />) || (
-                    <div
-                        style={{
-                            textAlign: 'center',
-                            padding: '0.5rem'
-                        }}
-                        onClick={() => {
-                            fetchMoreFn()
-                        }}
-                    >
-                        {hasMore ? '点击加载更多' : '没有更多了'}
-                    </div>
-                )}
+                <LoadMore handler={fetchMoreFn} />
             </ContentBody>
             <ToolBar />
         </>
