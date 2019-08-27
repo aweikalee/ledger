@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import Icon from '../Icon'
 import iconTextMap from '../Icon/map'
 import Button, { IButtonProps } from '../Button/Button'
-import styles from './ToolBarButton.module.scss'
+import styles from './Button.module.scss'
 
 export interface IToolButtonProps extends IButtonProps {
     icon: keyof typeof iconTextMap

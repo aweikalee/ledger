@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import Grid from '../Grid'
-import ToolBarButton from './ToolBarButton'
+import ToolBarButton from './Button'
 import Fixed, { IFixedProps } from '../Fixed/Fixed'
 import styles from './ToolBar.module.scss'
 export interface IToolBarProps extends React.HTMLAttributes<HTMLElement> {}

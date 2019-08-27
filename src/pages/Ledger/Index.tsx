@@ -8,12 +8,12 @@ import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
 import { DelayCSSTransition } from '@/components/Animation'
-import { LoadMore } from '@/components/Loading'
+import * as Loading from '@/components/Loading'
+import { ILoadMoreProps } from '@/components/Loading/More'
 import Record, { IRecord, IRecordType } from './components/Record'
 import styles from './Index.module.scss'
 import { format } from 'date-fns'
 import config from '@/config'
-import { ILoadMoreProps } from '@/components/Loading/LoadMore'
 
 const LedgerIndex: React.FC = props => {
     const {
@@ -168,7 +168,7 @@ const LedgerIndex: React.FC = props => {
                             )
                         })}
                 </TransitionGroup>
-                <LoadMore handler={fetchMoreFn} />
+                <Loading.More handler={fetchMoreFn} />
             </ContentBody>
             <ToolBar />
         </>

@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { Button } from '../Button'
 import Loading from './Loading'
-import styles from './LoadMore.module.scss'
+import styles from './More.module.scss'
 import { throttle } from '@/utils/throttle'
 
 type IStatus = 'ready' | 'loading' | 'complete' | 'error'

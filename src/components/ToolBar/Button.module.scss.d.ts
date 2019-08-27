@@ -1,4 +1,4 @@
-export type IToolButtonClass = {
+export type IToolBarButtonClass = {
     button: string
     icon: string
     text: string
@@ -6,5 +6,5 @@ export type IToolButtonClass = {
     default: string
 }
 
-const styles: IToolButtonClass
+const styles: IToolBarButtonClass
 export default styles

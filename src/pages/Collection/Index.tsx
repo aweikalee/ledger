@@ -8,7 +8,7 @@ import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
 import { DelayCSSTransition } from '@/components/Animation'
-import { LoadingBlock } from '@/components/Loading'
+import * as Loading from '@/components/Loading'
 import Ledger, { ILedger } from './components/Ledger'
 import styles from './Index.module.scss'
 
@@ -51,7 +51,7 @@ const CollectionIndex: React.FC = () => {
                             </DelayCSSTransition>
                         ))}
                 </TransitionGroup>
-                {loading && <LoadingBlock />}
+                {loading && <Loading.Block />}
             </ContentBody>
             <ToolBar />
         </>
