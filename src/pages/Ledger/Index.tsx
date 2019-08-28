@@ -168,7 +168,7 @@ const LedgerIndex: React.FC = props => {
                             )
                         })}
                 </TransitionGroup>
-                <Loading.More handler={fetchMoreFn} />
+                <Loading.More handler={fetchMoreFn} delay={100} />
             </ContentBody>
             <ToolBar />
         </>

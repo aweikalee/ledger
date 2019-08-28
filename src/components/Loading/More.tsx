@@ -1,23 +1,18 @@
 import React, { useRef, useEffect, useState } from 'react'
-import clsx from 'clsx'
 import { Button } from '../Button'
-import Spinner from './Spinner'
-import styles from './Loading.module.scss'
+import LoadingOrigin, { ILoadingProps } from './Loading'
 import { throttle } from '@/utils/throttle'
+
+const Loading = React.forwardRef(LoadingOrigin)
 
 type IStatus = 'ready' | 'loading' | 'complete' | 'error'
 
-export interface ILoadMoreProps extends React.HTMLAttributes<HTMLElement> {
+export interface ILoadMoreProps extends ILoadingProps {
     handler(callback: (error: Error | null, complete?: boolean) => void): void
 }
 
 const LoadMore: React.FC<ILoadMoreProps> = props => {
-    const {
-        className: classNameProp,
-        children: childrenProp,
-        handler,
-        ...other
-    }: typeof props = props
+    const { children: childrenProp, handler, ...other }: typeof props = props
 
     /* 缓存屏幕宽高  */
     const [screen, setScreen] = useState<{
@@ -52,6 +47,7 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
                 if (
                     status === 'loading' ||
                     status === 'complete' ||
+                    !el.current ||
                     el.current!.getBoundingClientRect().top >= screen.h
                 ) {
                     return
@@ -82,18 +78,15 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
         }
     }, [status, handler, screen, el])
 
-    const className = clsx(styles.loading, classNameProp)
     const bindProps = {
-        className,
         ref: el,
         ...other
     }
 
     const children: {
-        [key in IStatus]: JSX.Element
+        [key in IStatus]?: JSX.Element
     } = {
         ready: <div data-role="loading-text">加载更多</div>,
-        loading: <Spinner />,
         complete: <div data-role="loading-text">没有更多了</div>,
         error: (
             <>
@@ -112,9 +105,9 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
     }
 
     return (
-        <div data-role="load-more" {...bindProps}>
-            {children[status]}
-        </div>
+        <Loading data-role="load-more" {...bindProps}>
+            {status in children && children[status]}
+        </Loading>
     )
 }
 
