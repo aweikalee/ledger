@@ -51,7 +51,7 @@ const CollectionIndex: React.FC = () => {
                             </DelayCSSTransition>
                         ))}
                 </TransitionGroup>
-                {loading && <Loading />}
+                <Loading show={loading} delay={100} />
             </ContentBody>
             <ToolBar />
         </>
