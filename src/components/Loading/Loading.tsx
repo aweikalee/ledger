@@ -78,4 +78,4 @@ const Loading: React.FC<ILoadingProps> = (props, ref) => {
     )
 }
 
-export default Loading
+export default React.forwardRef(Loading)

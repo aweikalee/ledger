@@ -1,9 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { Button } from '../Button'
-import LoadingOrigin, { ILoadingProps } from './Loading'
+import Loading, { ILoadingProps } from './Loading'
 import { throttle } from '@/utils/throttle'
-
-const Loading = React.forwardRef(LoadingOrigin)
 
 type IStatus = 'ready' | 'loading' | 'complete' | 'error'
 
