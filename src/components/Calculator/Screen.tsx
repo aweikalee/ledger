@@ -64,20 +64,27 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
 
     const [screenFull, setScreenFull] = useState()
     useEffect(() => {
+        const len = queue.length
         const result = queue.map((part, index) => {
             const key = `${index},${part}`
-            return part in SYMBOL ? (
-                <React.Fragment key={key}>
-                    <wbr />
-                    <span data-role={part} className={styles.operator}>
-                        {SYMBOL[part as IKey['Operator']]}
+            if (part in SYMBOL) {
+                return (
+                    <React.Fragment key={key}>
+                        {index >= len - 2 ? <br /> : <wbr />}
+                        <span data-role={part} className={styles.operator}>
+                            {SYMBOL[part as IKey['Operator']]}
+                        </span>
+                    </React.Fragment>
+                )
+            } else {
+                return (
+                    <span data-role="number" key={key}>
+                        {index === len - 1
+                            ? part
+                            : new BigNumber(part).toFormat()}
                     </span>
-                </React.Fragment>
-            ) : (
-                <span data-role="number" key={key}>
-                    {new BigNumber(part).toFormat(index === 0 ? 2 : void 0)}
-                </span>
-            )
+                )
+            }
         })
 
         setScreenFull(result)
