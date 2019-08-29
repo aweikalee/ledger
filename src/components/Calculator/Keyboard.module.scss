@@ -1,0 +1,108 @@
+@import '@/style/index.scss';
+
+.keyboard {
+    position: fixed;
+    bottom: 0;
+    z-index: z-index(4) + 100;
+    display: grid;
+    height: 60vh;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 2px;
+    padding: 1px;
+    background-color: color(grey, 3);
+    outline-color: transparent;
+}
+
+.button {
+    background-color: color(white);
+
+    &[data-role='1'] {
+        grid-area: 4 / 1;
+    }
+
+    &[data-role='2'] {
+        grid-area: 4 / 2;
+    }
+
+    &[data-role='3'] {
+        grid-area: 4 / 3;
+    }
+
+    &[data-role='4'] {
+        grid-area: 3 / 1;
+    }
+
+    &[data-role='5'] {
+        grid-area: 3 / 2;
+    }
+
+    &[data-role='6'] {
+        grid-area: 3 / 3;
+    }
+
+    &[data-role='7'] {
+        grid-area: 2 / 1;
+    }
+
+    &[data-role='8'] {
+        grid-area: 2 / 2;
+    }
+
+    &[data-role='9'] {
+        grid-area: 2 / 3;
+    }
+
+    &[data-role='0'] {
+        grid-area: 5 / 1 / 5 / 3;
+    }
+
+    &[data-role='.'] {
+        grid-area: 5 / 3;
+    }
+
+    &[data-role='plus'] {
+        grid-area: 4 / 4;
+    }
+
+    &[data-role='minus'] {
+        grid-area: 3 / 4;
+    }
+
+    &[data-role='multiplication'] {
+        grid-area: 2 / 4;
+    }
+
+    &[data-role='division'] {
+        grid-area: 1 / 4;
+    }
+
+    &[data-role='equals'] {
+        grid-area: 5 / 4;
+    }
+
+    &[data-role='reset'] {
+        grid-area: 1 / 1;
+    }
+
+    &[data-role='backspace'] {
+        grid-area: 1 / 2 / 1 / 4;
+    }
+}
+
+.enter,
+.appear {
+    transform: translateY(100%);
+}
+.enter-active,
+.appear-active {
+    transform: translateY(0);
+    transition: transform 400ms $ease-out-quint;
+}
+.exit {
+    transform: translateY(0);
+}
+.exit-active {
+    transform: translateY(100%);
+    transition: transform 400ms;
+}

@@ -17,6 +17,7 @@
     "@types/react-router-dom": "^4.3.4",
     "@types/react-transition-group": "^4.2.2",
     "apollo-boost": "^0.4.4",
+    "bignumber.js": "^9.0.0",
     "clsx": "^1.0.4",
     "date-fns": "^2.0.1",
     "graphql": "^14.4.2",

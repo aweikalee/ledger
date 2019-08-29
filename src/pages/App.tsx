@@ -7,6 +7,8 @@ import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 import RecordIndex from './Record/Index'
 
+import LedgerAdd from './Ledger/Add'
+
 import './App.module.scss'
 
 const client = new ApolloClient({
@@ -21,6 +23,9 @@ const App: React.FC = () => {
                     <Route exact path="/" component={CollectionIndex} />
                     <Route exact path="/ledger/:id" component={LedgerIndex} />
                     <Route exact path="/record/:id" component={RecordIndex} />
+
+                    <Route exact path="/ledger/:id/add" component={LedgerAdd} />
+
                 </Switch>
             </BrowserRouter>
         </ApolloProvider>
