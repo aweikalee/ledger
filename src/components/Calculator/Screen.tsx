@@ -1,8 +1,10 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { ICalculatorKeyboardKey as IKey } from './Keyboard'
 import BigNumber from 'bignumber.js'
 import styles from './Screen.module.scss'
+import styleVars from '@/style/index.module.scss'
+import measure from '../utils/measure'
 
 export interface IKeyboradScreenProps
     extends React.HTMLAttributes<HTMLElement> {
@@ -30,64 +32,100 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
 
     const className = clsx(styles.screen, classNameProp)
 
-    const el = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        if (el && el.current) {
-            el.current.scrollTo({
-                top: 999999999999
-            })
-        }
-    }, [el, queue])
-
     const bindProps = {
         className,
-        ref: el,
         'data-focus': focus,
         ...other
     }
 
+    const [screenMini, setScreenMini] = useState<string>('0.00')
+    useEffect(() => {
+        const number = queue[0]
+        const bignumber = new BigNumber(number)
+        let result
+        if (number.length > 24) {
+            result = bignumber
+                .toExponential(18)
+                .replace(/^(\d+\.\d{2,}?)0+(e\+\d+)$/, '$1$2')
+        } else {
+            result = bignumber.toFixed(2)
+        }
+
+        setScreenMini(result)
+    }, [queue])
+
+    const elMini = useRef<HTMLDivElement>(null)
+    const [textScale, setTextScale] = useState(1)
+    useEffect(() => {
+        if (!focus) {
+            setTextScale(getTextScale(screenMini))
+        }
+    }, [elMini, screenMini, focus])
+
+    const [screenFull, setScreenFull] = useState()
+    useEffect(() => {
+        const result = queue.map((part, index) => {
+            const key = `${index},${part}`
+            return part in SYMBOL ? (
+                <React.Fragment key={key}>
+                    <wbr />
+                    <span data-role={part} className={styles.operator}>
+                        {SYMBOL[part as IKey['Operator']]}
+                    </span>
+                </React.Fragment>
+            ) : (
+                <span data-role="number" key={key}>
+                    {new BigNumber(part).toFormat(index === 0 ? 2 : void 0)}
+                </span>
+            )
+        })
+
+        setScreenFull(result)
+    }, [queue])
+
+    const elFull = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        if (elFull && elFull.current) {
+            elFull.current.scrollTo({
+                top: Number.MAX_SAFE_INTEGER
+            })
+        }
+    }, [elFull, screenFull])
+
     return (
         <div data-role="calculator-screen" {...bindProps}>
-            {(() => {
-                if (focus) {
-                    return queue.length === 1
-                        ? getScreenNumber(queue[0])
-                        : getScreenFormula(queue)
-                } else {
-                    return getScreenAbbreviation(queue[0])
-                }
-            })()}
+            {focus || (
+                <div
+                    data-role="mini"
+                    ref={elMini}
+                    style={{ fontSize: `${textScale}em` }}
+                >
+                    {screenMini}
+                </div>
+            )}
+            {focus && (
+                <div data-role="mask">
+                    <div data-role="full" ref={elFull}>
+                        {screenFull}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
 
 export default Screen
 
-function getScreenNumber(number: string) {
-    return new BigNumber(number).toFormat(2)
-}
+let baseTextWidth: number
+function getTextScale(text: string) {
+    if (!baseTextWidth) {
+        baseTextWidth = measure('1234567890123456', {
+            fontFamily: styleVars.fontFamily
+        }).width
+    }
+    const width = measure(text, {
+        fontFamily: styleVars.fontFamily
+    }).width
 
-function getScreenFormula(arr: string[]) {
-    return arr.map((part, index) => {
-        const key = `${index},${part}`
-        return part in SYMBOL ? (
-            <React.Fragment key={key}>
-                <wbr />
-                <span data-role={part} className={styles.operator}>
-                    {SYMBOL[part as IKey['Operator']]}
-                </span>
-            </React.Fragment>
-        ) : (
-            <span data-role="number" key={key}>
-                {new BigNumber(part).toFormat()}
-            </span>
-        )
-    })
-}
-
-function getScreenAbbreviation(number: string) {
-    const bignumber = new BigNumber(number)
-    const result =
-        number.length > 24 ? bignumber.toExponential(18) : bignumber.toFixed(2)
-    return <span>{result}</span>
+    return width < baseTextWidth ? 1 : baseTextWidth / width
 }

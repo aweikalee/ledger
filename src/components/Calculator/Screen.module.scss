@@ -3,23 +3,31 @@
 .screen {
     @include font(large-title);
     text-align: right;
-    word-break: break-word;
-    word-wrap: break-word;
-    background-color: color(white);
     outline-color: transparent;
-    line-height: 1.2;
-    box-sizing: border-box;
 
-    &[data-focus='true'] {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: z-index(4) + 90;
+    & [data-role='mini'] {
+    }
+    & [data-role='full'] {
+        background-color: inherit;
         height: 40vh;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
         padding: $gap;
+        line-height: 1.2;
+        box-sizing: border-box;
+        word-break: break-word;
+        word-wrap: break-word;
+    }
+    & [data-role='mask'] {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: z-index(4) + 90;
+        background-color: color(white);
+        max-width: 100%;
+        overflow: hidden;
     }
 }
 
