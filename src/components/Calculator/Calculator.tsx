@@ -34,6 +34,28 @@ const SYMBOL: {
     }
 }
 
+const KEYMAP: {
+    [key: string]: IKey['All']
+} = {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    0: 0,
+    '.': '.',
+    '+': 'plus',
+    '-': 'minus',
+    '*': 'multiplication',
+    '/': 'division',
+    Enter: 'equals',
+    Backspace: 'backspace'
+}
+
 const Calculator: React.FC<ICalculatorProps> = props => {
     const {
         className: classNameProp,
@@ -192,15 +214,23 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         return !isNumberString(last)
     }
 
+    const onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
+        const key = event.key
+        if (key in KEYMAP) {
+            handler(KEYMAP[key])
+        }
+    }
+
     return (
         <>
             <Screen
                 tabIndex={1}
                 focus={focusKeyboard || focus}
                 onFocus={() => setFocus(true)}
-                // onBlur={() => setTimeout(() => setFocus(false), 1)}
-                {...bindProps}
+                onBlur={() => setTimeout(() => setFocus(false), 1)}
+                onKeyPress={onKeyPress}
                 queue={queue}
+                {...bindProps}
             />
             <Keyboard
                 tabIndex={2}
@@ -208,6 +238,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
                 onBlur={() => setTimeout(() => setFocusKeyboard(false), 1)}
                 show={focusKeyboard || focus}
                 handler={handler}
+                onKeyPress={onKeyPress}
                 text={{
                     reset: isAllClear() || queue.length === 1 ? 'AC' : '',
                     equals: queue.length === 1 ? '完成' : ''
