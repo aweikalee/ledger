@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js'
 
 export interface ICalculatorProps extends React.HTMLAttributes<HTMLElement> {
     value?: string
+    autofocus?: boolean
 }
 
 const SYMBOL: {
@@ -61,6 +62,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         className: classNameProp,
         children: childrenProp,
         value: valueProp = '0',
+        autofocus = false,
         ...other
     }: typeof props = props
     const className = clsx(classNameProp)
@@ -68,7 +70,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
     const [queue, setQueue] = useState<string[]>([valueProp])
     useEffect(() => {}, [valueProp])
 
-    const [focus, setFocus] = useState(false)
+    const [focus, setFocus] = useState(autofocus)
     const [focusKeyboard, setFocusKeyboard] = useState(false)
     useEffect(() => {
         if (!focus && !focusKeyboard) {
@@ -221,24 +223,36 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         }
     }
 
+    const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+        const key = event.key
+        if (key === 'Escape') {
+            setFocus(false)
+            setFocusKeyboard(false)
+        }
+    }
+
     return (
         <>
             <Screen
                 tabIndex={1}
-                focus={focusKeyboard || focus}
+                show={focusKeyboard || focus}
+                focus={focus}
                 onFocus={() => setFocus(true)}
                 onBlur={() => setTimeout(() => setFocus(false), 1)}
                 onKeyPress={onKeyPress}
+                onKeyDown={onKeyDown}
                 queue={queue}
                 {...bindProps}
             />
             <Keyboard
                 tabIndex={2}
+                show={focusKeyboard || focus}
+                focus={focusKeyboard}
                 onFocus={() => setFocusKeyboard(true)}
                 onBlur={() => setTimeout(() => setFocusKeyboard(false), 1)}
-                show={focusKeyboard || focus}
                 handler={handler}
                 onKeyPress={onKeyPress}
+                onKeyDown={onKeyDown}
                 text={{
                     reset: isAllClear() || queue.length === 1 ? 'AC' : '',
                     equals: queue.length === 1 ? '完成' : ''

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import clsx from 'clsx'
 import styles from './Keyboard.module.scss'
 import stylesButton from '../Button/Button.module.scss'
@@ -45,6 +45,7 @@ const SYMBOL: {
 export interface ICalculatorKeyboardProps
     extends React.HTMLAttributes<HTMLElement> {
     show?: boolean
+    focus?: boolean
     handler?: (symbol: ICalculatorKeyboardKey['All']) => void
     text?: {
         [key in ICalculatorKeyboardKey['All']]?: string
@@ -55,7 +56,8 @@ const Keyboard: React.FC<ICalculatorKeyboardProps> = props => {
     const {
         className: classNameProp,
         children: childrenProp,
-        show = true,
+        show,
+        focus,
         handler,
         text = {},
         ...other
@@ -75,8 +77,21 @@ const Keyboard: React.FC<ICalculatorKeyboardProps> = props => {
         exit: styles['exit'],
         exitActive: styles['exit-active']
     }
+
+    const el = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        if (el && el.current) {
+            if (focus) {
+                el.current.focus()
+            } else {
+                el.current.blur()
+            }
+        }
+    }, [el, focus])
+
     const bindProps = {
         className,
+        ref: el,
         ...other
     }
 

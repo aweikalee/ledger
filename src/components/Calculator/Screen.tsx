@@ -9,6 +9,7 @@ import measure from '../utils/measure'
 export interface IKeyboradScreenProps
     extends React.HTMLAttributes<HTMLElement> {
     queue?: string[]
+    show?: boolean
     focus?: boolean
 }
 
@@ -26,15 +27,29 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
         className: classNameProp,
         children: childrenProp,
         queue = ['0'],
+        show,
         focus,
         ...other
     }: typeof props = props
 
     const className = clsx(styles.screen, classNameProp)
 
+    const el = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        console.log(1)
+        if (el && el.current) {
+            if (focus) {
+                el.current.focus()
+            } else {
+                el.current.blur()
+            }
+        }
+    }, [el, focus])
+
     const bindProps = {
         className,
-        'data-focus': focus,
+        ref: el,
+        'data-show': show,
         ...other
     }
 
@@ -101,7 +116,7 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
 
     return (
         <div data-role="calculator-screen" {...bindProps}>
-            {focus || (
+            {show || (
                 <div
                     data-role="mini"
                     ref={elMini}
@@ -110,7 +125,7 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
                     {screenMini}
                 </div>
             )}
-            {focus && (
+            {show && (
                 <div data-role="mask">
                     <div data-role="full" ref={elFull}>
                         {screenFull}

@@ -3,6 +3,8 @@
 .keyboard {
     position: fixed;
     bottom: 0;
+    left: 0;
+    right: 0;
     z-index: z-index(4) + 100;
     display: grid;
     height: 60vh;

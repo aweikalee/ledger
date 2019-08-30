@@ -13,7 +13,7 @@ const LedgerAdd: React.FC = props => {
                 left={<BackButton href="/" />}
             />
             <ContentBody>
-                <Calculator />
+                <Calculator autofocus />
             </ContentBody>
             <ToolBar />
         </>
