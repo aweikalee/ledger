@@ -1,15 +1,14 @@
-export const format = (
-    amount: string,
-    options: {
-        groupSize?: number
-        groupSeparator?: string
-        fractionGroupSize?: number
-        fractionGroupSeparator?: string
-        decimalSeparator?: string
-        prefix?: string
-        suffix?: string
-    } = {}
-) => {
+export interface IOptions {
+    groupSize?: number
+    groupSeparator?: string
+    fractionGroupSize?: number
+    fractionGroupSeparator?: string
+    decimalSeparator?: string
+    prefix?: string
+    suffix?: string
+}
+
+export const format = (amount: string, options: IOptions = {}) => {
     const {
         groupSize,
         groupSeparator,
@@ -40,7 +39,7 @@ export const format = (
     let i
 
     if (intLen > 0) {
-        if ( groupSize > 0 && groupSeparator !== '') {
+        if (groupSize > 0 && groupSeparator !== '') {
             i = intLen % groupSize || groupSize
             result += int.substr(0, i)
             for (; i < intLen; i += groupSize) {
@@ -60,7 +59,9 @@ export const format = (
             i = fractionGroupSize
             result += fraction.substr(0, i)
             for (; i < fractionLen; i += fractionGroupSize) {
-                result += fractionGroupSeparator + fraction.substr(i, fractionGroupSize)
+                result +=
+                    fractionGroupSeparator +
+                    fraction.substr(i, fractionGroupSize)
             }
         } else {
             result += fraction

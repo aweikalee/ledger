@@ -5,8 +5,9 @@ import BigNumberOrigin from 'bignumber.js'
 import styles from './Screen.module.scss'
 import styleVars from '@/style/index.module.scss'
 import measure from '../utils/measure'
+import * as amount from '@/utils/amount'
 
-const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e+9 })
+const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
 export interface IKeyboradScreenProps
     extends React.HTMLAttributes<HTMLElement> {
@@ -22,6 +23,10 @@ const SYMBOL: {
     division: '÷',
     plus: '+',
     minus: '-'
+}
+
+const FORMAT_OPTIONS: amount.IOptions = {
+    fractionGroupSize: 3
 }
 
 const Screen: React.FC<IKeyboradScreenProps> = props => {
@@ -55,7 +60,12 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
     }
 
     const [screenMini, setScreenMini] = useState<string>('0.00')
+    const lastNumber = useRef(queue[0])
     useEffect(() => {
+        if (show || lastNumber.current === queue[0]) {
+            return
+        }
+
         const number = queue[0]
         const bignumber = new BigNumber(number)
         let result
@@ -63,12 +73,16 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
             result = bignumber
                 .toExponential(18)
                 .replace(/^(\d+\.\d{2,}?)0+(e[+-]\d+)$/, '$1$2')
+                .replace(/(^\d+(\.\d+)?)/, match => {
+                    return amount.format(match, FORMAT_OPTIONS)
+                })
         } else {
-            result = bignumber.toFixed(2)
+            result = amount.format(bignumber.toFixed(2), FORMAT_OPTIONS)
         }
 
+        lastNumber.current = number
         setScreenMini(result)
-    }, [queue])
+    }, [show, queue])
 
     const elMini = useRef<HTMLDivElement>(null)
     const [textScale, setTextScale] = useState(1)
@@ -80,6 +94,9 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
 
     const [screenFull, setScreenFull] = useState()
     useEffect(() => {
+        if (!show) {
+            return
+        }
         const len = queue.length
         const result = queue.map((part, index) => {
             const key = `${index},${part}`
@@ -95,16 +112,14 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
             } else {
                 return (
                     <span data-role="number" key={key}>
-                        {index === len - 1
-                            ? part
-                            : new BigNumber(part).toFormat()}
+                        {amount.format(part, FORMAT_OPTIONS)}
                     </span>
                 )
             }
         })
 
         setScreenFull(result)
-    }, [queue])
+    }, [queue, show])
 
     const elFull = useRef<HTMLDivElement>(null)
     useEffect(() => {
