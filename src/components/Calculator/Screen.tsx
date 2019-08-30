@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { ICalculatorKeyboardKey as IKey } from './Keyboard'
-import BigNumber from 'bignumber.js'
+import BigNumberOrigin from 'bignumber.js'
 import styles from './Screen.module.scss'
 import styleVars from '@/style/index.module.scss'
 import measure from '../utils/measure'
+
+const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e+9 })
 
 export interface IKeyboradScreenProps
     extends React.HTMLAttributes<HTMLElement> {
@@ -36,7 +38,6 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
 
     const el = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        console.log(1)
         if (el && el.current) {
             if (focus) {
                 el.current.focus()
@@ -61,7 +62,7 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
         if (number.length > 24) {
             result = bignumber
                 .toExponential(18)
-                .replace(/^(\d+\.\d{2,}?)0+(e\+\d+)$/, '$1$2')
+                .replace(/^(\d+\.\d{2,}?)0+(e[+-]\d+)$/, '$1$2')
         } else {
             result = bignumber.toFixed(2)
         }

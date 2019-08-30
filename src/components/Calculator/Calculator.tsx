@@ -5,7 +5,9 @@ import Keyboard, {
     ICalculatorKeyboardKey as IKey
 } from './Keyboard'
 import Screen from './Screen'
-import BigNumber from 'bignumber.js'
+import BigNumberOrigin from 'bignumber.js'
+
+const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
 export interface ICalculatorProps extends React.HTMLAttributes<HTMLElement> {
     value?: string
@@ -53,8 +55,7 @@ const KEYMAP: {
     '-': 'minus',
     '*': 'multiplication',
     '/': 'division',
-    Enter: 'equals',
-    Backspace: 'backspace'
+    Enter: 'equals'
 }
 
 const Calculator: React.FC<ICalculatorProps> = props => {
@@ -76,6 +77,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         if (!focus && !focusKeyboard) {
             equals()
         }
+        /* eslint-disable-next-line */
     }, [focus, focusKeyboard])
 
     const bindProps = {
@@ -116,8 +118,9 @@ const Calculator: React.FC<ICalculatorProps> = props => {
 
     const equals = () => {
         const str = proccesser(queue)
+        /* eslint-disable-next-line */
         const calculate = new Function('BigNumber', `return ${str}`)
-        const result = calculate(BigNumber) as BigNumber
+        const result = calculate(BigNumber)
 
         setQueue([`${new BigNumber(result.toFixed(2))}`])
     }
@@ -218,17 +221,38 @@ const Calculator: React.FC<ICalculatorProps> = props => {
 
     const onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
         const key = event.key
+
         if (key in KEYMAP) {
             handler(KEYMAP[key])
         }
     }
+
+    const [nowKey, setNowKey] = useState('')
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (nowKey === 'Backspace') {
+                handler('backspace')
+            }
+        }, 200)
+
+        return () => {
+            clearTimeout(timer)
+        }
+    })
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
         const key = event.key
         if (key === 'Escape') {
             setFocus(false)
             setFocusKeyboard(false)
+        } else if (key === 'Backspace' || key === 'Delete') {
+            handler('backspace')
+            setNowKey('Backspace')
         }
+    }
+
+    const onKeyUp = () => {
+        setNowKey('')
     }
 
     return (
@@ -241,6 +265,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
                 onBlur={() => setTimeout(() => setFocus(false), 1)}
                 onKeyPress={onKeyPress}
                 onKeyDown={onKeyDown}
+                onKeyUp={onKeyUp}
                 queue={queue}
                 {...bindProps}
             />
@@ -253,6 +278,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
                 handler={handler}
                 onKeyPress={onKeyPress}
                 onKeyDown={onKeyDown}
+                onKeyUp={onKeyUp}
                 text={{
                     reset: isAllClear() || queue.length === 1 ? 'AC' : '',
                     equals: queue.length === 1 ? '完成' : ''
@@ -265,5 +291,5 @@ const Calculator: React.FC<ICalculatorProps> = props => {
 export default Calculator
 
 function isNumberString(number: string) {
-    return !/[^0-9\.-]/.test(number)
+    return !/[^0-9.-]/.test(number)
 }
