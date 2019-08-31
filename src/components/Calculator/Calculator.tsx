@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import clsx from 'clsx'
 import Keyboard, {
     ICalculatorKeyboardProps,
@@ -85,36 +85,38 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         ...other
     }
 
-    const operators = SYMBOL.operator
-    const operatorsLength = operators.length
-    const proccesser = (arr: string[]): string => {
-        for (let i = 0; i < operatorsLength; i += 1) {
-            const operator = operators[i]
-            const index = arr.indexOf(operator)
+    const proccesser = useMemo(() => {
+        const operators = SYMBOL.operator
+        const operatorsLength = operators.length
+        return (arr: string[]): string => {
+            for (let i = 0; i < operatorsLength; i += 1) {
+                const operator = operators[i]
+                const index = arr.indexOf(operator)
 
-            if (index === -1) {
-                continue
+                if (index === -1) {
+                    continue
+                }
+
+                const left = arr.slice(0, index)
+                const right = arr.slice(index + 1, arr.length)
+                const leftLen = left.length
+                const rightLen = right.length
+
+                if (leftLen && rightLen) {
+                    // 相当于 left.plus(right)
+                    return `new BigNumber(${proccesser(left)}).${
+                        SYMBOL.caculate[operator]
+                    }(${proccesser(right)})`
+                } else if (leftLen || rightLen) {
+                    return proccesser(leftLen > rightLen ? left : right)
+                }
             }
 
-            const left = arr.slice(0, index)
-            const right = arr.slice(index + 1, arr.length)
-            const leftLen = left.length
-            const rightLen = right.length
-
-            if (leftLen && rightLen) {
-                // 相当于 left.plus(right)
-                return `new BigNumber(${proccesser(left)}).${
-                    SYMBOL.caculate[operator]
-                }(${proccesser(right)})`
-            } else if (leftLen || rightLen) {
-                return proccesser(leftLen > rightLen ? left : right)
-            }
+            return arr.length > 0
+                ? `new BigNumber('${arr[0]}')`
+                : `new BigNumber('0')`
         }
-
-        return arr.length > 0
-            ? `new BigNumber('${arr[0]}')`
-            : `new BigNumber('0')`
-    }
+    }, [])
 
     const equals = () => {
         const str = proccesser(queue)
