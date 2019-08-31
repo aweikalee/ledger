@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import Keyboard, {
     ICalculatorKeyboardProps,
@@ -227,10 +227,10 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         }
     }
 
-    const [nowKey, setNowKey] = useState('')
+    const nowKey = useRef('')
     useEffect(() => {
         const timer = setTimeout(() => {
-            if (nowKey === 'Backspace') {
+            if (nowKey.current === 'Backspace') {
                 handler('backspace')
             }
         }, 200)
@@ -247,12 +247,12 @@ const Calculator: React.FC<ICalculatorProps> = props => {
             setFocusKeyboard(false)
         } else if (key === 'Backspace' || key === 'Delete') {
             handler('backspace')
-            setNowKey('Backspace')
+            nowKey.current = 'Backspace'
         }
     }
 
     const onKeyUp = () => {
-        setNowKey('')
+        nowKey.current = ''
     }
 
     return (
