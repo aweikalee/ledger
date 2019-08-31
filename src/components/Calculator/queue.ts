@@ -9,7 +9,7 @@ export interface ISetQueue {
     addOperator(operator: IKey['Operator']): void
     backspace(): void
     clear(): void
-    equals(): void
+    equals(callback?: (result: string) => void): void
     isAllClear(): boolean
 }
 
@@ -145,12 +145,12 @@ export const useQueue = (
         queueRef.current = queue
     }, [queue])
 
-    const setQueue: ISetQueue = useMemo(
+    const setQueue = useMemo<ISetQueue>(
         () => ({
-            addNumber(number: IKey['Number']) {
+            addNumber(number) {
                 setQueueState(addNumber(queueRef.current, number))
             },
-            addOperator(operator: IKey['Operator']) {
+            addOperator(operator) {
                 setQueueState(addOperator(queueRef.current, operator))
             },
             backspace() {
@@ -159,9 +159,12 @@ export const useQueue = (
             clear() {
                 setQueueState(clear(queueRef.current))
             },
-            equals() {
+            equals(callback) {
                 if (queueRef.current !== lastQueue.current) {
-                    setQueueState(equals(queueRef.current))
+                    const result = equals(queueRef.current)
+                    setQueueState(result)
+                    lastQueue.current = result
+                    callback && callback(result[0])
                 }
             },
             isAllClear() {

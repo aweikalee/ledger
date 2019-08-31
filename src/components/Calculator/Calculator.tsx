@@ -10,6 +10,7 @@ import { useQueue } from './queue'
 export interface ICalculatorProps extends React.HTMLAttributes<HTMLElement> {
     value?: string
     autofocus?: boolean
+    onUpdate?: (result: string) => void
 }
 
 const SYMBOL: {
@@ -54,6 +55,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         children: childrenProp,
         value: valueProp = '0',
         autofocus = false,
+        onUpdate,
         ...other
     }: typeof props = props
     const className = clsx(classNameProp)
@@ -69,9 +71,9 @@ const Calculator: React.FC<ICalculatorProps> = props => {
     const [focusKeyboard, setFocusKeyboard] = useState(false)
     useEffect(() => {
         if (!focus && !focusKeyboard) {
-            setQueue.equals()
+            setQueue.equals(onUpdate)
         }
-    }, [focus, focusKeyboard, setQueue])
+    }, [focus, focusKeyboard, setQueue, onUpdate])
 
     const handler: ICalculatorKeyboardProps['handler'] = useCallback(
         symbol => {
@@ -93,11 +95,11 @@ const Calculator: React.FC<ICalculatorProps> = props => {
                         setFocus(false)
                         setFocusKeyboard(false)
                     } else {
-                        setQueue.equals()
+                        setQueue.equals(onUpdate)
                     }
             }
         },
-        [setQueue, queueRef, setFocus, setFocusKeyboard]
+        [setQueue, queueRef, setFocus, setFocusKeyboard, onUpdate]
     )
 
     /* 绑定热键 */
