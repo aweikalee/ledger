@@ -92,7 +92,7 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
         }
     }, [elMini, screenMini, focus])
 
-    const [screenFull, setScreenFull] = useState()
+    const [screenFull, setScreenFull] = useState<JSX.Element[]>()
     useEffect(() => {
         if (!show) {
             return
