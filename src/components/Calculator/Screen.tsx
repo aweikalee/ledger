@@ -43,7 +43,7 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
 
     const el = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        if (el && el.current) {
+        if (el.current) {
             if (focus) {
                 el.current.focus()
             } else {

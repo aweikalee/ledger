@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import clsx from 'clsx'
 import Keyboard, {
     ICalculatorKeyboardProps,
     ICalculatorKeyboardKey as IKey
 } from './Keyboard'
 import Screen from './Screen'
-import BigNumberOrigin from 'bignumber.js'
-
-const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
+import { useQueue } from './queue'
 
 export interface ICalculatorProps extends React.HTMLAttributes<HTMLElement> {
     value?: string
@@ -20,25 +18,12 @@ const SYMBOL: {
     readonly backspace: IKey['Backspace']
     readonly number: IKey['Number'][]
     readonly operator: IKey['Operator'][]
-    readonly caculate: {
-        [key in IKey['Operator']]:
-            | 'multipliedBy'
-            | 'dividedBy'
-            | 'plus'
-            | 'minus'
-    }
 } = {
     equals: 'equals',
     backspace: 'backspace',
     reset: 'reset',
     number: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '.'],
-    operator: ['plus', 'minus', 'multiplication', 'division'],
-    caculate: {
-        multiplication: 'multipliedBy',
-        division: 'dividedBy',
-        plus: 'plus',
-        minus: 'minus'
-    }
+    operator: ['plus', 'minus', 'multiplication', 'division']
 }
 
 const KEYMAP: {
@@ -59,6 +44,7 @@ const KEYMAP: {
     '-': 'minus',
     '*': 'multiplication',
     '/': 'division',
+    '=': 'equals',
     Enter: 'equals'
 }
 
@@ -72,189 +58,94 @@ const Calculator: React.FC<ICalculatorProps> = props => {
     }: typeof props = props
     const className = clsx(classNameProp)
 
-    const [queue, setQueue] = useState<string[]>([valueProp])
-    useEffect(() => {}, [valueProp])
-
-    const [focus, setFocus] = useState(autofocus)
-    const [focusKeyboard, setFocusKeyboard] = useState(false)
-    useEffect(() => {
-        if (!focus && !focusKeyboard) {
-            equals()
-        }
-        /* eslint-disable-next-line */
-    }, [focus, focusKeyboard])
+    const [queue, queueRef, setQueue] = useQueue([valueProp])
 
     const bindProps = {
         className,
         ...other
     }
 
-    const proccesser = useMemo(() => {
-        const operators = SYMBOL.operator
-        const operatorsLength = operators.length
-
-        return (arr: string[]): BigNumberOrigin => {
-            for (let i = 0; i < operatorsLength; i += 1) {
-                const operator = operators[i]
-                const index = arr.indexOf(operator)
-
-                if (index === -1) {
-                    continue
-                }
-
-                const left = arr.slice(0, index)
-                const right = arr.slice(index + 1, arr.length)
-                const leftLen = left.length
-                const rightLen = right.length
-
-                if (leftLen && rightLen) {
-                    // 相当于 left.plus(right)
-                    return new BigNumber(proccesser(left))[
-                        SYMBOL.caculate[operator]
-                    ](proccesser(right))
-                } else if (leftLen || rightLen) {
-                    return proccesser(leftLen > rightLen ? left : right)
-                }
-            }
-
-            return arr.length > 0 ? new BigNumber(arr[0]) : new BigNumber('0')
-        }
-    }, [])
-
-    const equals = () => {
-        const result = proccesser(queue).toFixed(2)
-        setQueue([new BigNumber(result).toString()])
-    }
-
-    const addNumber = (number: IKey['Number']) => {
-        const _queue = [...queue]
-        const last = _queue.pop()!
-        if (number === '.') {
-            if (isNumberString(last)) {
-                if (last.indexOf('.') === -1) {
-                    _queue.push(`${last}.`)
-                } else {
-                    _queue.push(last)
-                }
-            } else {
-                _queue.push(last, '0.')
-            }
-        } else {
-            if (isNumberString(last)) {
-                if (last === '0') {
-                    _queue.push(`${number}`)
-                } else {
-                    _queue.push(`${last}${number}`)
-                }
-            } else {
-                _queue.push(last, `${number}`)
-            }
-        }
-        setQueue(_queue)
-    }
-
-    const addSymbol = (symbol: IKey['Operator']) => {
-        const _queue = [...queue]
-        const last = _queue.pop()!
-        if (!SYMBOL.operator.includes(last as IKey['Operator'])) {
-            _queue.push(last)
-        }
-        _queue.push(symbol)
-        setQueue(_queue)
-    }
-
-    const backspace = () => {
-        const _queue = [...queue]
-        const last = _queue.pop()!
-        if (isNumberString(last)) {
-            if (last.length > 1) {
-                const cuted = last.slice(0, last.length - 1)
-                _queue.push(cuted === '-' ? '0' : cuted)
-            } else {
-                last === '0' ? _queue.pop() : _queue.push('0')
-            }
-        }
-        setQueue(_queue.length > 0 ? _queue : ['0'])
-    }
-
-    const reset = () => {
-        const _queue = [...queue]
-        const last = _queue.pop()!
-        if (isNumberString(last)) {
-            if (last === '0') {
-                _queue.push('0')
-                setQueue(_queue)
-                return
-            }
-        }
-        setQueue(['0'])
-    }
-
-    const handler: ICalculatorKeyboardProps['handler'] = symbol => {
-        switch (true) {
-            case SYMBOL.number.includes(symbol as IKey['Number']):
-                addNumber(symbol as IKey['Number'])
-                break
-            case SYMBOL.operator.includes(symbol as IKey['Operator']):
-                addSymbol(symbol as IKey['Operator'])
-                break
-            case SYMBOL.backspace === symbol:
-                backspace()
-                break
-            case SYMBOL.reset === symbol:
-                reset()
-                break
-            default:
-                if (queue.length === 1) {
-                    setFocus(false)
-                    setFocusKeyboard(false)
-                } else {
-                    equals()
-                }
-        }
-    }
-
-    const isAllClear = () => {
-        const _queue = [...queue]
-        const last = _queue.pop()!
-        return !isNumberString(last)
-    }
-
-    const onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
-        const key = event.key
-
-        if (key in KEYMAP) {
-            handler(KEYMAP[key])
-        }
-    }
-
-    const nowKey = useRef('')
+    const [focus, setFocus] = useState(autofocus)
+    const [focusKeyboard, setFocusKeyboard] = useState(false)
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (nowKey.current === 'Backspace') {
-                handler('backspace')
-            }
-        }, 200)
+        if (!focus && !focusKeyboard) {
+            setQueue.equals()
+        }
+    }, [focus, focusKeyboard, setQueue])
 
-        return () => {
-            clearTimeout(timer)
+    const handler: ICalculatorKeyboardProps['handler'] = useCallback(
+        symbol => {
+            switch (true) {
+                case SYMBOL.number.includes(symbol as IKey['Number']):
+                    setQueue.addNumber(symbol as IKey['Number'])
+                    break
+                case SYMBOL.operator.includes(symbol as IKey['Operator']):
+                    setQueue.addOperator(symbol as IKey['Operator'])
+                    break
+                case SYMBOL.backspace === symbol:
+                    setQueue.backspace()
+                    break
+                case SYMBOL.reset === symbol:
+                    setQueue.clear()
+                    break
+                default:
+                    if (queueRef.current.length === 1) {
+                        setFocus(false)
+                        setFocusKeyboard(false)
+                    } else {
+                        setQueue.equals()
+                    }
+            }
+        },
+        [setQueue, queueRef, setFocus, setFocusKeyboard]
+    )
+
+    /* 绑定热键 */
+    const nowKey = useRef('')
+
+    const onKeyPress = useCallback(
+        (event: React.KeyboardEvent<HTMLElement>) => {
+            const key = event.key
+
+            if (key in KEYMAP) {
+                handler(KEYMAP[key])
+            }
+        },
+        [handler]
+    )
+
+    const onKeyDown = useCallback(
+        (event: React.KeyboardEvent<HTMLElement>) => {
+            const key = event.key
+            if (key === 'Escape') {
+                setFocus(false)
+                setFocusKeyboard(false)
+            } else if (key === 'Backspace' || key === 'Delete') {
+                handler('backspace')
+                nowKey.current = 'Backspace'
+            }
+        },
+        [handler, setFocus, setFocusKeyboard]
+    )
+
+    const onKeyUp = useCallback(() => {
+        nowKey.current = ''
+    }, [nowKey])
+
+    useEffect(() => {
+        /* backspace 无法使用 keypress 监听, 此处将模拟连续触发 backspace */
+        if (nowKey.current === 'Backspace') {
+            const timer = setTimeout(() => {
+                if (nowKey.current === 'Backspace') {
+                    handler('backspace')
+                }
+            }, 200)
+
+            return () => {
+                clearTimeout(timer)
+            }
         }
     })
-
-    const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-        const key = event.key
-        if (key === 'Escape') {
-            setFocus(false)
-            setFocusKeyboard(false)
-        } else if (key === 'Backspace' || key === 'Delete') {
-            handler('backspace')
-            nowKey.current = 'Backspace'
-        }
-    }
-
-    const onKeyUp = () => {
-        nowKey.current = ''
-    }
 
     return (
         <>
@@ -281,7 +172,8 @@ const Calculator: React.FC<ICalculatorProps> = props => {
                 onKeyDown={onKeyDown}
                 onKeyUp={onKeyUp}
                 text={{
-                    reset: isAllClear() || queue.length === 1 ? 'AC' : '',
+                    reset:
+                        setQueue.isAllClear() || queue.length === 1 ? 'AC' : '',
                     equals: queue.length === 1 ? '完成' : ''
                 }}
             ></Keyboard>
@@ -290,7 +182,3 @@ const Calculator: React.FC<ICalculatorProps> = props => {
 }
 
 export default Calculator
-
-function isNumberString(number: string) {
-    return !/[^0-9.-]/.test(number)
-}
