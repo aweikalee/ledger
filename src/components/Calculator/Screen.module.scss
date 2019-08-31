@@ -5,8 +5,6 @@
     text-align: right;
     outline-color: transparent;
 
-    & [data-role='mini'] {
-    }
     & [data-role='full'] {
         background-color: inherit;
         height: 40vh;
@@ -17,7 +15,20 @@
         box-sizing: border-box;
         word-break: break-word;
         word-wrap: break-word;
+
+        & span {
+            font-size: 0.7em;
+        }
+
+        & span:nth-last-child(1) {
+            font-size: 1em;
+        }
+
+        & [data-role='operator']:nth-last-child(2) {
+            font-size: 1em;
+        }
     }
+
     & [data-role='mask'] {
         position: fixed;
         top: 0;
@@ -29,9 +40,9 @@
         max-width: 100%;
         overflow: hidden;
     }
-}
 
-.operator {
-    color: color(yellow, 5);
-    margin: 0 $gap / 4;
+    & [data-role='operator'] {
+        color: color(yellow, 5);
+        margin: 0 $gap / 4;
+    }
 }

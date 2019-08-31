@@ -104,7 +104,7 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
                 return (
                     <React.Fragment key={key}>
                         {index >= len - 2 ? <br /> : <wbr />}
-                        <span data-role={part} className={styles.operator}>
+                        <span data-role="operator" data-operator={part}>
                             {SYMBOL[part as IKey['Operator']]}
                         </span>
                     </React.Fragment>
