@@ -21,7 +21,11 @@ const SYMBOL: {
     readonly number: IKey['Number'][]
     readonly operator: IKey['Operator'][]
     readonly caculate: {
-        [key in IKey['Operator']]: string
+        [key in IKey['Operator']]:
+            | 'multipliedBy'
+            | 'dividedBy'
+            | 'plus'
+            | 'minus'
     }
 } = {
     equals: 'equals',
@@ -88,7 +92,8 @@ const Calculator: React.FC<ICalculatorProps> = props => {
     const proccesser = useMemo(() => {
         const operators = SYMBOL.operator
         const operatorsLength = operators.length
-        return (arr: string[]): string => {
+
+        return (arr: string[]): BigNumberOrigin => {
             for (let i = 0; i < operatorsLength; i += 1) {
                 const operator = operators[i]
                 const index = arr.indexOf(operator)
@@ -104,27 +109,21 @@ const Calculator: React.FC<ICalculatorProps> = props => {
 
                 if (leftLen && rightLen) {
                     // 相当于 left.plus(right)
-                    return `new BigNumber(${proccesser(left)}).${
+                    return new BigNumber(proccesser(left))[
                         SYMBOL.caculate[operator]
-                    }(${proccesser(right)})`
+                    ](proccesser(right))
                 } else if (leftLen || rightLen) {
                     return proccesser(leftLen > rightLen ? left : right)
                 }
             }
 
-            return arr.length > 0
-                ? `new BigNumber('${arr[0]}')`
-                : `new BigNumber('0')`
+            return arr.length > 0 ? new BigNumber(arr[0]) : new BigNumber('0')
         }
     }, [])
 
     const equals = () => {
-        const str = proccesser(queue)
-        /* eslint-disable-next-line */
-        const calculate = new Function('BigNumber', `return ${str}`)
-        const result = calculate(BigNumber)
-
-        setQueue([`${new BigNumber(result.toFixed(2))}`])
+        const result = proccesser(queue).toFixed(2)
+        setQueue([new BigNumber(result).toString()])
     }
 
     const addNumber = (number: IKey['Number']) => {
