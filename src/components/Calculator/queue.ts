@@ -135,11 +135,15 @@ const equals = (queue: IQueue) => {
 }
 
 export const useQueue = (
-    initialState: IQueue
+    value: string
 ): [IQueue, React.MutableRefObject<IQueue>, ISetQueue] => {
-    const [queue, setQueueState] = useState<IQueue>(initialState)
+    const [queue, setQueueState] = useState<IQueue>([value])
     const queueRef = useRef<IQueue>(queue)
-    const lastQueue = useRef<IQueue>(queue)
+    const lastValue = useRef<string>(queue[0])
+
+    useEffect(() => {
+        setQueueState([value])
+    }, [value])
 
     useEffect(() => {
         queueRef.current = queue
@@ -160,10 +164,12 @@ export const useQueue = (
                 setQueueState(clear(queueRef.current))
             },
             equals(callback) {
-                if (queueRef.current !== lastQueue.current) {
+                if (
+                    queueRef.current.length > 1 ||
+                    queueRef.current[0] !== lastValue.current
+                ) {
                     const result = equals(queueRef.current)
-                    setQueueState(result)
-                    lastQueue.current = result
+                    lastValue.current = result[0]
                     callback && callback(result[0])
                 }
             },

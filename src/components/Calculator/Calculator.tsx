@@ -60,18 +60,23 @@ const Calculator: React.FC<ICalculatorProps> = props => {
     }: typeof props = props
     const className = clsx(classNameProp)
 
-    const [queue, queueRef, setQueue] = useQueue([valueProp])
-
     const bindProps = {
         className,
         ...other
     }
 
+    const [queue, queueRef, setQueue] = useQueue(valueProp)
+
     const [focus, setFocus] = useState(autofocus)
     const [focusKeyboard, setFocusKeyboard] = useState(false)
+    const lastFocus = useRef([focus, focusKeyboard])
     useEffect(() => {
-        if (!focus && !focusKeyboard) {
-            setQueue.equals(onUpdate)
+        const last = lastFocus.current
+        if (last[0] !== focus || last[1] !== focusKeyboard) {
+            if (!focus && !focusKeyboard) {
+                setQueue.equals(onUpdate)
+            }
+            lastFocus.current = [focus, focusKeyboard]
         }
     }, [focus, focusKeyboard, setQueue, onUpdate])
 
@@ -91,11 +96,10 @@ const Calculator: React.FC<ICalculatorProps> = props => {
                     setQueue.clear()
                     break
                 default:
+                    setQueue.equals(onUpdate)
                     if (queueRef.current.length === 1) {
                         setFocus(false)
                         setFocusKeyboard(false)
-                    } else {
-                        setQueue.equals(onUpdate)
                     }
             }
         },
