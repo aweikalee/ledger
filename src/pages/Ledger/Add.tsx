@@ -1,10 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
-import Calculator from '@/components/Calculator'
+import Calculator, {
+    ICalculatorProps
+} from '@/components/Calculator/Calculator'
 
 const LedgerAdd: React.FC = props => {
+    const [forms, setForms] = useState({
+        amount: '0'
+    })
+
+    const onAmountUpdate: ICalculatorProps['onUpdate'] = res => {
+        setForms({
+            ...forms,
+            amount: res
+        })
+    }
+
     return (
         <>
             <NavigationBar
@@ -13,7 +26,11 @@ const LedgerAdd: React.FC = props => {
                 left={<BackButton href="/" />}
             />
             <ContentBody>
-                <Calculator autofocus />
+                <Calculator
+                    value={forms.amount}
+                    onUpdate={onAmountUpdate}
+                    autofocus
+                />
             </ContentBody>
             <ToolBar />
         </>
