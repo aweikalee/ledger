@@ -1,52 +1,19 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import clsx from 'clsx'
-import Keyboard, {
-    ICalculatorKeyboardProps,
-    ICalculatorKeyboardKey as IKey
-} from './Keyboard'
+import Keyboard, { ICalculatorKeyboardProps } from './Keyboard'
 import Screen from './Screen'
 import { useQueue } from './queue'
+import { CSSTransition } from 'react-transition-group'
+import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
+import styles from './Calculator.module.scss'
+import { SYMBOL, SYMBOL_NUMBER, SYMBOL_OPERATOR } from './config'
 
 export interface ICalculatorProps extends React.HTMLAttributes<HTMLElement> {
     value?: string
-    autofocus?: boolean
+    show?: boolean
     onUpdate?: (result: string) => void
-}
-
-const SYMBOL: {
-    readonly equals: IKey['Equals']
-    readonly reset: IKey['Reset']
-    readonly backspace: IKey['Backspace']
-    readonly number: IKey['Number'][]
-    readonly operator: IKey['Operator'][]
-} = {
-    equals: 'equals',
-    backspace: 'backspace',
-    reset: 'reset',
-    number: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '.'],
-    operator: ['plus', 'minus', 'multiplication', 'division']
-}
-
-const KEYMAP: {
-    [key: string]: IKey['All']
-} = {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    0: 0,
-    '.': '.',
-    '+': 'plus',
-    '-': 'minus',
-    '*': 'multiplication',
-    '/': 'division',
-    '=': 'equals',
-    Enter: 'equals'
+    onFocus?: () => void
+    onBlur?: () => void
 }
 
 const Calculator: React.FC<ICalculatorProps> = props => {
@@ -54,67 +21,56 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         className: classNameProp,
         children: childrenProp,
         value: valueProp = '0',
-        autofocus = false,
-        onUpdate,
+        show = false,
+        onUpdate = () => {},
+        onFocus = () => {},
+        onBlur: onBlurProp = () => {},
         ...other
     }: typeof props = props
-    const className = clsx(classNameProp)
-
-    const bindProps = {
-        className,
-        ...other
-    }
 
     const [queue, queueRef, setQueue] = useQueue(valueProp)
-
-    const [focus, setFocus] = useState(autofocus)
-    const [focusKeyboard, setFocusKeyboard] = useState(false)
-    const lastFocus = useRef([focus, focusKeyboard])
-    useEffect(() => {
-        const last = lastFocus.current
-        if (last[0] !== focus || last[1] !== focusKeyboard) {
-            if (!focus && !focusKeyboard) {
-                setQueue.equals(onUpdate)
-            }
-            lastFocus.current = [focus, focusKeyboard]
-        }
-    }, [focus, focusKeyboard, setQueue, onUpdate])
 
     const handler: ICalculatorKeyboardProps['handler'] = useCallback(
         symbol => {
             switch (true) {
-                case SYMBOL.number.includes(symbol as IKey['Number']):
-                    setQueue.addNumber(symbol as IKey['Number'])
+                case symbol in SYMBOL_NUMBER:
+                    setQueue.addNumber(symbol)
                     break
-                case SYMBOL.operator.includes(symbol as IKey['Operator']):
-                    setQueue.addOperator(symbol as IKey['Operator'])
+                case symbol in SYMBOL_OPERATOR:
+                    setQueue.addOperator(symbol)
                     break
-                case SYMBOL.backspace === symbol:
+                case symbol === 'backspace':
                     setQueue.backspace()
                     break
-                case SYMBOL.reset === symbol:
+                case symbol === 'reset':
                     setQueue.clear()
                     break
                 default:
                     setQueue.equals(onUpdate)
                     if (queueRef.current.length === 1) {
-                        setFocus(false)
-                        setFocusKeyboard(false)
+                        onBlurProp()
                     }
             }
         },
-        [setQueue, queueRef, setFocus, setFocusKeyboard, onUpdate]
+        [setQueue, queueRef, onUpdate, onBlurProp]
     )
 
     /* 绑定热键 */
     const nowKey = useRef('')
 
+    const onBlur = useCallback(() => {
+        setQueue.equals(onUpdate)
+        onBlurProp()
+    }, [setQueue, onBlurProp, onUpdate])
+
     const onKeyPress = useCallback(
         (event: React.KeyboardEvent<HTMLElement>) => {
             const key = event.key
 
-            if (key in KEYMAP) {
-                handler(KEYMAP[key])
+            if (key in SYMBOL) {
+                handler(key as (keyof typeof SYMBOL))
+            } else if (key === 'Enter') {
+                handler('=')
             }
         },
         [handler]
@@ -124,14 +80,13 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         (event: React.KeyboardEvent<HTMLElement>) => {
             const key = event.key
             if (key === 'Escape') {
-                setFocus(false)
-                setFocusKeyboard(false)
+                onBlur()
             } else if (key === 'Backspace' || key === 'Delete') {
                 handler('backspace')
                 nowKey.current = 'Backspace'
             }
         },
-        [handler, setFocus, setFocusKeyboard]
+        [handler, onBlur]
     )
 
     const onKeyUp = useCallback(() => {
@@ -153,37 +108,56 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         }
     })
 
+    const el = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        if (show && el.current) {
+            el.current.focus()
+        }
+    }, [el, show])
+
+    const className = clsx(styles.calculator, classNameProp)
+    const classnames: CSSTransitionClassNames = {
+        appear: styles['appear'],
+        appearActive: styles['appear-active'],
+        enter: styles['enter'],
+        enterActive: styles['enter-active'],
+        exit: styles['exit'],
+        exitActive: styles['exit-active']
+    }
+    const bindProps = {
+        className,
+        ref: el,
+        tabIndex: 1,
+        onKeyPress,
+        onKeyDown,
+        onKeyUp,
+        onFocus,
+        onBlur,
+        ...other
+    }
+
     return (
-        <>
-            <Screen
-                tabIndex={1}
-                show={focusKeyboard || focus}
-                focus={focus}
-                onFocus={() => setFocus(true)}
-                onBlur={() => setTimeout(() => setFocus(false), 1)}
-                onKeyPress={onKeyPress}
-                onKeyDown={onKeyDown}
-                onKeyUp={onKeyUp}
-                queue={queue}
-                {...bindProps}
-            />
-            <Keyboard
-                tabIndex={2}
-                show={focusKeyboard || focus}
-                focus={focusKeyboard}
-                onFocus={() => setFocusKeyboard(true)}
-                onBlur={() => setTimeout(() => setFocusKeyboard(false), 1)}
-                handler={handler}
-                onKeyPress={onKeyPress}
-                onKeyDown={onKeyDown}
-                onKeyUp={onKeyUp}
-                text={{
-                    reset:
-                        setQueue.isAllClear() || queue.length === 1 ? 'AC' : '',
-                    equals: queue.length === 1 ? '完成' : ''
-                }}
-            ></Keyboard>
-        </>
+        <CSSTransition
+            in={show}
+            unmountOnExit
+            timeout={400}
+            classNames={classnames}
+            appear
+        >
+            <div data-role="calculator" {...bindProps}>
+                <Screen queue={queue} />
+                <Keyboard
+                    handler={handler}
+                    text={{
+                        reset:
+                            setQueue.isAllClear() || queue.length === 1
+                                ? 'AC'
+                                : '',
+                        '=': queue.length === 1 ? '完成' : ''
+                    }}
+                ></Keyboard>
+            </div>
+        </CSSTransition>
     )
 }
 

@@ -1,32 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
-import { ICalculatorKeyboardKey as IKey } from './Keyboard'
-import BigNumberOrigin from 'bignumber.js'
-import styles from './Screen.module.scss'
-import styleVars from '@/style/index.module.scss'
-import measure from '../utils/measure'
 import * as amount from '@/utils/amount'
-
-const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
+import styles from './Screen.module.scss'
+import { SYMBOL_OPERATOR, FORMAT_OPTIONS } from './config'
 
 export interface IKeyboradScreenProps
     extends React.HTMLAttributes<HTMLElement> {
     queue?: string[]
-    show?: boolean
-    focus?: boolean
-}
-
-const SYMBOL: {
-    [key in IKey['Operator']]: string
-} = {
-    multiplication: '×',
-    division: '÷',
-    plus: '+',
-    minus: '-'
-}
-
-const FORMAT_OPTIONS: amount.IOptions = {
-    fractionGroupSize: 3
 }
 
 const Screen: React.FC<IKeyboradScreenProps> = props => {
@@ -34,136 +14,59 @@ const Screen: React.FC<IKeyboradScreenProps> = props => {
         className: classNameProp,
         children: childrenProp,
         queue = ['0'],
-        show,
-        focus,
         ...other
     }: typeof props = props
 
-    const className = clsx(styles.screen, classNameProp)
+    const [screen, setScreen] = useState<JSX.Element[]>()
+    useEffect(() => {
+        setScreen(getScreenValue(queue))
+    }, [queue])
 
     const el = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        if (el.current) {
-            if (focus) {
-                el.current.focus()
-            } else {
-                el.current.blur()
-            }
-        }
-    }, [el, focus])
-
-    const bindProps = {
-        className,
-        ref: el,
-        'data-show': show,
-        ...other
-    }
-
-    const [screenMini, setScreenMini] = useState<string>('0.00')
-    const lastNumber = useRef(queue[0])
-    useEffect(() => {
-        if (show || lastNumber.current === queue[0]) {
-            return
-        }
-
-        const number = queue[0]
-        const bignumber = new BigNumber(number)
-        let result
-        if (number.length > 24) {
-            result = bignumber
-                .toExponential(18)
-                .replace(/^(\d+\.\d{2,}?)0+(e[+-]\d+)$/, '$1$2')
-                .replace(/(^\d+(\.\d+)?)/, match => {
-                    return amount.format(match, FORMAT_OPTIONS)
-                })
-        } else {
-            result = amount.format(bignumber.toFixed(2), FORMAT_OPTIONS)
-        }
-
-        lastNumber.current = number
-        setScreenMini(result)
-    }, [show, queue])
-
-    const elMini = useRef<HTMLDivElement>(null)
-    const [textScale, setTextScale] = useState(1)
-    useEffect(() => {
-        if (!focus) {
-            setTextScale(getTextScale(screenMini))
-        }
-    }, [elMini, screenMini, focus])
-
-    const [screenFull, setScreenFull] = useState<JSX.Element[]>()
-    useEffect(() => {
-        if (!show) {
-            return
-        }
-        const len = queue.length
-        const result = queue.map((part, index) => {
-            const key = `${index},${part}`
-            if (part in SYMBOL) {
-                return (
-                    <React.Fragment key={key}>
-                        {index >= len - 2 ? <br /> : <wbr />}
-                        <span data-role="operator" data-operator={part}>
-                            {SYMBOL[part as IKey['Operator']]}
-                        </span>
-                    </React.Fragment>
-                )
-            } else {
-                return (
-                    <span data-role="number" key={key}>
-                        {amount.format(part, FORMAT_OPTIONS)}
-                    </span>
-                )
-            }
-        })
-
-        setScreenFull(result)
-    }, [queue, show])
-
-    const elFull = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        if (elFull && elFull.current) {
-            elFull.current.scrollTo({
+        if (el && el.current) {
+            el.current.scrollTo({
                 top: Number.MAX_SAFE_INTEGER
             })
         }
-    }, [elFull, screenFull])
+    }, [el, screen])
+
+    const className = clsx(styles.screen, classNameProp)
+    const bindProps = {
+        className,
+        ...other
+    }
 
     return (
         <div data-role="calculator-screen" {...bindProps}>
-            {show || (
-                <div
-                    data-role="mini"
-                    ref={elMini}
-                    style={{ fontSize: `${textScale}em` }}
-                >
-                    {screenMini}
-                </div>
-            )}
-            {show && (
-                <div data-role="mask">
-                    <div data-role="full" ref={elFull}>
-                        {screenFull}
-                    </div>
-                </div>
-            )}
+            <div data-role="full" ref={el}>
+                {screen}
+            </div>
         </div>
     )
 }
 
 export default Screen
 
-let baseTextWidth: number
-function getTextScale(text: string) {
-    if (!baseTextWidth) {
-        baseTextWidth = measure('1234567890123456', {
-            fontFamily: styleVars.fontFamily
-        }).width
-    }
-    const width = measure(text, {
-        fontFamily: styleVars.fontFamily
-    }).width
-
-    return width < baseTextWidth ? 1 : baseTextWidth / width
+function getScreenValue(queue: string[]) {
+    const len = queue.length
+    return queue.map((part, index) => {
+        const key = `${index},${part}`
+        if (part in SYMBOL_OPERATOR) {
+            return (
+                <React.Fragment key={key}>
+                    {index >= len - 2 ? <br /> : <wbr />}
+                    <span data-role="operator" data-operator={part}>
+                        {SYMBOL_OPERATOR[part as keyof typeof SYMBOL_OPERATOR]}
+                    </span>
+                </React.Fragment>
+            )
+        } else {
+            return (
+                <span data-role="number" key={key}>
+                    {amount.format(part, FORMAT_OPTIONS)}
+                </span>
+            )
+        }
+    })
 }

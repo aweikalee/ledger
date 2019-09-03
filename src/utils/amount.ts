@@ -30,12 +30,13 @@ export const format = (amount: string, options: IOptions = {}) => {
         options
     )
 
+    const symbol = amount.charAt(0)
     const arr = amount.split('.')
-    const int = arr[0]
+    const int = symbol === '+' || symbol === '-' ? arr[0].slice(1) : arr[0]
     const fraction = arr[1] || ''
     const intLen = int.length
     const fractionLen = fraction.length
-    let result = ''
+    let result = symbol === '+' || symbol === '-' ? symbol : ''
     let i
 
     if (intLen > 0) {

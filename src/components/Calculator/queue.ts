@@ -1,41 +1,40 @@
 import BigNumberOrigin from 'bignumber.js'
-import { ICalculatorKeyboardKey as IKey } from './Keyboard'
 import { useState, useMemo, useRef, useEffect } from 'react'
+import { SYMBOL_NUMBER, SYMBOL_OPERATOR } from './config'
+
+const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
+
+const OPERATOR: (keyof typeof SYMBOL_OPERATOR)[] = ['+', '-', '*', '/']
+
+const TO_BIGNUMBER_OPERATOR: {
+    [key in keyof typeof SYMBOL_OPERATOR]:
+        | 'multipliedBy'
+        | 'dividedBy'
+        | 'plus'
+        | 'minus'
+} = {
+    '*': 'multipliedBy',
+    '/': 'dividedBy',
+    '+': 'plus',
+    '-': 'minus'
+}
 
 export type IQueue = string[]
 
 export interface ISetQueue {
-    addNumber(number: IKey['Number']): void
-    addOperator(operator: IKey['Operator']): void
+    addNumber(number: keyof typeof SYMBOL_NUMBER): void
+    addOperator(operator: keyof typeof SYMBOL_OPERATOR): void
     backspace(): void
     clear(): void
     equals(callback?: (result: string) => void): void
     isAllClear(): boolean
 }
 
-const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
-
-const OPERATOR: IKey['Operator'][] = [
-    'plus',
-    'minus',
-    'multiplication',
-    'division'
-]
-
-const TO_BIGNUMBER_OPERATOR: {
-    [key in IKey['Operator']]: 'multipliedBy' | 'dividedBy' | 'plus' | 'minus'
-} = {
-    multiplication: 'multipliedBy',
-    division: 'dividedBy',
-    plus: 'plus',
-    minus: 'minus'
-}
-
 const isNumberString = (number: string) => {
-    return !/[^0-9.-]/.test(number)
+    return !/[^0-9.-]/.test(number) && !/^-$/.test(number)
 }
 
-const addNumber = (theQueue: IQueue, number: IKey['Number']) => {
+const addNumber = (theQueue: IQueue, number: keyof typeof SYMBOL_NUMBER) => {
     const queue = [...theQueue]
     const last = queue.pop()!
     if (number === '.') {
@@ -62,10 +61,13 @@ const addNumber = (theQueue: IQueue, number: IKey['Number']) => {
     return queue
 }
 
-const addOperator = (theQueue: IQueue, operator: IKey['Operator']) => {
+const addOperator = (
+    theQueue: IQueue,
+    operator: keyof typeof SYMBOL_OPERATOR
+) => {
     const queue = [...theQueue]
     const last = queue.pop()!
-    if (!OPERATOR.includes(last as IKey['Operator'])) {
+    if (!(last in SYMBOL_OPERATOR)) {
         queue.push(last)
     }
     queue.push(operator)
@@ -90,7 +92,7 @@ const clear = (theQueue: IQueue) => {
     const queue = [...theQueue]
     const last = queue.pop()!
     if (isNumberString(last)) {
-        if (last === '0') {
+        if (last !== '0') {
             queue.push('0')
             return queue
         }

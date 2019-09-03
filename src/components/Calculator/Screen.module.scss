@@ -1,48 +1,33 @@
 @import '@/style/index.scss';
 
-.screen {
+.screen,
+.screen-mini {
     @include font(large-title);
+}
+.screen {
     text-align: right;
-    outline-color: transparent;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: $gap;
+    line-height: 1.2;
+    box-sizing: border-box;
+    word-break: break-word;
+    word-wrap: break-word;
+    height: 100%;
+    width: 100%;
 
-    & [data-role='full'] {
-        background-color: inherit;
-        height: 40vh;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: $gap;
-        line-height: 1.2;
-        box-sizing: border-box;
-        word-break: break-word;
-        word-wrap: break-word;
-
-        & span {
-            font-size: 0.7em;
-        }
-
-        & span:nth-last-child(1) {
+    & span {
+        font-size: 0.7em;
+        &:nth-last-child(1) {
             font-size: 1em;
         }
-
-        & [data-role='operator']:nth-last-child(2) {
-            font-size: 1em;
-        }
-    }
-
-    & [data-role='mask'] {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: z-index(4) + 90;
-        background-color: color(white);
-        max-width: 100%;
-        overflow: hidden;
     }
 
     & [data-role='operator'] {
         color: color(yellow, 5);
         margin: 0 $gap / 4;
+        &::nth-last-child(2) {
+            font-size: 1em;
+        }
     }
 }
