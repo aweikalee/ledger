@@ -1,10 +1,11 @@
-import React, { CSSProperties, useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import clsx from 'clsx'
 import styles from './Modal.module.scss'
 import { CSSTransition } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 import { useStore } from '@/store'
 import { EnterHandler, ExitHandler } from 'react-transition-group/Transition'
+import { Portal } from '../Portal'
 
 export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
     show?: boolean
@@ -73,10 +74,7 @@ const MaskBase: React.FC<IModalProps> = props => {
             style={{ zIndex: id + 10000 }}
         >
             {showMask && (
-                <div
-                    data-role="modal-mask"
-                    data-color={maskColor}
-                ></div>
+                <div data-role="modal-mask" data-color={maskColor}></div>
             )}
             <div data-role="modal-body" {...bindProps}>
                 {children}
@@ -129,17 +127,19 @@ const Mask: React.FC<IModalProps> = props => {
     }
 
     return (
-        <CSSTransition
-            in={show}
-            appear
-            timeout={150}
-            classNames={classNames}
-            unmountOnExit
-            onEnter={onEnter}
-            onExited={onExited}
-        >
-            <MaskBase {...props} />
-        </CSSTransition>
+        <Portal container="modal">
+            <CSSTransition
+                in={show}
+                appear
+                timeout={150}
+                classNames={classNames}
+                unmountOnExit
+                onEnter={onEnter}
+                onExited={onExited}
+            >
+                <MaskBase {...props} />
+            </CSSTransition>
+        </Portal>
     )
 }
 

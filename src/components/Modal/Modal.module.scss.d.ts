@@ -1,6 +1,5 @@
 export type IMaskClass = {
     modal: string
-    mask: string
     appear: string
     'appear-active': string
     enter: string
