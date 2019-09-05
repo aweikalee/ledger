@@ -4,24 +4,23 @@ import styles from './Modal.module.scss'
 import { CSSTransition } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 import { useStore } from '@/store'
+import { EnterHandler, ExitHandler } from 'react-transition-group/Transition'
 
 export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
     show?: boolean
     maskColor?: 'black' | 'white' | 'transparent'
-    onClickMask?: React.DOMAttributes<HTMLDivElement>['onClick']
+    onClickMask?: Function
 }
 
 const MaskBase: React.FC<IModalProps> = props => {
     const {
         className: classNameProp,
         children,
-        style: styleProp,
         show,
         maskColor = 'black',
         onClickMask = () => {},
         ...other
     }: typeof props = props
-
 
     const [id, setID] = useState(0)
     const { modalQueue, setModalQueue, modalQueueRef } = useStore()
@@ -52,43 +51,59 @@ const MaskBase: React.FC<IModalProps> = props => {
         modalQueue[modalQueue.length - 1] === id || modalQueue.length === 0
 
     const el = useRef<HTMLDivElement>(null)
-    const className = clsx(styles.modal, classNameProp)
-    const style: CSSProperties = {
-        ...styleProp,
-        zIndex: id + 10000
+    const className = clsx(classNameProp)
+    const onClickCapture: React.DOMAttributes<
+        HTMLDivElement
+    >['onClickCapture'] = e => {
+        if (e.target === el.current) {
+            onClickMask()
+        }
     }
     const bindProps = {
         className,
-        style,
         ref: el,
+        onClickCapture,
         ...other
     }
 
     return (
-        <div data-role="modal" {...bindProps}>
+        <div
+            data-role="modal"
+            className={styles.modal}
+            style={{ zIndex: id + 10000 }}
+        >
             {showMask && (
                 <div
                     data-role="modal-mask"
-                    className={styles.mask}
                     data-color={maskColor}
-                    onClick={onClickMask}
                 ></div>
             )}
-            {children}
+            <div data-role="modal-body" {...bindProps}>
+                {children}
+            </div>
         </div>
     )
 }
 
+let saveOverflow: string | null = null
 const Mask: React.FC<IModalProps> = props => {
+    const { modalQueue } = useStore()
+
     const [show, setShow] = useState(false)
     useEffect(() => {
         if (props.show) {
-            requestAnimationFrame(() => {
+            const timmer = requestAnimationFrame(() => {
                 setShow(true)
             })
+
+            return () => {
+                cancelAnimationFrame(timmer)
+            }
         } else {
             setShow(false)
         }
+
+        return () => {}
     }, [props.show])
 
     const classNames: CSSTransitionClassNames = {
@@ -100,13 +115,28 @@ const Mask: React.FC<IModalProps> = props => {
         exitActive: styles['exit-active']
     }
 
+    const onEnter: EnterHandler = () => {
+        if (show && modalQueue.length === 0) {
+            saveOverflow = document.body.style.overflow
+            document.body.style.overflow = 'hidden'
+        }
+    }
+    const onExited: ExitHandler = () => {
+        if (!show && modalQueue.length === 0) {
+            document.body.style.overflow = saveOverflow
+            saveOverflow = null
+        }
+    }
+
     return (
         <CSSTransition
             in={show}
             appear
-            timeout={400}
+            timeout={150}
             classNames={classNames}
             unmountOnExit
+            onEnter={onEnter}
+            onExited={onExited}
         >
             <MaskBase {...props} />
         </CSSTransition>
