@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, CSSProperties } from 'react'
 import clsx from 'clsx'
 import styles from './Modal.module.scss'
 import { CSSTransition } from 'react-transition-group'
@@ -53,6 +53,9 @@ const MaskBase: React.FC<IModalProps> = props => {
 
     const el = useRef<HTMLDivElement>(null)
     const className = clsx(classNameProp)
+    const style: CSSProperties = {
+        overflow: showMask ? '' : 'hidden'
+    }
     const onClickCapture: React.DOMAttributes<
         HTMLDivElement
     >['onClickCapture'] = e => {
@@ -63,6 +66,7 @@ const MaskBase: React.FC<IModalProps> = props => {
     const bindProps = {
         className,
         ref: el,
+        style,
         onClickCapture,
         ...other
     }
