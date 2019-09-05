@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
+import { useStore } from '@/store'
 
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
@@ -18,16 +19,29 @@ const client = new ApolloClient({
 const App: React.FC = () => {
     return (
         <ApolloProvider client={client}>
-            <BrowserRouter>
-                <Switch>
-                    <Route exact path="/" component={CollectionIndex} />
-                    <Route exact path="/ledger/:id" component={LedgerIndex} />
-                    <Route exact path="/record/:id" component={RecordIndex} />
+            <useStore.Provider>
+                <BrowserRouter>
+                    <Switch>
+                        <Route exact path="/" component={CollectionIndex} />
+                        <Route
+                            exact
+                            path="/ledger/:id"
+                            component={LedgerIndex}
+                        />
+                        <Route
+                            exact
+                            path="/record/:id"
+                            component={RecordIndex}
+                        />
 
-                    <Route exact path="/ledger/:id/add" component={LedgerAdd} />
-
-                </Switch>
-            </BrowserRouter>
+                        <Route
+                            exact
+                            path="/ledger/:id/add"
+                            component={LedgerAdd}
+                        />
+                    </Switch>
+                </BrowserRouter>
+            </useStore.Provider>
         </ApolloProvider>
     )
 }

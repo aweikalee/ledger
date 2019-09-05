@@ -19,6 +19,7 @@
     "apollo-boost": "^0.4.4",
     "bignumber.js": "^9.0.0",
     "clsx": "^1.0.4",
+    "constate": "^1.2.0",
     "date-fns": "^2.0.1",
     "graphql": "^14.4.2",
     "node-sass": "^4.12.0",
