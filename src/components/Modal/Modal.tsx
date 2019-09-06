@@ -20,6 +20,8 @@ const MaskBase: React.FC<IModalProps> = props => {
         show,
         maskColor = 'black',
         onClickMask = () => {},
+        onMouseDown: onMouseDownProp,
+        onMouseUp: onMouseUpProp,
         ...other
     }: typeof props = props
 
@@ -56,18 +58,28 @@ const MaskBase: React.FC<IModalProps> = props => {
     const style: CSSProperties = {
         overflow: showMask ? '' : 'hidden'
     }
-    const onClickCapture: React.DOMAttributes<
+    const isClickMask = useRef(false)
+    const onMouseDown: React.DOMAttributes<
         HTMLDivElement
-    >['onClickCapture'] = e => {
+    >['onMouseDown'] = e => {
         if (e.target === el.current) {
+            isClickMask.current = true
+        }
+        onMouseDownProp && onMouseDownProp(e)
+    }
+    const onMouseUp: React.DOMAttributes<HTMLDivElement>['onMouseUp'] = (e) => {
+        if (e.target === el.current && isClickMask.current) {
             onClickMask()
         }
+        isClickMask.current = false
+        onMouseUpProp && onMouseUpProp(e)
     }
     const bindProps = {
         className,
         ref: el,
         style,
-        onClickCapture,
+        onMouseDown,
+        onMouseUp,
         ...other
     }
 
