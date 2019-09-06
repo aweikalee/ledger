@@ -9,17 +9,17 @@ import { Portal } from '../Portal'
 
 export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
     show?: boolean
-    maskColor?: 'black' | 'white' | 'transparent'
-    onClickMask?: Function
+    overlayColor?: 'black' | 'white' | 'transparent'
+    onClickOverlay?: Function
 }
 
-const MaskBase: React.FC<IModalProps> = props => {
+const ModalBase: React.FC<IModalProps> = props => {
     const {
         className: classNameProp,
         children,
         show,
-        maskColor = 'black',
-        onClickMask = () => {},
+        overlayColor = 'black',
+        onClickOverlay = () => {},
         onMouseDown: onMouseDownProp,
         onMouseUp: onMouseUpProp,
         ...other
@@ -50,28 +50,28 @@ const MaskBase: React.FC<IModalProps> = props => {
         }
     }, [show, setModalQueue, modalQueueRef])
 
-    const showMask =
+    const showOverlay =
         modalQueue[modalQueue.length - 1] === id || modalQueue.length === 0
 
     const el = useRef<HTMLDivElement>(null)
     const className = clsx(classNameProp)
     const style: CSSProperties = {
-        overflow: showMask ? '' : 'hidden'
+        overflow: showOverlay ? '' : 'hidden'
     }
-    const isClickMask = useRef(false)
+    const isClickOverlay = useRef(false)
     const onMouseDown: React.DOMAttributes<
         HTMLDivElement
     >['onMouseDown'] = e => {
         if (e.target === el.current) {
-            isClickMask.current = true
+            isClickOverlay.current = true
         }
         onMouseDownProp && onMouseDownProp(e)
     }
     const onMouseUp: React.DOMAttributes<HTMLDivElement>['onMouseUp'] = (e) => {
-        if (e.target === el.current && isClickMask.current) {
-            onClickMask()
+        if (e.target === el.current && isClickOverlay.current) {
+            onClickOverlay()
         }
-        isClickMask.current = false
+        isClickOverlay.current = false
         onMouseUpProp && onMouseUpProp(e)
     }
     const bindProps = {
@@ -89,8 +89,8 @@ const MaskBase: React.FC<IModalProps> = props => {
             className={styles.modal}
             style={{ zIndex: id + 10000 }}
         >
-            {showMask && (
-                <div data-role="modal-mask" data-color={maskColor}></div>
+            {showOverlay && (
+                <div data-role="modal-overlay" data-color={overlayColor}></div>
             )}
             <div data-role="modal-body" {...bindProps}>
                 {children}
@@ -100,7 +100,7 @@ const MaskBase: React.FC<IModalProps> = props => {
 }
 
 let saveOverflow: string | null = null
-const Mask: React.FC<IModalProps> = props => {
+const Modal: React.FC<IModalProps> = props => {
     const { modalQueue } = useStore()
 
     const [show, setShow] = useState(false)
@@ -153,10 +153,10 @@ const Mask: React.FC<IModalProps> = props => {
                 onEnter={onEnter}
                 onExited={onExited}
             >
-                <MaskBase {...props} />
+                <ModalBase {...props} />
             </CSSTransition>
         </Portal>
     )
 }
 
-export default Mask
+export default Modal

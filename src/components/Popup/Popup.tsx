@@ -20,8 +20,8 @@ const Popup: React.FC<IPopupProps> = props => {
         className: classNameProp,
         children,
         show,
-        maskColor,
-        onClickMask = () => {},
+        overlayColor,
+        onClickOverlay = () => {},
         onClickClose = () => {},
         onClose = () => {},
         header,
@@ -47,9 +47,9 @@ const Popup: React.FC<IPopupProps> = props => {
     return (
         <Modal
             show={show}
-            maskColor={maskColor}
-            onClickMask={() => {
-                onClickMask()
+            overlayColor={overlayColor}
+            onClickOverlay={() => {
+                onClickOverlay()
                 onClose()
             }}
         >
