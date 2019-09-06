@@ -7,6 +7,8 @@ import Calculator, {
     ICalculatorProps
 } from '@/components/Calculator/Calculator'
 import { ScreenMini } from '@/components/Calculator'
+import { Popup } from '@/components/Popup'
+import { Modal } from '@/components/Modal'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
 
@@ -68,7 +70,17 @@ const LedgerAdd: React.FC = props => {
         triggerValidation([{ name: 'amount' }])
     }
 
-    const [calculatorShow, setCalculatorShow] = useState(true)
+    const [calculatorShow, setCalculatorShow] = useState(false)
+    const [test, setTest] = useState<{
+        [key: number]: boolean
+    }>({
+        1: true,
+        2: true,
+        3: true,
+        4: true,
+        5: true,
+        6: true
+    })
 
     return (
         <>
@@ -76,8 +88,82 @@ const LedgerAdd: React.FC = props => {
                 title="新增账单"
                 subTitle="旅行账簿"
                 left={<BackButton href="/" />}
+                onClick={() => {
+                    setTest({
+                        1: true,
+                        2: true,
+                        3: true,
+                        4: true,
+                        5: true,
+                        6: true
+                    })
+                }}
             />
             <ContentBody>
+                CNY
+                <Popup show={test[1]} onClickMask={() => setTest({...test, 1: false})}>
+                    <input type="text"/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                </Popup>
+                <Popup show={test[2]} onClickMask={() => setTest({...test, 2: false})}>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                    asd<br/>
+                </Popup>
                 <ScreenMini
                     value={forms.amount}
                     onClick={() => setCalculatorShow(true)}
@@ -88,6 +174,60 @@ const LedgerAdd: React.FC = props => {
                     show={calculatorShow}
                     onBlur={() => setCalculatorShow(false)}
                 />
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
+                asd<br/>
             </ContentBody>
             <ToolBar />
         </>
