@@ -13,6 +13,7 @@ export interface IPopupProps extends IModalProps {
     onClickClose?: Function
     header?: boolean
     title?: string
+    contentPadding?: boolean
 }
 
 const Popup: React.FC<IPopupProps> = props => {
@@ -26,6 +27,7 @@ const Popup: React.FC<IPopupProps> = props => {
         onClose = () => {},
         header,
         title = '',
+        contentPadding = false,
         ...other
     }: typeof props = props
 
@@ -63,19 +65,25 @@ const Popup: React.FC<IPopupProps> = props => {
                     {header && (
                         <div data-role="popup-header">
                             <div data-role="popup-title">{title}</div>
-                            <div data-role="popup-close" onClick={
-                                () => {
+                            <div
+                                data-role="popup-close"
+                                onClick={() => {
                                     onClickClose()
                                     onClose()
-                                }
-                            }>
+                                }}
+                            >
                                 <Button type="text" color="default">
                                     <Icon text="plus"></Icon>
                                 </Button>
                             </div>
                         </div>
                     )}
-                    {children}
+                    <div
+                        data-role="popup-content"
+                        data-padding={contentPadding}
+                    >
+                        {children}
+                    </div>
                 </div>
             </CSSTransition>
         </Modal>

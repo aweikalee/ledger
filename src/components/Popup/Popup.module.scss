@@ -26,6 +26,11 @@
             display: block;
         }
     }
+    & [data-role='popup-content'] {
+        &[data-padding='true'] {
+            padding: $gap;
+        }
+    }
 }
 
 .appear,
