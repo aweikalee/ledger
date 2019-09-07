@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import useForm from 'react-hook-form'
+import { useQuery } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
@@ -8,11 +10,16 @@ import Calculator, {
 } from '@/components/Calculator/Calculator'
 import { ScreenMini } from '@/components/Calculator'
 import { Popup } from '@/components/Popup'
-import { Modal } from '@/components/Modal'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
+import Button from '@/components/Button'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
+
+export interface ICurrency {
+    name: string
+    cn: string
+}
 
 export interface IForm {
     amount?: string
@@ -71,16 +78,22 @@ const LedgerAdd: React.FC = props => {
     }
 
     const [calculatorShow, setCalculatorShow] = useState(false)
-    const [test, setTest] = useState<{
-        [key: number]: boolean
-    }>({
-        1: true,
-        2: true,
-        3: true,
-        4: true,
-        5: true,
-        6: true
-    })
+
+    /* Currency */
+    const [showCurrency, setShowCurrency] = useState(true)
+    const [activeCurrency, setActiveCurrency] = useState('CNY')
+    const { data: dataCurrency } = useQuery<{
+        currencys: any[]
+    }>(
+        gql`
+            query {
+                currencys {
+                    name
+                    cn
+                }
+            }
+        `
+    )
 
     return (
         <>
@@ -88,82 +101,45 @@ const LedgerAdd: React.FC = props => {
                 title="新增账单"
                 subTitle="旅行账簿"
                 left={<BackButton href="/" />}
-                onClick={() => {
-                    setTest({
-                        1: true,
-                        2: true,
-                        3: true,
-                        4: true,
-                        5: true,
-                        6: true
-                    })
-                }}
             />
             <ContentBody>
-                CNY
-                <Popup show={test[1]} onClickMask={() => setTest({...test, 1: false})}>
-                    <input type="text"/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
+                <Button onClick={() => setShowCurrency(true)}>
+                    {activeCurrency}
+                </Button>
+                <Popup
+                    show={showCurrency}
+                    onClickOverlay={() => setShowCurrency(false)}
+                    header
+                    title="选择货币种类"
+                    contentPadding
+                >
+                    {dataCurrency &&
+                        dataCurrency.currencys &&
+                        dataCurrency.currencys.map(item => (
+                            <Button
+                                type={
+                                    item.name === activeCurrency
+                                        ? 'contained'
+                                        : 'outlined'
+                                }
+                                color={
+                                    item.name === activeCurrency
+                                        ? 'primary'
+                                        : 'default'
+                                }
+                                border="round"
+                                size="large"
+                                key={item.name}
+                                onClick={() => {
+                                    setActiveCurrency(item.name)
+                                    setShowCurrency(false)
+                                }}
+                            >
+                                {item.name}
+                            </Button>
+                        ))}
                 </Popup>
-                <Popup show={test[2]} onClickMask={() => setTest({...test, 2: false})}>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                    asd<br/>
-                </Popup>
+
                 <ScreenMini
                     value={forms.amount}
                     onClick={() => setCalculatorShow(true)}
@@ -174,60 +150,6 @@ const LedgerAdd: React.FC = props => {
                     show={calculatorShow}
                     onBlur={() => setCalculatorShow(false)}
                 />
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
-                asd<br/>
             </ContentBody>
             <ToolBar />
         </>
