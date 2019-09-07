@@ -8,6 +8,8 @@ module.exports = gql`
         records(pid: ID!, date: String, cursor: ID, limit: Int): Records
         recordType(id: ID!): RecordType
         recordTypes(pid: ID!): [RecordType]
+        currency(name: String!): Currency
+        currencys: [Currency]
         user(id: ID!): User
     }
 
@@ -28,6 +30,7 @@ module.exports = gql`
         detail: String
         amount: Float
         currency: String!
+        rate: Float
     }
 
     type Records implements BasePagination {
@@ -40,6 +43,12 @@ module.exports = gql`
         text: String!
         icon: String!
         color: String!
+    }
+
+    type Currency {
+        id: ID!
+        name: String!
+        cn: String!
     }
 
     type User {
