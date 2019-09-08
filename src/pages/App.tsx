@@ -3,10 +3,12 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { useStore } from '@/store'
+import { AsyncComponent } from '@/components/AsyncComponent'
 
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 import RecordIndex from './Record/Index'
+const Test = AsyncComponent(() => import('./Test/Index'))
 
 import LedgerAdd from './Ledger/Add'
 
@@ -39,6 +41,10 @@ const App: React.FC = () => {
                             path="/ledger/:id/add"
                             component={LedgerAdd}
                         />
+
+                        {process.env.NODE_ENV === 'development' && (
+                            <Route exact path="/test" component={Test} />
+                        )}
                     </Switch>
                 </BrowserRouter>
             </useStore.Provider>
