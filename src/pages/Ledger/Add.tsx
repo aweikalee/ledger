@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import useForm from 'react-hook-form'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
-import Calculator, {
-    ICalculatorProps
-} from '@/components/Calculator/Calculator'
+import Calculator from '@/components/Calculator/Calculator'
 import { ScreenMini } from '@/components/Calculator'
 import { Popup } from '@/components/Popup'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
 import Button from '@/components/Button'
+import TypePicker from './components/TypePicker'
+import { IRecordType } from './components/Record'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -23,22 +23,42 @@ export interface ICurrency {
 
 export interface IForm {
     amount?: string
-    lastname?: string
-    firstname?: string
+    currency?: string
+    type?: string
 }
 
 const LedgerAdd: React.FC = props => {
+    const {
+        params: { id }
+    } = (props as any).match as {
+        params: {
+            id: string
+        }
+    }
+
+    /* initialization */
     const [forms, setForms] = useState<IForm>({
-        amount: '0'
+        amount: '0',
+        currency: 'CNY',
+        type: ''
     })
-    const { register, errors, setValue, triggerValidation } = useForm<IForm>({
+    const { register, setValue, triggerValidation } = useForm<IForm>({
         mode: 'onChange',
         defaultValues: {
             amount: forms.amount,
-            lastname: '',
-            firstname: ''
+            currency: forms.currency,
+            type: forms.type
         }
     })
+
+    const updateForms = (field: keyof IForm, value: IForm[typeof field]) => {
+        setValue(field, value)
+        setForms({
+            ...forms,
+            [field]: value
+        })
+        triggerValidation([{ name: field }])
+    }
 
     React.useEffect(() => {
         register(
@@ -66,22 +86,39 @@ const LedgerAdd: React.FC = props => {
                 }
             }
         )
+
+        register(
+            {
+                name: 'currency'
+            },
+            {
+                validate: value => {
+                    return valid.queue<string>([valid.isRequire()], {
+                        name: '货币种类'
+                    })(value)
+                }
+            }
+        )
+
+        register(
+            {
+                name: 'type'
+            },
+            {
+                validate: value => {
+                    return valid.queue<string>([valid.isRequire()], {
+                        name: '类型'
+                    })(value)
+                }
+            }
+        )
     }, [register])
 
-    const onAmountUpdate: ICalculatorProps['onUpdate'] = res => {
-        setValue('amount', res)
-        setForms({
-            ...forms,
-            amount: res
-        })
-        triggerValidation([{ name: 'amount' }])
-    }
-
+    /* Amount */
     const [calculatorShow, setCalculatorShow] = useState(false)
 
     /* Currency */
-    const [showCurrency, setShowCurrency] = useState(true)
-    const [activeCurrency, setActiveCurrency] = useState('CNY')
+    const [showCurrency, setShowCurrency] = useState(false)
     const { data: dataCurrency } = useQuery<{
         currencys: any[]
     }>(
@@ -95,6 +132,27 @@ const LedgerAdd: React.FC = props => {
         `
     )
 
+    /* Types */
+    const { data: dataTypes } = useQuery<{
+        recordTypes: IRecordType[]
+    }>(
+        gql`
+            query($pid: ID!) {
+                recordTypes(pid: $pid) {
+                    id
+                    text
+                    icon
+                    color
+                }
+            }
+        `,
+        {
+            variables: {
+                pid: id
+            }
+        }
+    )
+
     return (
         <>
             <NavigationBar
@@ -103,8 +161,9 @@ const LedgerAdd: React.FC = props => {
                 left={<BackButton href="/" />}
             />
             <ContentBody>
+                {/* Currency */}
                 <Button onClick={() => setShowCurrency(true)}>
-                    {activeCurrency}
+                    {forms.currency}
                 </Button>
                 <Popup
                     show={showCurrency}
@@ -118,12 +177,12 @@ const LedgerAdd: React.FC = props => {
                         dataCurrency.currencys.map(item => (
                             <Button
                                 type={
-                                    item.name === activeCurrency
+                                    item.name === forms.currency
                                         ? 'contained'
                                         : 'outlined'
                                 }
                                 color={
-                                    item.name === activeCurrency
+                                    item.name === forms.currency
                                         ? 'primary'
                                         : 'default'
                                 }
@@ -131,7 +190,7 @@ const LedgerAdd: React.FC = props => {
                                 size="large"
                                 key={item.name}
                                 onClick={() => {
-                                    setActiveCurrency(item.name)
+                                    updateForms('currency', item.name)
                                     setShowCurrency(false)
                                 }}
                             >
@@ -140,15 +199,23 @@ const LedgerAdd: React.FC = props => {
                         ))}
                 </Popup>
 
+                {/* Amount */}
                 <ScreenMini
                     value={forms.amount}
                     onClick={() => setCalculatorShow(true)}
                 ></ScreenMini>
                 <Calculator
                     value={forms.amount}
-                    onUpdate={onAmountUpdate}
+                    onUpdate={value => updateForms('amount', value)}
                     show={calculatorShow}
                     onBlur={() => setCalculatorShow(false)}
+                />
+
+                {/* type */}
+                <TypePicker
+                    data={dataTypes ? dataTypes.recordTypes : []}
+                    active={forms.type || ''}
+                    onChange={value => updateForms('type', value)}
                 />
             </ContentBody>
             <ToolBar />
