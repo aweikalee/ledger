@@ -8,11 +8,12 @@ import { AsyncComponent } from '@/components/AsyncComponent'
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 import RecordIndex from './Record/Index'
-const Test = AsyncComponent(() => import('./Test/Index'))
 
 import LedgerAdd from './Ledger/Add'
 
 import './App.module.scss'
+
+const Test = AsyncComponent(() => import(/* webpackChunkName: 'Test' */'./Test/Index'))
 
 const client = new ApolloClient({
     uri: '/graphql'

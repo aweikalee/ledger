@@ -1,23 +1,34 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
-export type IAsyncComponent = <T = {}>(
-    loader: () => Promise<any>
-) => React.ComponentType<T>
+const asyncComponent = <T extends {}>(loader: () => Promise<any>) =>
+    class AsyncComponent extends React.Component<
+        T,
+        {
+            Component: React.ComponentType<T> | null
+        }
+    > {
+        constructor(props: T) {
+            super(props)
 
-const AsyncComponent: IAsyncComponent = loader => {
-    return props => {
-        const [Component, setComponent] = useState<React.FC>()
-        useEffect(() => {
+            this.state = {
+                Component: null
+            }
+        }
+        componentDidMount() {
             loader()
-                .then(module => (module.default ? module.default : module))
-                .then(res => setComponent(res))
-                .catch(err => {
-                    throw err
+                .then(module => {
+                    this.setState({
+                        Component: module.default
+                    })
                 })
-        }, [])
-
-        return Component ? <Component {...props} /> : null
+                .catch(error => {
+                    throw error
+                })
+        }
+        render() {
+            const { Component } = this.state
+            return Component ? <Component {...this.props} /> : null
+        }
     }
-}
 
-export default AsyncComponent
+export default asyncComponent
