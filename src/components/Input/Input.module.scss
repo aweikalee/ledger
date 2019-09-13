@@ -1,16 +1,12 @@
 @import '@/style/index.scss';
 
-.input {
+.input, .textarea {
     @include font(body);
+    line-height: 1.5;
     color: color(grey, 7);
     background-color: transparent;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: nowrap;
     width: 100%;
-    height: 0;
-    min-height: rem(44);
+    box-sizing: border-box;
     position: relative;
 
     &::before {
@@ -33,6 +29,16 @@
         transition: transform 300ms $ease-out;
         transform: scaleX(0);
     }
+}
+
+.input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: 0;
+    min-height: calc(1.5em + #{$gap});
+    padding: $gap/2 0;
 
     & [data-role='input-before'],
     & [data-role='input-box'],
@@ -50,16 +56,16 @@
         flex-shrink: 1;
         height: 100%;
     }
-    & [data-role='input-input'] {
+    & [data-role='input-input']{
         width: 100%;
         height: 100%;
         display: block;
         box-sizing: border-box;
         border: none;
         outline: none;
-        resize: none;
         background-color: inherit;
         color: inherit;
+        padding: 0;
 
         &::placeholder {
             opacity: 0.5;
@@ -91,6 +97,27 @@
     }
 }
 
+.textarea {
+    padding: $gap/2 rem(4);
+    & [data-role='input-textarea'] {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+        resize: none;
+        background-color: inherit;
+        color: inherit;
+        height: 0;
+        min-height: calc(1.5em);
+        padding: 0;
+
+        &::placeholder {
+            opacity: 0.5;
+        }
+    }
+}
+
 .label {
     width: 100%;
     @include font(title-3);
@@ -112,7 +139,7 @@
     width: 100%;
 
     &[data-focus='true'] {
-        & .input {
+        & .input, & .textarea {
             &::before {
                 transform: scaleX(0);
             }
@@ -123,7 +150,7 @@
     }
 
     &[data-error='true'] {
-        & .input {
+        & .input, & .textarea{
             &:before {
                 border-bottom-color: color(red, 5);
             }
@@ -138,10 +165,10 @@
     }
 
     &[data-disabled='true'] {
-        & .input {
+        & .input, & .textarea {
             opacity: 0.5;
             cursor: not-allowed;
-            & [data-role='input-input'] {
+            & [data-role='input-input'], & [data-role="input-textarea"] {
                 cursor: not-allowed;
             }
         }

@@ -1,5 +1,6 @@
 export { default } from './Input'
 export { default as Input } from './Input'
+export { default as TextArea } from './TextArea'
 export { default as Control } from './Control'
 export { default as Label } from './Label'
 export { default as Helper } from './Helper'
