@@ -4,11 +4,13 @@ import React, {
     useLayoutEffect,
     useEffect,
     useState,
-    CSSProperties
+    CSSProperties,
+    useCallback
 } from 'react'
 import clsx from 'clsx'
 import styles from './Input.module.scss'
 import { InputContext } from './Control'
+import useResizeObserver from '../utils/useResizeObserver'
 import calculateNodeHeight from './calculateNodeHeight'
 
 export interface ITextAreaAutoSize {
@@ -27,6 +29,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
         const {
             className: classNameProp,
             children,
+            style: styleProp,
             value = '',
             autosize,
             onChange,
@@ -49,9 +52,16 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
             }
         }, [el, ref])
 
+        const timer = useRef<number>()
+        const oldValue = useRef<typeof value>(value)
+        const [resizing, setResizing] = useState(false)
         const [textareaStyles, setTextareaStyles] = useState<CSSProperties>({})
-        useEffect(() => {
-            const timer = requestAnimationFrame(() => {
+        const handlerResize = useCallback(() => {
+            if (timer.current) {
+                cancelAnimationFrame(timer.current)
+            }
+            timer.current = requestAnimationFrame(() => {
+                setResizing(true)
                 if (!autosize || !el.current) {
                     return
                 }
@@ -63,12 +73,24 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
                     maxRows
                 )
                 setTextareaStyles(styles)
+
+                timer.current = requestAnimationFrame(() => {
+                    setResizing(false)
+                })
             })
+        }, [autosize, setResizing])
+        useEffect(() => {
+            if (oldValue.current !== value) {
+                handlerResize()
+            }
 
             return () => {
-                cancelAnimationFrame(timer)
+                if (timer.current) {
+                    cancelAnimationFrame(timer.current)
+                }
             }
-        }, [value, el, autosize])
+        }, [value, handlerResize])
+        useResizeObserver(el, handlerResize)
 
         const onFocus: React.DOMAttributes<
             HTMLTextAreaElement
@@ -96,7 +118,11 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
             onFocus,
             onBlur,
             ref: el,
-            style: textareaStyles,
+            style: {
+                ...styleProp,
+                ...textareaStyles,
+                ...(resizing ? { oveflow: 'hidden' } : null)
+            },
             ...other
         }
 
