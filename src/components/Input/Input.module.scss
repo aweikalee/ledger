@@ -1,0 +1,149 @@
+@import '@/style/index.scss';
+
+.input {
+    @include font(body);
+    color: color(grey, 7);
+    background-color: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 0;
+    min-height: rem(44);
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom: 2px solid color(grey, 5);
+        transform: scaleX(1);
+        transition: transform 300ms $ease-in;
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom: 2px solid color(primary, 5);
+        transition: transform 300ms $ease-out;
+        transform: scaleX(0);
+    }
+
+    & [data-role='input-before'],
+    & [data-role='input-box'],
+    & [data-role='input-clear'],
+    & [data-role='input-after'] {
+        flex-shrink: 0;
+        margin-left: rem(4);
+    }
+    & > :last-child {
+        margin-right: rem(4);
+    }
+
+    & [data-role='input-box'] {
+        flex-grow: 1;
+        flex-shrink: 1;
+        height: 100%;
+    }
+    & [data-role='input-input'] {
+        width: 100%;
+        height: 100%;
+        display: block;
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+        resize: none;
+        background-color: inherit;
+        color: inherit;
+
+        &::placeholder {
+            opacity: 0.5;
+        }
+    }
+
+    & [data-role='input-clear'] {
+        color: color(grey, 7);
+        background-color: rgba(color(grey, 2), 30%);
+        border-radius: 50%;
+        width: 1em;
+        height: 1em;
+        line-height: 1em;
+        text-align: center;
+        transform: rotate(45deg);
+        cursor: pointer;
+
+        & > [data-role='icon'] {
+            font-size: 0.7em;
+            display: block;
+        }
+
+        &:hover {
+            opacity: 0.7;
+        }
+        &:active {
+            opacity: 0.3;
+        }
+    }
+}
+
+.label {
+    width: 100%;
+    @include font(title-3);
+    font-weight: bold;
+    color: color(grey, 9);
+}
+
+.helper {
+    width: 100%;
+    @include font(callout);
+    color: color(grey, 5);
+    margin-top: $gap / 4;
+}
+
+.control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    &[data-focus='true'] {
+        & .input {
+            &::before {
+                transform: scaleX(0);
+            }
+            &::after {
+                transform: scaleX(1);
+            }
+        }
+    }
+
+    &[data-error='true'] {
+        & .input {
+            &:before {
+                border-bottom-color: color(red, 5);
+            }
+            &:after {
+                border-bottom-color: color(yellow, 5);
+            }
+        }
+
+        & .helper {
+            color: color(red, 5);
+        }
+    }
+
+    &[data-disabled='true'] {
+        & .input {
+            opacity: 0.5;
+            cursor: not-allowed;
+            & [data-role='input-input'] {
+                cursor: not-allowed;
+            }
+        }
+    }
+}
