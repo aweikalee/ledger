@@ -11,6 +11,8 @@ import { Popup } from '@/components/Popup'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
 import Button from '@/components/Button'
+import * as Input from '@/components/Input'
+import Grid from '@/components/Grid'
 import TypePicker from './components/TypePicker'
 import { IRecordType } from './components/Record'
 
@@ -25,6 +27,7 @@ export interface IForm {
     amount?: string
     currency?: string
     type?: string
+    detail?: string
 }
 
 const LedgerAdd: React.FC = props => {
@@ -42,14 +45,17 @@ const LedgerAdd: React.FC = props => {
         currency: 'CNY',
         type: ''
     })
-    const { register, setValue, triggerValidation } = useForm<IForm>({
-        mode: 'onChange',
-        defaultValues: {
-            amount: forms.amount,
-            currency: forms.currency,
-            type: forms.type
+    const { register, setValue, triggerValidation } = useForm<IForm>(
+        {
+            mode: 'onChange',
+            defaultValues: {
+                amount: forms.amount,
+                currency: forms.currency,
+                type: forms.type,
+                detail: ''
+            }
         }
-    })
+    )
 
     const updateForms = (field: keyof IForm, value: IForm[typeof field]) => {
         setValue(field, value)
@@ -217,6 +223,21 @@ const LedgerAdd: React.FC = props => {
                     active={forms.type || ''}
                     onChange={value => updateForms('type', value)}
                 />
+
+                <Grid container gap={2}>
+                    {/* detail */}
+                    <Grid item sm={12}>
+                        <Input.Control>
+                            <Input.Label htmlFor="detail">描述</Input.Label>
+                            <Input.TextArea
+                                name="detail"
+                                id="detail"
+                                ref={register}
+                                autosize
+                            />
+                        </Input.Control>
+                    </Grid>
+                </Grid>
             </ContentBody>
             <ToolBar />
         </>
