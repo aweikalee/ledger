@@ -20,9 +20,8 @@ export interface ITextAreaAutoSize {
 
 export interface ITextAreaProps
     extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-    value?: string
     autosize?: boolean | ITextAreaAutoSize
-    placeholder?: string
+    onUpdate?: (value: string) => void
 }
 const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
     (props, ref) => {
@@ -30,10 +29,9 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
             className: classNameProp,
             children,
             style: styleProp,
-            value = '',
             autosize,
-            onChange,
-            onInput,
+            onUpdate,
+            onChange: onChangeProp,
             onFocus: onFocusProp,
             onBlur: onBlurProp,
             ...other
@@ -53,7 +51,6 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
         }, [el, ref])
 
         const timer = useRef<number>()
-        const oldValue = useRef<typeof value>(value)
         const [resizing, setResizing] = useState(false)
         const [textareaStyles, setTextareaStyles] = useState<CSSProperties>({})
         const handlerResize = useCallback(() => {
@@ -80,18 +77,26 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
             })
         }, [autosize, setResizing])
         useEffect(() => {
-            if (oldValue.current !== value) {
-                handlerResize()
-            }
-
+            handlerResize()
             return () => {
                 if (timer.current) {
                     cancelAnimationFrame(timer.current)
                 }
             }
-        }, [value, handlerResize])
+        }, [handlerResize])
         useResizeObserver(el, handlerResize)
 
+        const onChange: React.TextareaHTMLAttributes<
+            HTMLTextAreaElement
+        >['onChange'] = e => {
+            if (onChangeProp) {
+                onChangeProp(e)
+            }
+            if (onUpdate) {
+                onUpdate(e.target.value)
+            }
+            handlerResize()
+        }
         const onFocus: React.DOMAttributes<
             HTMLTextAreaElement
         >['onFocus'] = e => {
@@ -111,10 +116,8 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, ITextAreaProps>(
 
         const className = clsx(styles.textarea, classNameProp)
         const bindProps = {
-            value,
             disabled: context.disabled,
             onChange,
-            onInput,
             onFocus,
             onBlur,
             ref: el,

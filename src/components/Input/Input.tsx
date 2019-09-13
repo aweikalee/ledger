@@ -11,21 +11,18 @@ const inputFC = React.forwardRef<
 
 export interface IInputProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
-    value?: string
     before?: JSX.Element | string
     after?: JSX.Element | string
     clear?: boolean
-    placeholder?: string
     inputComponent?: React.ForwardRefExoticComponent<any>
+    onUpdate?: (value: string) => void
 }
 const Input = React.forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
     const {
         className: classNameProp,
         children,
-        value = '',
-        type = 'text',
-        onChange,
-        onInput,
+        onUpdate,
+        onChange: onChangeProp,
         onFocus: onFocusProp,
         onBlur: onBlurProp,
         before,
@@ -48,27 +45,35 @@ const Input = React.forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
         }
     }, [el, ref])
 
+    const onChange: React.InputHTMLAttributes<
+        HTMLInputElement
+    >['onChange'] = e => {
+        if (onChangeProp) {
+            onChangeProp(e)
+        }
+        if (onUpdate) {
+            onUpdate(e.target.value)
+        }
+    }
+
     const onClear: React.DOMAttributes<HTMLDivElement>['onClick'] = e => {
         const event = Object.create(e)
         const oldValue = el.current!.value
         event.target = el.current
         el.current!.value = ''
-        if (onChange) {
-            onChange(event)
-        }
-        if (onInput) {
-            onInput(event)
-        }
+        onChange(event)
         el.current!.value = oldValue
     }
 
-    const onFocus: React.DOMAttributes<HTMLInputElement>['onFocus'] = e => {
+    const onFocus: React.InputHTMLAttributes<
+        HTMLInputElement
+    >['onFocus'] = e => {
         context.onFocus()
         if (onFocusProp) {
             onFocusProp(e)
         }
     }
-    const onBlur: React.DOMAttributes<HTMLInputElement>['onBlur'] = e => {
+    const onBlur: React.InputHTMLAttributes<HTMLInputElement>['onBlur'] = e => {
         context.onBlur()
         if (onBlurProp) {
             onBlurProp(e)
@@ -79,11 +84,8 @@ const Input = React.forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
 
     const className = clsx(styles.input, classNameProp)
     const bindProps = {
-        value,
-        type,
         disabled: context.disabled,
         onChange,
-        onInput,
         onFocus,
         onBlur,
         ref: el,
@@ -96,7 +98,7 @@ const Input = React.forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
             <div data-role="input-box">
                 <Component data-role="input-input" {...bindProps} />
             </div>
-            {clear && !context.disabled && value && (
+            {clear && !context.disabled && el.current && el.current.value && (
                 <div data-role="input-clear" onClick={onClear}>
                     <Icon text="plus"></Icon>
                 </div>
