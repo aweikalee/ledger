@@ -6,7 +6,8 @@ const ERROR_MESSAGE: {
     normal: '数据验证错误',
     require: '{name}不能为空',
     maxLength: '{name}不能超过{limit}个字符',
-    minLength: '{name}不能少于{limit}个字符'
+    minLength: '{name}不能少于{limit}个字符',
+    isDate: '{name}不是有效的日期格式'
 }
 
 export type IGetError = (
@@ -22,7 +23,7 @@ export const errorFactory: IGetError = (template, fields = {}) => {
             `{${key}}`,
             fields[key] !== void 0 ? `${fields[key]}` : ''
         )
-    }, template || ERROR_MESSAGE['normal']) as string).replace(/\{\w+\}/, '')
+    }, template || ERROR_MESSAGE['normal']) as string).replace(/\{\w+\}/g, '')
 }
 
 export const getError: IGetError = (type, fields = {}) => {
@@ -53,7 +54,7 @@ export const isRequire = (): IRule => {
 
 export const maxLength = (max: number): IRule => {
     return (value, options = {}) => {
-        if (`${value || ''}`.length > max) {
+        if (`${value || ''}`.length <= max) {
             return true
         }
         return getError('maxLength', {
@@ -65,12 +66,34 @@ export const maxLength = (max: number): IRule => {
 
 export const minLength = (min: number): IRule => {
     return (value, options = {}) => {
-        if (`${value || ''}`.length < min) {
+        if (`${value || ''}`.length >= min) {
             return true
         }
         return getError('minLength', {
             ...options,
             limit: min
+        })
+    }
+}
+
+export const isDate = (): IRule<string | number | Date> => {
+    return (value, options = {}) => {
+        if (!isNaN(new Date(value!).valueOf())) {
+            return true
+        }
+        return getError('isDate', {
+            ...options
+        })
+    }
+}
+
+export const isDateString = (): IRule<string> => {
+    return (value, options = {}) => {
+        if (typeof value === 'string' && !isNaN(new Date(value!).valueOf())) {
+            return true
+        }
+        return getError('isDate', {
+            ...options
         })
     }
 }
