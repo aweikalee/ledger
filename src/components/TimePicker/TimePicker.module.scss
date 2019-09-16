@@ -1,0 +1,101 @@
+@import '@/style/index.scss';
+
+$_li-height: rem(36);
+
+.timepicker {
+    background-color: color(white);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    & [data-role='timepicker-screen'] {
+        text-align: center;
+        background-color: color(primary, 2);
+        @include font(large-title);
+        padding: $gap / 2 0;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+    & .panel {
+        height: auto;
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+    & [data-role='timepicker-footer'] {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
+
+.panel {
+    height: $_li-height * 8;
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    background-color: inherit;
+}
+
+.select {
+    height: 100%;
+    flex: 1;
+    & [data-role='timepicker-col'] {
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        // width: rem(80);
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
+        position: relative;
+        @include font(body);
+
+        &[data-hover='true'],
+        &:hover {
+            overflow-y: auto;
+        }
+    }
+
+    & [data-role='timepicker-ul'] {
+        margin: 0;
+        padding: 0;
+        padding-bottom: $_li-height * 7;
+        list-style: none;
+    }
+    & [data-role='timepicker-li'] {
+        height: $_li-height;
+        line-height: $_li-height;
+        padding-left: rem(30);
+        text-align: left;
+        list-style: none;
+        cursor: pointer;
+        user-select: none;
+
+        &:hover {
+            background-color: color(primary, 1);
+        }
+
+        &:focus {
+            color: color(primary, 6);
+            outline: none;
+        }
+        &[data-selected='true'] {
+            background-color: color(grey, 1);
+            font-weight: bold;
+        }
+    }
+}
+
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & .timepicker {
+        width: rem(300);
+        max-width: calc(100% - #{$gap * 2});
+        height: calc(100% - #{$gap * 2});
+        max-height: $_li-height * 8 + rem(67) + rem(50);
+        border-radius: $border-radius;
+        box-shadow: shadow(10);
+    }
+}
