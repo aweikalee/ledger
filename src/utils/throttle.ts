@@ -1,17 +1,40 @@
-const timers: NodeJS.Timeout[] = []
-const methods: Function[] = []
+import { useRef, useEffect } from 'react'
 
-export const throttle = (method: Function, interval = 100) => {
-    if (methods.indexOf(method) === -1) {
-        methods.push(method)
+export const throttle = (
+    method: (...args: any[]) => void,
+    interval = 100
+) => {
+    let time = 0
 
-        timers.push(
-            setTimeout(() => {
-                method()
+    return (...args: any[]) => {
+        const now = Date.now()
+        if (now - time > interval) {
+            method(...args)
+            time = now
+        }
+    }
+}
 
-                methods.splice(methods.indexOf(method))
-                timers.shift()
+export const useThrottleDelay = (
+    method: (...args: any[]) => void,
+    interval = 100
+) => {
+    const timer = useRef<NodeJS.Timeout | null>(null)
+    useEffect(
+        () => () => {
+            if (timer.current) {
+                clearTimeout(timer.current)
+            }
+        },
+        []
+    )
+
+    return (...args: any[]) => {
+        if (!timer.current) {
+            timer.current = setTimeout(() => {
+                method(...args)
+                timer.current = null
             }, interval)
-        )
+        }
     }
 }

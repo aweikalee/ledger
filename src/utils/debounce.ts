@@ -1,11 +1,27 @@
-export const debounce = (method: Function, interval = 100) => {
-    throw Error(`Please use "debounceFactory" instead of "debounce"`)
-}
+import { useRef, useEffect } from 'react'
 
-export const debounceFactory = (method: Function, interval = 100) => {
-    let timer: NodeJS.Timeout
+export const useDebounce = (
+    method: (...args: any[]) => void,
+    interval = 100
+) => {
+    const timer = useRef<NodeJS.Timeout>()
+    useEffect(
+        () => () => {
+            if (timer.current) {
+                clearTimeout(timer.current)
+            }
+        },
+        []
+    )
+
     return (...args: any[]) => {
-        clearTimeout(timer)
-        timer = setTimeout(() => method(...args), interval)
+        if (timer.current) {
+            clearTimeout(timer.current)
+        }
+        timer.current = setTimeout(() => {
+            method(...args)
+            console.log(timer)
+        }, interval)
+        return timer.current
     }
 }
