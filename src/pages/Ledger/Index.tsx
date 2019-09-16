@@ -68,9 +68,6 @@ const LedgerIndex: React.FC = props => {
     }, [data])
 
     const fetchMoreFn: ILoadMoreProps['handler'] = cb => {
-        if (loading) {
-            return
-        }
         fetchMore({
             variables: {
                 pid: id,
@@ -168,7 +165,7 @@ const LedgerIndex: React.FC = props => {
                             )
                         })}
                 </TransitionGroup>
-                <Loading.More handler={fetchMoreFn} delay={100} />
+                <Loading.More handler={fetchMoreFn} loading={loading} delay={100} />
             </ContentBody>
             <ToolBar />
         </>

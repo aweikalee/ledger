@@ -1,32 +1,40 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { Button } from '../Button'
 import Loading, { ILoadingProps } from './Loading'
-import { throttle } from '@/utils/throttle'
+import { useThrottleDelay } from '@/utils/throttle'
 
 type IStatus = 'ready' | 'loading' | 'complete' | 'error'
 
 export interface ILoadMoreProps extends ILoadingProps {
-    handler(callback: (error: Error | null, complete?: boolean) => void): void
+    loading?: boolean
+    handler?: (
+        callback: (error: Error | null, complete?: boolean) => void
+    ) => void
 }
 
 const LoadMore: React.FC<ILoadMoreProps> = props => {
-    const { children: childrenProp, handler, ...other }: typeof props = props
+    const {
+        children: childrenProp,
+        loading = false,
+        handler,
+        ...other
+    }: typeof props = props
 
     /* 缓存屏幕宽高  */
-    const [screen, setScreen] = useState<{
+    const screenRef = useRef<{
         w: number
         h: number
-    }>(() => ({
+    }>({
         w: window.innerWidth,
         h: window.innerHeight
-    }))
+    })
 
     useEffect(() => {
         const getScreen = () => {
-            setScreen({
+            screenRef.current = {
                 w: window.innerWidth,
                 h: window.innerHeight
-            })
+            }
         }
         window.addEventListener('resize', getScreen)
         return () => {
@@ -38,43 +46,68 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
     const el = useRef<HTMLDivElement>(null)
     const [status, setStatus] = useState<IStatus>('ready')
 
+    const statusRef = useRef<typeof status>(status)
     useEffect(() => {
-        const attemptLoad = () => {
-            throttle(() => {
-                // 检查状态及视口
-                if (
-                    status === 'loading' ||
-                    status === 'complete' ||
-                    !el.current ||
-                    el.current!.getBoundingClientRect().top >= screen.h
-                ) {
-                    return
-                }
+        statusRef.current = status
+    }, [status])
 
-                // 执行加载
-                setStatus('loading')
-                try {
-                    handler((error, complete) => {
-                        if (error) {
-                            throw error
-                        } else {
-                            complete
-                                ? setStatus('complete')
-                                : setStatus('ready')
-                        }
-                    })
-                } catch (error) {
-                    setStatus('error')
-                }
-            }, 200)
+    const handlerRef = useRef<typeof handler>(handler)
+    useEffect(() => {
+        handlerRef.current = handler
+    }, [handler])
+
+    /*
+        初始化 加载一次，如果未填满屏幕则再重复加载
+        之后按滚动事件进行判定
+    */
+
+    const checkLoad = () => {
+        if (
+            status === 'loading' ||
+            status === 'complete' ||
+            !el.current ||
+            el.current!.getBoundingClientRect().top >= screenRef.current.h
+        ) {
+            return false
         }
-        attemptLoad()
+        return true
+    }
 
-        window.addEventListener('scroll', attemptLoad)
+    const handlerLoad = () => {
+        setStatus('loading')
+        try {
+            if (handler) {
+                handler((error, complete) => {
+                    if (error) {
+                        throw error
+                    } else {
+                        complete ? setStatus('complete') : setStatus('ready')
+                    }
+                })
+            }
+        } catch (error) {
+            setStatus('error')
+        }
+    }
+
+    const onScroll = useThrottleDelay(() => {
+        if (checkLoad()) {
+            handlerLoad()
+        }
+    }, 200)
+
+    useEffect(() => {
+        if (!loading) {
+            onScroll()
+        }
+    }, [loading, onScroll])
+
+    useEffect(() => {
+        window.addEventListener('scroll', onScroll)
         return () => {
-            window.removeEventListener('scroll', attemptLoad)
+            window.removeEventListener('scroll', onScroll)
         }
-    }, [status, handler, screen, el])
+    }, [onScroll])
 
     const bindProps = {
         ref: el,
