@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import useForm from 'react-hook-form'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import { format } from 'date-fns'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import Calculator from '@/components/Calculator/Calculator'
 import { ScreenMini } from '@/components/Calculator'
 import { Popup } from '@/components/Popup'
+import * as TimePicker from '@/components/TimePicker'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
 import Button from '@/components/Button'
@@ -15,6 +17,7 @@ import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
 import TypePicker from './components/TypePicker'
 import { IRecordType } from './components/Record'
+import config from '@/config'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -28,6 +31,7 @@ export interface IForm {
     currency?: string
     type?: string
     detail?: string
+    datetime?: string
 }
 
 const LedgerAdd: React.FC = props => {
@@ -40,22 +44,21 @@ const LedgerAdd: React.FC = props => {
     }
 
     /* initialization */
-    const [forms, setForms] = useState<IForm>({
+    const [forms, setForms] = useState<IForm>(() => ({
         amount: '0',
         currency: 'CNY',
-        type: ''
-    })
-    const { register, setValue, triggerValidation } = useForm<IForm>(
-        {
-            mode: 'onChange',
-            defaultValues: {
-                amount: forms.amount,
-                currency: forms.currency,
-                type: forms.type,
-                detail: ''
-            }
+        type: '',
+        datetime: format(new Date(), config.datetimeFormat)
+    }))
+    const { register, setValue, triggerValidation } = useForm<IForm>({
+        mode: 'onChange',
+        defaultValues: {
+            amount: forms.amount,
+            currency: forms.currency,
+            type: forms.type,
+            detail: ''
         }
-    )
+    })
 
     const updateForms = (field: keyof IForm, value: IForm[typeof field]) => {
         setValue(field, value)
@@ -118,6 +121,22 @@ const LedgerAdd: React.FC = props => {
                 }
             }
         )
+
+        register(
+            {
+                name: 'datetime'
+            },
+            {
+                validate: value => {
+                    return valid.queue<string>(
+                        [valid.isRequire(), valid.isDate()],
+                        {
+                            name: '时间'
+                        }
+                    )(value)
+                }
+            }
+        )
     }, [register])
 
     /* Amount */
@@ -157,6 +176,24 @@ const LedgerAdd: React.FC = props => {
                 pid: id
             }
         }
+    )
+
+    /* DateTime */
+    const [showTime, setShowTime] = useState(false)
+    const dateChild = (
+        <Button type="text" color="default" size="medium" onClick={() => {}}>
+            {format(new Date(forms.datetime!), config.dateFormat)}
+        </Button>
+    )
+    const timeChild = (
+        <Button
+            type="text"
+            color="default"
+            size="large"
+            onClick={() => setShowTime(true)}
+        >
+            {format(new Date(forms.datetime!), config.timeFormat)}
+        </Button>
     )
 
     return (
@@ -237,7 +274,37 @@ const LedgerAdd: React.FC = props => {
                             />
                         </Input.Control>
                     </Grid>
+
+                    {/* datetime */}
+                    <Grid item sm={12}>
+                        <Input.Control>
+                            <Input.Label htmlFor="datetime">时间</Input.Label>
+                            <Input.Input
+                                name="datetime"
+                                id="datetime"
+                                disabled
+                                before={dateChild}
+                                after={timeChild}
+                            />
+                        </Input.Control>
+                    </Grid>
                 </Grid>
+
+                <TimePicker.Modal
+                    show={showTime}
+                    onClickOverlay={() => setShowTime(false)}
+                >
+                    <TimePicker.TimePicker
+                        value={new Date(forms.datetime!)}
+                        onConfirm={value => {
+                            updateForms(
+                                'datetime',
+                                format(value, config.datetimeFormat)
+                            )
+                            setShowTime(false)
+                        }}
+                    ></TimePicker.TimePicker>
+                </TimePicker.Modal>
             </ContentBody>
             <ToolBar />
         </>
