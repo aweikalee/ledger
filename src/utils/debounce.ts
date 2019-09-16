@@ -1,21 +1,11 @@
-const timers: NodeJS.Timeout[] = []
-const methods: Function[] = []
-
 export const debounce = (method: Function, interval = 100) => {
-    const index = methods.indexOf(method)
-    if (index !== -1) {
-        clearTimeout(timers[index])
-        methods.splice(index)
-        timers.splice(index)
-    }
+    throw Error(`Please use "debounceFactory" instead of "debounce"`)
+}
 
-    methods.push(method)
-    timers.push(
-        setTimeout(() => {
-            method()
-            const index = methods.indexOf(method)
-            methods.splice(index)
-            timers.splice(index)
-        }, interval)
-    )
+export const debounceFactory = (method: Function, interval = 100) => {
+    let timer: NodeJS.Timeout
+    return (...args: any[]) => {
+        clearTimeout(timer)
+        timer = setTimeout(() => method(...args), interval)
+    }
 }

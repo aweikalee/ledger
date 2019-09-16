@@ -3,7 +3,7 @@ import scrollTo from '../utils/scrollTo'
 import useFirstRun from '../utils/useFirstRun'
 import useResizeObserver from '../utils/useResizeObserver'
 import styles from './TimePicker.module.scss'
-import { debounce } from '@/utils/debounce'
+import { debounceFactory } from '@/utils/debounce'
 
 export interface ITimePickerSelectProps {
     min?: number
@@ -60,9 +60,9 @@ const TimePickerSelect: React.FC<ITimePickerSelectProps> = props => {
         scrollToSelected()
     }, [selected, scrollToSelected])
 
-    const onResize = useCallback(() => {
-        debounce(scrollToSelected, 100)
-    }, [scrollToSelected])
+    const onResize = useCallback(debounceFactory(scrollToSelected, 100), [
+        scrollToSelected
+    ])
     useResizeObserver(wrapperRef, onResize)
 
     /* 控制overflow-y状态（移动端） */
