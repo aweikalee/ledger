@@ -20,7 +20,6 @@ export const useDebounce = (
         }
         timer.current = setTimeout(() => {
             method(...args)
-            console.log(timer)
         }, interval)
         return timer.current
     }
