@@ -6,6 +6,11 @@ import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 import { useStore } from '@/store'
 import { EnterHandler, ExitHandler } from 'react-transition-group/Transition'
 import { Portal } from '../Portal'
+import {
+    getScrollBarWidth,
+    hasScrollBar,
+    hasScrollBarWidthDocumnet
+} from '../utils/scrollBar'
 
 export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
     show?: boolean
@@ -17,6 +22,7 @@ const ModalBase: React.FC<IModalProps> = props => {
     const {
         className: classNameProp,
         children,
+        style: styleProp,
         show,
         overlayColor = 'black',
         onClickOverlay = () => {},
@@ -54,9 +60,22 @@ const ModalBase: React.FC<IModalProps> = props => {
         modalQueue[modalQueue.length - 1] === id || modalQueue.length === 0
 
     const el = useRef<HTMLDivElement>(null)
+    const [paddingRight, setPaddingRight] = useState(0)
+    useEffect(() => {
+        if (el.current && !showOverlay) {
+            if (hasScrollBar(el.current)) {
+                setPaddingRight(getScrollBarWidth())
+            } else {
+                setPaddingRight(0)
+            }
+        }
+    }, [el, showOverlay])
+
     const className = clsx(classNameProp)
     const style: CSSProperties = {
-        overflow: showOverlay ? '' : 'hidden'
+        overflow: showOverlay ? '' : 'hidden',
+        paddingRight: showOverlay ? undefined : paddingRight,
+        ...styleProp
     }
     const isClickOverlay = useRef(false)
     const onMouseDown: React.DOMAttributes<
@@ -67,7 +86,7 @@ const ModalBase: React.FC<IModalProps> = props => {
         }
         onMouseDownProp && onMouseDownProp(e)
     }
-    const onMouseUp: React.DOMAttributes<HTMLDivElement>['onMouseUp'] = (e) => {
+    const onMouseUp: React.DOMAttributes<HTMLDivElement>['onMouseUp'] = e => {
         if (e.target === el.current && isClickOverlay.current) {
             onClickOverlay()
         }
@@ -100,6 +119,7 @@ const ModalBase: React.FC<IModalProps> = props => {
 }
 
 let saveOverflow: string | null = null
+let savePaddingRight: string | null = null
 const Modal: React.FC<IModalProps> = props => {
     const { modalQueue } = useStore()
 
@@ -132,13 +152,19 @@ const Modal: React.FC<IModalProps> = props => {
     const onEnter: EnterHandler = () => {
         if (show && modalQueue.length === 0) {
             saveOverflow = document.body.style.overflow
+            savePaddingRight = document.body.style.paddingRight
             document.body.style.overflow = 'hidden'
+            if (hasScrollBarWidthDocumnet()) {
+                document.body.style.paddingRight = `${getScrollBarWidth()}px`
+            }
         }
     }
     const onExited: ExitHandler = () => {
         if (!show && modalQueue.length === 0) {
-            document.body.style.overflow = saveOverflow
+            document.body.style.overflow = saveOverflow as string
+            document.body.style.paddingRight = savePaddingRight
             saveOverflow = null
+            savePaddingRight = null
         }
     }
 
