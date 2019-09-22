@@ -18,7 +18,7 @@ export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
     onClickOverlay?: Function
 }
 
-const ModalBase: React.FC<IModalProps> = props => {
+const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
     const {
         className: classNameProp,
         children,
@@ -60,6 +60,7 @@ const ModalBase: React.FC<IModalProps> = props => {
         modalQueue[modalQueue.length - 1] === id || modalQueue.length === 0
 
     const el = useRef<HTMLDivElement>(null)
+    React.useImperativeHandle(ref, () => el.current!)
     const [paddingRight, setPaddingRight] = useState(0)
     useEffect(() => {
         if (el.current && !showOverlay) {
@@ -116,11 +117,14 @@ const ModalBase: React.FC<IModalProps> = props => {
             </div>
         </div>
     )
-}
+})
 
 let saveOverflow: string | null = null
 let savePaddingRight: string | null = null
-const Modal: React.FC<IModalProps> = props => {
+const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
+    const el = useRef<HTMLDivElement>(null)
+    React.useImperativeHandle(ref, () => el.current!)
+
     const { modalQueue } = useStore()
 
     const [show, setShow] = useState(false)
@@ -179,10 +183,10 @@ const Modal: React.FC<IModalProps> = props => {
                 onEnter={onEnter}
                 onExited={onExited}
             >
-                <ModalBase {...props} />
+                <ModalBase ref={el} {...props} />
             </CSSTransition>
         </Portal>
     )
-}
+})
 
 export default Modal
