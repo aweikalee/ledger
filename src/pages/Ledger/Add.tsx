@@ -210,7 +210,7 @@ const LedgerAdd: React.FC = props => {
                 </Button>
                 <Popup
                     show={showCurrency}
-                    onClickOverlay={() => setShowCurrency(false)}
+                    onClose={() => setShowCurrency(false)}
                     header
                     title="选择货币种类"
                     contentPadding

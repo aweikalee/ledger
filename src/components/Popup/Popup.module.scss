@@ -1,14 +1,17 @@
 @import '@/style/index.scss';
 
 .popup {
-    background-color: #fff;
-    margin: 10vh auto;
-    width: calc(100% - #{$gap * 4});
-    box-sizing: border-box;
-    border-radius: $border-radius;
-    box-shadow: shadow(10);
-    max-width: screen-boundary(md-lg);
-    & > [data-role='popup-header'] {
+    overflow: auto;
+    & [data-role='popup'] {
+        background-color: #fff;
+        margin: 10vh auto;
+        width: calc(100% - #{$gap * 4});
+        box-sizing: border-box;
+        border-radius: $border-radius;
+        box-shadow: shadow(10);
+        max-width: screen-boundary(md-lg);
+    }
+    & [data-role='popup-header'] {
         padding: $gap;
         display: flex;
         justify-content: space-between;
