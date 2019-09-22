@@ -1,0 +1,100 @@
+@import '@/style/index.scss';
+
+.drawer {
+    & [data-role='drawer'] {
+        background-color: color(white);
+        box-shadow: shadow(10);
+        overflow: auto;
+
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        &[data-anchor='top'] {
+            bottom: initial;
+            width: 100%;
+            max-height: calc(100vh - #{$gap * 2});
+        }
+        &[data-anchor='bottom'] {
+            top: initial;
+            width: 100%;
+            max-height: calc(100vh - #{$gap * 2});
+        }
+        &[data-anchor='left'] {
+            right: initial;
+            height: 100%;
+            max-width: calc(100vw - #{$gap * 2});
+        }
+        &[data-anchor='right'] {
+            left: initial;
+            max-width: calc(100vw - #{$gap * 2});
+        }
+    }
+}
+
+.appear,
+.enter {
+    opacity: 0;
+    &[data-anchor='top'] {
+        transform: translateY(-100%);
+    }
+    &[data-anchor='bottom'] {
+        transform: translateY(100%);
+    }
+    &[data-anchor='left'] {
+        transform: translateX(-100%);
+    }
+    &[data-anchor='right'] {
+        transform: translateX(100%);
+    }
+}
+.appear-active,
+.enter-active {
+    opacity: 1;
+    transition: opacity 350ms $ease-out, transform 350ms $ease-out;
+    &[data-anchor='top'] {
+        transform: translateY(0);
+    }
+    &[data-anchor='bottom'] {
+        transform: translateY(0);
+    }
+    &[data-anchor='left'] {
+        transform: translateX(0);
+    }
+    &[data-anchor='right'] {
+        transform: translateX(0);
+    }
+}
+.exit {
+    opacity: 1;
+    &[data-anchor='top'] {
+        transform: translateY(0);
+    }
+    &[data-anchor='bottom'] {
+        transform: translateY(0);
+    }
+    &[data-anchor='left'] {
+        transform: translateX(0);
+    }
+    &[data-anchor='right'] {
+        transform: translateX(0);
+    }
+}
+.exit-active {
+    opacity: 0;
+    transition: opacity 350ms $ease-in, transform 350ms;
+    &[data-anchor='top'] {
+        transform: translateY(-100%);
+    }
+    &[data-anchor='bottom'] {
+        transform: translateY(100%);
+    }
+    &[data-anchor='left'] {
+        transform: translateX(-100%);
+    }
+    &[data-anchor='right'] {
+        transform: translateX(100%);
+    }
+}
