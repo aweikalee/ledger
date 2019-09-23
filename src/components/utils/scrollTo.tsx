@@ -16,3 +16,10 @@ export const scrollTo = (element: Element, to: number, duration: number) => {
 }
 
 export default scrollTo
+
+export const getOffsetScrollTop = (parent: Element, child: Element) => {
+    const _parent = parent.getBoundingClientRect()
+    const _child = child.getBoundingClientRect()
+
+    return _child.top -_parent.top + parent.scrollTop
+}
