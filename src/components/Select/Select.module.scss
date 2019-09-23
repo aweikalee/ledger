@@ -1,0 +1,58 @@
+@import '@/style/index.scss';
+
+.select {
+}
+
+.column {
+}
+
+.option {
+}
+
+.modal {
+    & [data-role='drawer'] {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        height: rem(320);
+        min-height: 40vh;
+        max-height: calc(100vh - #{$gap});
+        width: 100%;
+        max-width: rem(500);
+        margin: 0 auto;
+        border-radius: $border-radius $border-radius 0 0;
+    }
+
+    & [data-role='select-drawer-header'] {
+        flex-shrink: 0;
+    }
+
+    & [data-role='select-drawer-title'] {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & [data-role='select-drawer-panel'] {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow: auto;
+    }
+
+    & [data-role='select-drawer-columns'] {
+        flex-grow: 1;
+        flex-shrink: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        overflow: hidden;
+        padding: 0 $gap $gap $gap;
+    }
+
+    & [data-role='select-column'] {
+        height: 100%;
+        flex: 1;
+    }
+}
