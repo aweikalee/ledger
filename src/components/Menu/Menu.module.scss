@@ -1,0 +1,64 @@
+@import '@/style/index.scss';
+
+$_height: rem(40);
+
+.list {
+    @include font(body);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: color(white);
+
+    &[data-ready='true'] {
+        overflow-y: hidden;
+    }
+    &[data-hover='true'],
+    &:hover,
+    &:focus {
+        overflow-y: scroll;
+
+        & .item {
+            padding-right: 0 !important;
+        }
+    }
+}
+
+.item {
+    cursor: pointer;
+    user-select: none;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:not([aria-disabled='true']) {
+        &:hover,
+        &:focus {
+            color: color(primary, 6);
+            background-color: color(primary, 1);
+        }
+
+        &[aria-selected='true'] {
+            background-color: color(grey, 1);
+        }
+    }
+    &[aria-disabled='true'] {
+        outline: none;
+        opacity: 0.5;
+    }
+
+    & > [data-role='menu-item-content'] {
+        display: flex;
+        min-height: $_height;
+        align-items: center;
+        padding: 0 $gap / 2;
+        word-wrap: break-word;
+        word-break: break-all;
+
+        &[data-align='center'] {
+            justify-content: center;
+        }
+        &[data-align='right'] {
+            justify-content: flex-end;
+        }
+    }
+}
