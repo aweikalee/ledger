@@ -1,8 +1,35 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, CSSProperties, useState } from 'react'
 import clsx from 'clsx'
 import styles from './Select.module.scss'
 import MenuList from '../Menu/List'
 import { ISelectOptionProps } from './Option'
+
+const Filler: React.FC<{
+    observer: any
+}> = props => {
+    // FIXME: resize
+    const el = useRef<HTMLDivElement>(null)
+    const [style, setStyle] = useState<CSSProperties>({})
+    useEffect(() => {
+        if (!el.current) {
+            return
+        }
+
+        const prev = el.current.previousElementSibling as HTMLElement
+        let height
+        if (prev) {
+            height = `calc(100% - ${prev.offsetHeight}px)`
+        } else {
+            height = '100%'
+        }
+
+        setStyle({
+            height
+        })
+    }, [el, props.observer])
+
+    return <div ref={el} style={style}></div>
+}
 
 export interface ISelectColumnProps extends React.HTMLAttributes<HTMLElement> {
     // Value
@@ -10,6 +37,9 @@ export interface ISelectColumnProps extends React.HTMLAttributes<HTMLElement> {
 
     // Options
     multiple?: boolean
+
+    // Display
+    filler?: boolean
 
     // Events
     onUpdate?: (value: ISelectColumnProps['value']) => void
@@ -26,6 +56,9 @@ const Column = React.forwardRef<HTMLElement, ISelectColumnProps>(
 
             // Options
             multiple,
+
+            // Display
+            filler,
 
             // Events
             onTouchStart: onTouchStartProp,
@@ -110,6 +143,7 @@ const Column = React.forwardRef<HTMLElement, ISelectColumnProps>(
                 {...bindProps}
             >
                 {items}
+                {filler && <Filler observer={children} />}
             </MenuList>
         )
     }
