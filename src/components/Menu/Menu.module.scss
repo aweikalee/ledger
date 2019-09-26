@@ -13,6 +13,11 @@ $_height: rem(40);
     &[data-ready='true'] {
         overflow-y: hidden;
     }
+    &[data-ready='false'] {
+        & .item {
+            padding-right: 0 !important;
+        }
+    }
     &[data-hover='true'],
     &:hover,
     &:focus {
