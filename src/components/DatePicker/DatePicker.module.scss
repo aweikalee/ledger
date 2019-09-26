@@ -1,0 +1,109 @@
+@import '@/style/index.scss';
+
+.datepicker {
+    & [data-role='datepicker-header'] {
+        background-color: color(primary, 2);
+        padding: $gap;
+        flex-grow: 0;
+        flex-shrink: 0;
+        color: color(primary, 9);
+    }
+
+    & [data-role='datepicker-header-text'] {
+        &[data-size='large'] {
+            @include font(large-title);
+            color: color(primary, 9);
+        }
+        &[data-size='medium'] {
+            @include font(title-2);
+        }
+        &[data-size='small'] {
+            @include font(title-3);
+            color: color(primary, 9);
+            opacity: 0.5;
+            margin-bottom: -0.25em;
+        }
+    }
+}
+
+.panel {
+    display: flex;
+
+    & .column {
+        flex-grow: 1;
+        flex-shrink: 1;
+
+        & [data-role='select-column'] {
+            flex-grow: 1;
+            flex-shrink: 1;
+        }
+    }
+
+    & .column + .column {
+        border-left: 1px solid color(primary, 2);
+    }
+
+    & [data-role='detepicker-label'] {
+        padding: $gap / 2 0;
+        background-color: color(yellow, 2);
+        color: color(yellow, 8);
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & [data-role='select-column'] {
+        width: 100%;
+    }
+}
+
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & .datepicker {
+        background-color: color(white);
+        min-width: rem(325);
+        max-width: calc(100% - #{$gap * 2});
+        height: rem(450);
+        max-height: calc(100vh - #{$gap * 2});
+        border-radius: $border-radius;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    & .panel {
+        flex-shrink: 1;
+        flex-grow: 1;
+        overflow: hidden;
+    }
+}
+
+.appear,
+.enter {
+    opacity: 0;
+    transform: translateY(100%);
+}
+.appear-active,
+.enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 350ms $ease-out, transform 350ms $ease-out;
+}
+.exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+.exit-active {
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: opacity 350ms $ease-in, transform 350ms;
+}
