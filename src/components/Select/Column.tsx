@@ -1,45 +1,15 @@
 import React, { useRef, useEffect, CSSProperties, useState } from 'react'
 import clsx from 'clsx'
 import styles from './Select.module.scss'
-import MenuList from '../Menu/List'
+import MenuList, { IMenuListProps } from '../Menu/List'
 import { ISelectOptionProps } from './Option'
 
-const Filler: React.FC<{
-    observer: any
-}> = props => {
-    // FIXME: resize
-    const el = useRef<HTMLDivElement>(null)
-    const [style, setStyle] = useState<CSSProperties>({})
-    useEffect(() => {
-        if (!el.current) {
-            return
-        }
-
-        const prev = el.current.previousElementSibling as HTMLElement
-        let height
-        if (prev) {
-            height = `calc(100% - ${prev.offsetHeight}px)`
-        } else {
-            height = '100%'
-        }
-
-        setStyle({
-            height
-        })
-    }, [el, props.observer])
-
-    return <div ref={el} style={style}></div>
-}
-
-export interface ISelectColumnProps extends React.HTMLAttributes<HTMLElement> {
+export interface ISelectColumnProps extends IMenuListProps {
     // Value
     value?: string | number | (string | number)[]
 
     // Options
     multiple?: boolean
-
-    // Display
-    filler?: boolean
 
     // Events
     onUpdate?: (value: ISelectColumnProps['value']) => void
@@ -56,9 +26,9 @@ const Column = React.forwardRef<HTMLElement, ISelectColumnProps>(
 
             // Options
             multiple,
+            itemRenderer,
 
             // Display
-            filler,
 
             // Events
             onTouchStart: onTouchStartProp,
@@ -101,7 +71,7 @@ const Column = React.forwardRef<HTMLElement, ISelectColumnProps>(
                 onUpdateProp(newValue)
             }
         }
-        const items = React.Children.map(children, child => {
+        const cloneElement = (child: React.ReactNode) => {
             if (
                 !React.isValidElement<ISelectOptionProps>(child) ||
                 child.type === React.Fragment
@@ -124,7 +94,10 @@ const Column = React.forwardRef<HTMLElement, ISelectColumnProps>(
                 selected,
                 onClick: onClickItem(child)
             } as React.HTMLAttributes<HTMLElement>)
-        })
+        }
+        const items = itemRenderer
+            ? []
+            : React.Children.map(children, cloneElement)
 
         const className = clsx(styles.column, classNameProp)
         const bindProps: React.HTMLAttributes<HTMLElement> = {
@@ -141,10 +114,12 @@ const Column = React.forwardRef<HTMLElement, ISelectColumnProps>(
                 data-role="select-column"
                 role="listbox"
                 {...bindProps}
-            >
-                {items}
-                {filler && <Filler observer={children} />}
-            </MenuList>
+                itemRenderer={
+                    itemRenderer
+                        ? (index, key) => cloneElement(itemRenderer(index, key))
+                        : index => cloneElement(items[index])
+                }
+            />
         )
     }
 )

@@ -53,6 +53,7 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
             // Event
             onUpdate = () => {},
 
+            // Other
             ...other
         }: typeof props = props
 
@@ -68,7 +69,6 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                 value.getFullYear(),
                 value.getMonth() + 1
             )
-            
 
             const resultMin = mergeAndPickerValues(
                 dateToArray(value),

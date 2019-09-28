@@ -1,18 +1,51 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import clsx from 'clsx'
+import ReactList, { ReactListProps } from 'react-list'
 import { getScrollBarWidth } from '../utils/scrollBar'
 import styles from './Menu.module.scss'
 
-export interface IMenuListProps extends React.HTMLAttributes<HTMLElement> {}
+const SCROLLBAR_WIDTH = getScrollBarWidth()
+
+const Filler: React.FC<{
+    itemHeight?: number
+}> = props => {
+    const { itemHeight }: typeof props = props
+
+    return (
+        <div
+            style={{
+                height: itemHeight ? `calc(100% - ${itemHeight}px)` : '100%'
+            }}
+        ></div>
+    )
+}
+
+export interface IMenuListProps extends React.HTMLAttributes<HTMLElement> {
+    // Display
+    filler?: boolean
+
+    // Options
+    length?: ReactListProps['length']
+    itemRenderer?: ReactListProps['itemRenderer']
+    itemsRenderer?: ReactListProps['itemsRenderer']
+    listRef?: React.Ref<ReactList>
+}
 
 const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
     const {
         className: classNameProp,
         children,
+        style,
 
-        // Events
-        onTouchStart: onTouchStartProp,
-        onTouchEnd: onTouchEndProp,
+        // Display
+        tabIndex = 0,
+        filler,
+
+        // Options
+        length,
+        itemRenderer,
+        itemsRenderer,
+        listRef,
 
         // Other
         ...other
@@ -20,6 +53,9 @@ const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
 
     const el = useRef<HTMLDivElement>(null)
     React.useImperativeHandle(ref, () => el.current!)
+
+    const elList = useRef<ReactList>(null)
+    React.useImperativeHandle(listRef, () => elList.current!)
 
     /* 键盘操作 */
     const onKeyDown: IMenuListProps['onKeyDown'] = e => {
@@ -30,19 +66,28 @@ const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
         const key = e.key
         const activeElement = (el.current.ownerDocument || document)
             .activeElement!
+        const _elList = elList.current!
 
         if (key === 'ArrowDown') {
             e.preventDefault()
-            moveFocus(el.current, activeElement, nextItem)
+            moveFocus(_elList.items, activeElement, nextItem)
         } else if (key === 'ArrowUp') {
-            moveFocus(el.current, activeElement, prevItem)
+            moveFocus(_elList.items, activeElement, prevItem)
             e.preventDefault()
         } else if (key === 'Home') {
             e.preventDefault()
-            moveFocus(el.current, undefined, nextItem)
+            _elList.items.focus()
+            el.current.scrollTop = 0
         } else if (key === 'End') {
             e.preventDefault()
-            moveFocus(el.current, undefined, prevItem)
+            _elList.items.focus()
+            el.current.scrollTop = el.current.scrollHeight
+        } else if (key === 'PageUp') {
+            _elList.items.focus()
+            _elList.scrollAround(_elList.getVisibleRange()[0] - 10)
+        } else if (key === 'PageDown') {
+            _elList.items.focus()
+            _elList.scrollAround(_elList.getVisibleRange()[1] + 10)
         } else if (key === ' ' || key === 'Enter') {
             e.preventDefault()
             if (activeElement) {
@@ -62,19 +107,13 @@ const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
         },
         [hoverTimer]
     )
-    const onTouchStart: IMenuListProps['onTouchStart'] = e => {
-        if (onTouchStartProp) {
-            onTouchStartProp(e)
-        }
+    const onTouchStart: IMenuListProps['onTouchStart'] = () => {
         if (hoverTimer.current) {
             clearTimeout(hoverTimer.current)
         }
         setHover(true)
     }
-    const onTouchEnd: IMenuListProps['onTouchEnd'] = e => {
-        if (onTouchEndProp) {
-            onTouchEndProp(e)
-        }
+    const onTouchEnd: IMenuListProps['onTouchEnd'] = () => {
         if (hoverTimer.current) {
             clearTimeout(hoverTimer.current)
         }
@@ -83,40 +122,14 @@ const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
         }, 3000)
     }
 
-    /* 使其他软件能认为该组件是滚动容器，所以等初始完后再将overflow-y设为hidden */
-    const [ready, setReady] = useState(false)
-    useEffect(() => {
-        const timer = requestAnimationFrame(() => {
-            setReady(true)
-        })
-        return () => {
-            cancelAnimationFrame(timer)
-        }
-    }, [])
-
-    /* 防止滚动条出现/消失产生的抖动 */
-    const paddingRight = getScrollBarWidth()
-    const items = React.Children.map(children, child => {
-        if (!React.isValidElement(child)) {
-            return null
-        }
-        if (child.type === React.Fragment) {
-            return child
-        }
-
-        return React.cloneElement(child, {
-            style: {
-                paddingRight
-            }
-        } as React.HTMLAttributes<HTMLElement>)
-    })
+    const items = useMemo(() => React.Children.toArray(children), [children])
 
     const className = clsx(styles.list, classNameProp)
     const bindProps = {
         className,
+        style,
 
         // Status
-        'data-ready': ready,
         'data-hover': hover,
 
         // Events
@@ -126,13 +139,65 @@ const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
         onTouchCancel: onTouchEnd,
 
         // Other
-        tabIndex: 0,
         ...other
     } as React.HTMLAttributes<HTMLElement>
 
     return (
-        <div data-role="menu-list" role="menu" ref={el} {...bindProps}>
-            {items}
+        <div data-role="menu-list" ref={el} {...bindProps}>
+            <ReactList
+                length={length || items.length}
+                type="uniform"
+                ref={elList}
+                threshold={30}
+                scrollParentGetter={component => {
+                    return component.getEl().parentElement!
+                }}
+                itemsRenderer={
+                    itemsRenderer
+                        ? itemsRenderer
+                        : (items, ref) => {
+                              return (
+                                  <div
+                                      role="menu"
+                                      ref={ref}
+                                      tabIndex={tabIndex}
+                                  >
+                                      {items}
+                                  </div>
+                              )
+                          }
+                }
+                itemRenderer={(index, key) => {
+                    const item = itemRenderer
+                        ? itemRenderer(index, key)
+                        : items[index]
+
+                    const _props = {
+                        key: itemRenderer ? undefined : key,
+                        style: {
+                            paddingRight: SCROLLBAR_WIDTH
+                        }
+                    }
+
+                    if (
+                        React.isValidElement(item) &&
+                        item.type !== React.Fragment
+                    ) {
+                        return React.cloneElement(item, _props)
+                    }
+                }}
+            />
+            {filler && (
+                <Filler
+                    itemHeight={
+                        elList.current
+                            ? elList.current.getSizeOfItem(
+                                  (length || items.length) - 1
+                              )
+                            : undefined
+                    }
+                />
+            )}
         </div>
     )
 })
@@ -145,7 +210,7 @@ function nextItem(list: Element, current?: Element): Element | undefined {
     if (current && current.nextElementSibling) {
         return current.nextElementSibling
     }
-    return list.firstChild as Element
+    return list.lastChild as Element
 }
 
 function prevItem(list: Element, current?: Element): Element | undefined {
@@ -155,7 +220,7 @@ function prevItem(list: Element, current?: Element): Element | undefined {
     if (current && current.previousElementSibling) {
         return current.previousElementSibling
     }
-    return list.lastChild as Element
+    return list.firstChild as Element
 }
 
 function moveFocus(

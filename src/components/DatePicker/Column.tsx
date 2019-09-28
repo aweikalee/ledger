@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react'
 import clsx from 'clsx'
+import ReactList from 'react-list'
 import styles from './DatePicker.module.scss'
 import * as Select from '../Select'
 import { getScrollBarWidth } from '../utils/scrollBar'
-import scrollTo, { getOffsetScrollTop } from '../utils/scrollTo'
+import scrollTo from '../utils/scrollTo'
 import { ISelectColumnProps } from '../Select/Column'
 
 export interface IDatePickerColumnProps
@@ -48,34 +49,32 @@ const Component = React.forwardRef<HTMLElement, IDatePickerColumnProps>(
         const el = useRef<HTMLDivElement>(null)
         React.useImperativeHandle(ref, () => el.current!)
 
+        const elList = useRef<ReactList>(null)
+
         const [list, setList] = useState<number[]>([])
-        const [listNode, setListNode] = useState<React.ReactNode>()
         useEffect(() => {
-            const result = []
+            const result: number[] = []
             for (let i = min; i <= max; i += step) {
                 result.push(i)
             }
             setList(result)
-            setListNode(
-                result.map(v => {
-                    return (
-                        <Select.Option align="center" value={v} key={v}>
-                            {format ? format(v) : v}
-                        </Select.Option>
-                    )
-                })
-            )
         }, [min, max, step, format])
+        const itemRenderer: ISelectColumnProps['itemRenderer'] = index => {
+            const v = list[index]
+            return (
+                <Select.Option align="center" value={v} key={v}>
+                    {format ? format(v) : v}
+                </Select.Option>
+            )
+        }
 
         /* 滚动至选中目标 */
         useEffect(() => {
             const index = list.indexOf(value!)
-            if (index !== -1 && el.current) {
-                const scrollTop = getOffsetScrollTop(
-                    el.current,
-                    el.current.children[index]
-                )
-                scrollTo(el.current, scrollTop, 150)
+            if (index !== -1 && elList.current) {
+                const current = elList.current
+                const scrollTop = current.getSpaceBefore(index)
+                scrollTo(el.current!, scrollTop, 150)
             }
         }, [value, list])
 
@@ -97,9 +96,13 @@ const Component = React.forwardRef<HTMLElement, IDatePickerColumnProps>(
                 >
                     {label}
                 </div>
-                <Select.Column ref={el} {...bindProps}>
-                    {listNode}
-                </Select.Column>
+                <Select.Column
+                    ref={el}
+                    listRef={elList}
+                    length={list.length}
+                    itemRenderer={itemRenderer}
+                    {...bindProps}
+                />
             </div>
         )
     }

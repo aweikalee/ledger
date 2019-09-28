@@ -6,18 +6,11 @@ $_height: rem(40);
     @include font(body);
     box-sizing: border-box;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     background-color: color(white);
+    position: relative;
 
-    &[data-ready='true'] {
-        overflow-y: hidden;
-    }
-    &[data-ready='false'] {
-        & .item {
-            padding-right: 0 !important;
-        }
-    }
     &[data-hover='true'],
     &:hover,
     &:focus {
