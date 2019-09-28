@@ -69,6 +69,7 @@ const Component = React.forwardRef<HTMLElement, IDatePickerColumnProps>(
         }
 
         /* 滚动至选中目标 */
+        const [resize, setResize] = useState(false)
         useEffect(() => {
             const index = list.indexOf(value!)
             if (index !== -1 && elList.current) {
@@ -76,7 +77,7 @@ const Component = React.forwardRef<HTMLElement, IDatePickerColumnProps>(
                 const scrollTop = current.getSpaceBefore(index)
                 scrollTo(el.current!, scrollTop, 150)
             }
-        }, [value, list])
+        }, [value, list, resize])
 
         const className = clsx(styles.column, classNameProp)
         const bindProps = {
@@ -101,6 +102,7 @@ const Component = React.forwardRef<HTMLElement, IDatePickerColumnProps>(
                     listRef={elList}
                     length={list.length}
                     itemRenderer={itemRenderer}
+                    onResize={() => setResize(v => !v)}
                     {...bindProps}
                 />
             </div>

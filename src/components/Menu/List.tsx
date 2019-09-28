@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import clsx from 'clsx'
 import ReactList, { ReactListProps } from 'react-list'
 import { getScrollBarWidth } from '../utils/scrollBar'
 import styles from './Menu.module.scss'
+import useResizeObserver from '../utils/useResizeObserver'
+import { useDebounce } from '@/utils/debounce'
 
 const SCROLLBAR_WIDTH = getScrollBarWidth()
 
@@ -29,6 +31,9 @@ export interface IMenuListProps extends React.HTMLAttributes<HTMLElement> {
     itemRenderer?: ReactListProps['itemRenderer']
     itemsRenderer?: ReactListProps['itemsRenderer']
     listRef?: React.Ref<ReactList>
+
+    // Event
+    onResize?: () => void
 }
 
 const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
@@ -47,6 +52,9 @@ const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
         itemsRenderer,
         listRef,
 
+        // Event
+        onResize,
+
         // Other
         ...other
     }: typeof props = props
@@ -56,6 +64,24 @@ const MenuList = React.forwardRef<HTMLElement, IMenuListProps>((props, ref) => {
 
     const elList = useRef<ReactList>(null)
     React.useImperativeHandle(listRef, () => elList.current!)
+
+    const elObserver = useRef<HTMLElement>()
+    const elNone = useRef<HTMLElement>()
+    const resize = useState(false)
+    useEffect(() => {
+        if (!el.current) {
+            return
+        }
+
+        elObserver.current = el.current.parentElement as HTMLElement
+    }, [el])
+    const resizeCallback = useCallback(useDebounce(() => {
+        resize[1](v => !v)
+        if (onResize) {
+            onResize()
+        }
+    }, 200), [])
+    useResizeObserver(elObserver.current ? elObserver : elNone, resizeCallback)
 
     /* 键盘操作 */
     const onKeyDown: IMenuListProps['onKeyDown'] = e => {
