@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, CSSProperties, useState } from 'react'
+import React, { useRef } from 'react'
 import clsx from 'clsx'
 import styles from './Select.module.scss'
 import MenuList, { IMenuListProps } from '../Menu/List'

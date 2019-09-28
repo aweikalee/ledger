@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link, LinkProps } from 'react-router-dom'
 import clsx from 'clsx'
 import styles, {
@@ -18,7 +18,7 @@ export interface IButtonProps extends React.HTMLAttributes<HTMLElement> {
     disabled?: boolean
 }
 
-const Button: React.FC<IButtonProps> = props => {
+const Component = React.forwardRef<HTMLElement, IButtonProps>((props, ref) => {
     const {
         className: classNameProp,
         children,
@@ -31,6 +31,9 @@ const Button: React.FC<IButtonProps> = props => {
         href,
         ...other
     }: typeof props = props
+
+    const el = useRef<HTMLElement>(null)
+    React.useImperativeHandle(ref, () => el.current!)
 
     const className = clsx(
         styles.button,
@@ -49,18 +52,20 @@ const Button: React.FC<IButtonProps> = props => {
     } = {
         className,
         disabled,
+        tabIndex: 0,
         ...other
     }
 
     return href ? (
-        <Link data-role="button" to={href} {...bindProps}>
+        <Link data-role="button" ref={el as any} to={href} {...bindProps}>
             {children}
         </Link>
     ) : (
-        <button data-role="button" {...bindProps}>
+        <button data-role="button" ref={el as any} {...bindProps}>
             {children}
         </button>
     )
-}
+})
 
-export default Button
+Component.displayName = 'Button'
+export default Component
