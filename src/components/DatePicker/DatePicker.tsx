@@ -12,6 +12,14 @@ export interface IDatePickerProps extends React.HTMLAttributes<HTMLElement> {
     min?: Date
     max?: Date
 
+    // Display
+    yearStep?: number
+    monthStep?: number
+    dayStep?: number
+    hourStep?: number
+    minuteStep?: number
+    secondStep?: number
+
     // Status
     disabledYears?: boolean
     disabledMonths?: boolean
@@ -52,6 +60,14 @@ const Component = React.forwardRef<HTMLElement, IDatePickerProps>(
             min = DEFAULT_MIN,
             max = DEFAULT_MAX,
 
+            // Display
+            yearStep,
+            monthStep,
+            dayStep,
+            hourStep,
+            minuteStep,
+            secondStep,
+
             // Status
             disabledYears,
             disabledMonths,
@@ -77,10 +93,19 @@ const Component = React.forwardRef<HTMLElement, IDatePickerProps>(
             let _value = valueProps || new Date()
             _value = _value > min ? _value : min
             _value = _value < max ? _value : max
+            _value = cloneDate(_value)
 
             setValue(_value)
         }, [valueProps, min, max])
 
+        const step = {
+            yearStep,
+            monthStep,
+            dayStep,
+            hourStep,
+            minuteStep,
+            secondStep
+        }
         const disabled = {
             disabledYears,
             disabledMonths,
@@ -116,6 +141,7 @@ const Component = React.forwardRef<HTMLElement, IDatePickerProps>(
                         onUpdate && onUpdate(v)
                     }}
                     {...disabled}
+                    {...step}
                 ></Panel>
 
                 <div data-role="datepicker-footer">
@@ -136,6 +162,11 @@ const Component = React.forwardRef<HTMLElement, IDatePickerProps>(
 
 Component.displayName = 'DatePicker'
 export default Component
+
+
+function cloneDate(date: Date) {
+    return new Date(date.valueOf())
+}
 
 function displayRenderer(
     value: Date,

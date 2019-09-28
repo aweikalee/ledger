@@ -10,6 +10,14 @@ export interface IDatePickerPanelProps
     min: Date
     max: Date
 
+    // Display
+    yearStep?: number
+    monthStep?: number
+    dayStep?: number
+    hourStep?: number
+    minuteStep?: number
+    secondStep?: number
+
     // Status
     disabledYears?: boolean
     disabledMonths?: boolean
@@ -41,6 +49,14 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
             value,
             min: minProp,
             max: maxProp,
+
+            // Display
+            yearStep = 1,
+            monthStep = 1,
+            dayStep = 1,
+            hourStep = 1,
+            minuteStep = 1,
+            secondStep = 1,
 
             // Status
             disabledYears,
@@ -98,7 +114,8 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                         label="年"
                         min={min.year}
                         max={max.year}
-                        value={value.getFullYear()}
+                        step={yearStep}
+                        value={fitStep(value.getFullYear(), yearStep, min.year)}
                         onUpdate={v => {
                             const date = cloneDate(value)
                             date.setFullYear(v)
@@ -111,7 +128,10 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                         label="月"
                         min={min.month + 1}
                         max={max.month + 1}
-                        value={value.getMonth() + 1}
+                        step={monthStep}
+                        value={
+                            fitStep(value.getMonth(), monthStep, min.month) + 1
+                        }
                         format={supplementaryZero}
                         onUpdate={v => {
                             const date = cloneDate(value)
@@ -132,7 +152,8 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                         label="日"
                         min={min.day}
                         max={max.day}
-                        value={value.getDate()}
+                        step={dayStep}
+                        value={fitStep(value.getDate(), dayStep, min.day)}
                         format={supplementaryZero}
                         onUpdate={v => {
                             const date = cloneDate(value)
@@ -146,7 +167,8 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                         label="时"
                         min={min.hour}
                         max={max.hour}
-                        value={value.getHours()}
+                        step={hourStep}
+                        value={fitStep(value.getHours(), hourStep, min.hour)}
                         format={supplementaryZero}
                         onUpdate={v => {
                             const date = cloneDate(value)
@@ -160,7 +182,12 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                         label="分"
                         min={min.minute}
                         max={max.minute}
-                        value={value.getMinutes()}
+                        step={minuteStep}
+                        value={fitStep(
+                            value.getMinutes(),
+                            minuteStep,
+                            min.minute
+                        )}
                         format={supplementaryZero}
                         onUpdate={v => {
                             const date = cloneDate(value)
@@ -174,7 +201,12 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                         label="秒"
                         min={min.second}
                         max={max.second}
-                        value={value.getSeconds()}
+                        step={secondStep}
+                        value={fitStep(
+                            value.getSeconds(),
+                            secondStep,
+                            min.second
+                        )}
                         format={supplementaryZero}
                         onUpdate={v => {
                             const date = cloneDate(value)
@@ -274,4 +306,17 @@ function dateArrayToObject(array: number[]) {
         result[keys[i]] = array[i]
     }
     return result
+}
+
+function fitStep(value: number, step: number, min: number) {
+    let current = value
+    if (current < min) {
+        current = min
+    }
+
+    if (current % step !== 0) {
+        current -= current % step
+    }
+
+    return current
 }

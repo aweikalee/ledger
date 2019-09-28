@@ -54,8 +54,10 @@ const Component = React.forwardRef<HTMLElement, IDatePickerColumnProps>(
         const [list, setList] = useState<number[]>([])
         useEffect(() => {
             const result: number[] = []
-            for (let i = min; i <= max; i += step) {
-                result.push(i)
+            for (let i = 0; i <= max; i += step) {
+                if (i >= min) {
+                    result.push(i)
+                }
             }
             setList(result)
         }, [min, max, step, format])
