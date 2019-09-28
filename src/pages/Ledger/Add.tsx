@@ -9,7 +9,7 @@ import ToolBar from '@/components/ToolBar'
 import Calculator from '@/components/Calculator/Calculator'
 import { ScreenMini } from '@/components/Calculator'
 import { Popup } from '@/components/Popup'
-import * as TimePicker from '@/components/TimePicker'
+import * as DatePicker from '@/components/DatePicker'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
 import Button from '@/components/Button'
@@ -179,9 +179,15 @@ const LedgerAdd: React.FC = props => {
     )
 
     /* DateTime */
+    const [showDate, setShowDate] = useState(false)
     const [showTime, setShowTime] = useState(false)
     const dateChild = (
-        <Button type="text" color="default" size="medium" onClick={() => {}}>
+        <Button
+            type="text"
+            color="default"
+            size="medium"
+            onClick={() => setShowDate(true)}
+        >
             {format(new Date(forms.datetime!), config.dateFormat)}
         </Button>
     )
@@ -290,11 +296,30 @@ const LedgerAdd: React.FC = props => {
                     </Grid>
                 </Grid>
 
-                <TimePicker.Modal
+                <DatePicker.Modal
+                    show={showDate}
+                    onClickOverlay={() => setShowDate(false)}
+                >
+                    <DatePicker.DatePicker
+                        value={new Date(forms.datetime!)}
+                        onConfirm={value => {
+                            updateForms(
+                                'datetime',
+                                format(value, config.datetimeFormat)
+                            )
+                            setShowDate(false)
+                        }}
+                        disabledHours
+                        disabledMinutes
+                        disabledSeconds
+                    ></DatePicker.DatePicker>
+                </DatePicker.Modal>
+
+                <DatePicker.Modal
                     show={showTime}
                     onClickOverlay={() => setShowTime(false)}
                 >
-                    <TimePicker.TimePicker
+                    <DatePicker.DatePicker
                         value={new Date(forms.datetime!)}
                         onConfirm={value => {
                             updateForms(
@@ -303,8 +328,11 @@ const LedgerAdd: React.FC = props => {
                             )
                             setShowTime(false)
                         }}
-                    ></TimePicker.TimePicker>
-                </TimePicker.Modal>
+                        disabledYears
+                        disabledMonths
+                        disabledDays
+                    ></DatePicker.DatePicker>
+                </DatePicker.Modal>
             </ContentBody>
             <ToolBar />
         </>

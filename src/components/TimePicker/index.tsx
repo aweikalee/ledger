@@ -1,5 +1,0 @@
-export { default } from './TimePicker'
-export { default as TimePicker } from './TimePicker'
-export { default as Panel } from './Panel'
-export { default as Select } from './Select'
-export { default as Modal } from './Modal'
