@@ -7,59 +7,61 @@ export interface ICheckboxProps extends React.HTMLAttributes<HTMLElement> {
     value?: number | string
 
     // Status
-    selected?: boolean
+    checked?: boolean
     disabled?: boolean
 }
-const Component = React.forwardRef<HTMLElement, ICheckboxProps>((props, ref) => {
-    const {
-        className: classNameProp,
-        children,
+const Component = React.forwardRef<HTMLElement, ICheckboxProps>(
+    (props, ref) => {
+        const {
+            className: classNameProp,
+            children,
 
-        // Value
-        value,
+            // Value
+            value,
 
-        // Status
-        selected,
-        disabled,
+            // Status
+            checked,
+            disabled,
 
-        // Display
-        tabIndex = 0,
+            // Display
+            tabIndex = 0,
 
-        // Other
-        ...other
-    }: typeof props = props
+            // Other
+            ...other
+        }: typeof props = props
 
-    const el = useRef<HTMLDivElement>(null)
-    React.useImperativeHandle(ref, () => el.current!)
+        const el = useRef<HTMLDivElement>(null)
+        React.useImperativeHandle(ref, () => el.current!)
 
-    const className = clsx(styles.checkbox, classNameProp)
-    const bindProps = {
-        className,
-        'aria-selected': !disabled && selected ? true : undefined,
-        'aria-disabled': disabled ? true : undefined,
-        ...other
-    }
+        const className = clsx(styles.checkbox, classNameProp)
+        const bindProps = {
+            className,
+            'aria-disabled': disabled ? true : undefined,
+            ...other
+        }
 
-    return (
-        <div
-            data-role="checkbox"
-            role="checkbox"
-            ref={el}
-            data-value={value}
-            {...bindProps}
-        >
+        return (
             <div
-                data-role="checkbox-checkbox"
-                tabIndex={disabled ? undefined : tabIndex}
-            ></div>
-            {children && (
-                <div data-role="checkbox-label">
-                    <div data-role="checkbox-label-text">{children}</div>
-                </div>
-            )}
-        </div>
-    )
-})
+                data-role="checkbox"
+                role="checkbox"
+                aria-checked={!disabled && checked ? true : undefined}
+                ref={el}
+                data-value={value}
+                {...bindProps}
+            >
+                <div
+                    data-role="checkbox-checkbox"
+                    tabIndex={disabled ? undefined : tabIndex}
+                ></div>
+                {children && (
+                    <div data-role="checkbox-label">
+                        <div data-role="checkbox-label-text">{children}</div>
+                    </div>
+                )}
+            </div>
+        )
+    }
+)
 
 Component.displayName = 'Checkbox'
 export default Component

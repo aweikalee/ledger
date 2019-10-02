@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useRef } from 'react'
 import clsx from 'clsx'
 import { ICheckboxProps } from './Checkbox'
 import styles from './Checkbox.module.scss'
@@ -65,7 +65,7 @@ const Component = React.forwardRef<HTMLElement, ICheckboxGroupProps>(
                 return null
             }
 
-            const selected =
+            const checked =
                 !child.props.disabled &&
                 valueProp.indexOf(child.props.value as any) !== -1
 
@@ -73,8 +73,8 @@ const Component = React.forwardRef<HTMLElement, ICheckboxGroupProps>(
                 role: 'radio',
                 value: undefined,
                 'data-value': child.props.value,
-                selected: selected,
-                'aria-selected': selected,
+                checked: checked,
+                'aria-checked': checked,
                 onClick: onClickItem(child)
             } as React.HTMLAttributes<HTMLElement>)
         })
