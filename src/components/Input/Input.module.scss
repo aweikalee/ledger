@@ -1,6 +1,7 @@
 @import '@/style/index.scss';
 
-.input, .textarea {
+.input,
+.textarea {
     @include font(body);
     line-height: 1.5;
     color: color(grey, 7);
@@ -55,7 +56,7 @@
         flex-shrink: 1;
         height: 100%;
     }
-    & [data-role='input-input']{
+    & [data-role='input-input'] {
         width: 100%;
         height: 100%;
         display: block;
@@ -122,6 +123,28 @@
     @include font(title-3);
     font-weight: bold;
     color: color(grey, 9);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+
+    & [data-role='input-label-wrapper'] {
+        flex-grow: 0;
+        flex-shrink: 1;
+    }
+
+    & [data-role='input-label'] {
+        &::after {
+            content: '0';
+            visibility: hidden;
+        }
+    }
+
+    & [data-role='input-label-description'] {
+        flex-grow: 1;
+        flex-shrink: 1;
+        @include font(subhead);
+        color: color(grey, 5);
+    }
 }
 
 .helper {
@@ -138,7 +161,8 @@
     width: 100%;
 
     &[data-focus='true'] {
-        & .input, & .textarea {
+        & .input,
+        & .textarea {
             &::before {
                 transform: scaleX(0);
             }
@@ -149,7 +173,8 @@
     }
 
     &[data-error='true'] {
-        & .input, & .textarea{
+        & .input,
+        & .textarea {
             &:before {
                 border-bottom-color: color(red, 5);
             }
@@ -164,10 +189,12 @@
     }
 
     &[data-disabled='true'] {
-        & .input, & .textarea {
+        & .input,
+        & .textarea {
             opacity: 0.5;
             cursor: not-allowed;
-            & [data-role='input-input'], & [data-role="input-textarea"] {
+            & [data-role='input-input'],
+            & [data-role='input-textarea'] {
                 cursor: not-allowed;
             }
         }
