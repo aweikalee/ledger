@@ -76,17 +76,16 @@ const Ledger: React.FC<
 
     const [amountInt, amountFloat] = formatAmount(amount)
     const childAmount = (
-        <Grid
-            className={clsx(
-                styles.amount,
-                amount > 0 ? styles.income : styles.outgoing
-            )}
-            block
-            sm
-            wrap="nowrap"
-        >
-            {amountInt}
-            <span style={{ fontSize: '0.8em' }}>{amountFloat}</span>
+        <Grid sm wrap="nowrap" justify="flex-end" alignItems="baseline">
+            <div
+                className={clsx(
+                    styles.amount,
+                    amount > 0 ? styles.income : styles.outgoing
+                )}
+            >
+                {amountInt}
+                <span style={{ fontSize: '0.8em' }}>{amountFloat}</span>
+            </div>
         </Grid>
     )
 

@@ -51,9 +51,9 @@
 }
 .amount {
     @include font(body);
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    text-align: right;
 }
 .outgoing {
     color: color(grey, 8);
