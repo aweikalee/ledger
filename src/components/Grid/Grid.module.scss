@@ -4,7 +4,6 @@
 .item {
     display: flex;
     box-sizing: border-box;
-    overflow: hidden;
 }
 .container {
     width: 100%;
@@ -79,15 +78,15 @@
             flex-shrink: 0;
         }
         .#{$size}-true {
+            width: 0;
             max-width: 100%;
             flex-basis: 0;
             flex-grow: 1;
-            flex-shrink: 1;
         }
         @each $grid in 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 {
             $width: ($grid / 12) * 100%;
             .#{$size}-#{$grid} {
-                max-width: $width;
+                width: $width;
                 flex-basis: $width;
                 flex-grow: 0;
             }

@@ -94,13 +94,13 @@ const Ledger: React.FC<
     )
 
     const childDetail = (
-        <Grid className={styles.detail} item block sm>
-            {detail}
+        <Grid item sm>
+            <div className={styles.detail}>{detail}</div>
         </Grid>
     )
 
     const childCurrency = (
-        <Grid className={styles.currency} item sm="auto">
+        <Grid className={styles.currency} item>
             {currency}
         </Grid>
     )
@@ -113,7 +113,7 @@ const Ledger: React.FC<
         >
             <Grid container justify="center" alignItems="center">
                 {childIcon}
-                <Grid className={styles.main} item sm>
+                <Grid className={styles.main} item sm direction="column">
                     <Grid item sm={12} alignItems="baseline">
                         {childTime}
                         {childAmount}
