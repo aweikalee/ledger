@@ -26,27 +26,21 @@ const LedgerIndex: React.FC<RouteChildrenProps> = props => {
             />
             <ContentBody>
                 <Grid className={styles.record} container wrap="wrap">
-                    <Grid item sm={12}>
-                        <Grid item sm="auto">
-                            图标
-                        </Grid>
-                        <Grid item sm={true}>
-                            交通
-                        </Grid>
-                        <Grid item sm="auto">
-                            2019-08-18 16:59
-                        </Grid>
+                    <Grid sm={12}>
+                        <Grid sm="auto">图标</Grid>
+                        <Grid sm={true}>交通</Grid>
+                        <Grid sm="auto">2019-08-18 16:59</Grid>
                     </Grid>
-                    <Grid item sm={12}>+18000.00 CNY</Grid>
-                    <Grid item sm={12}>成员 ________</Grid>
-                    <Grid item sm={12}>备注 ________</Grid>
-                    <Grid item sm={12} justify="space-around">
-                        <Grid item sm={true}>
+                    <Grid sm={12}>+18000.00 CNY</Grid>
+                    <Grid sm={12}>成员 ________</Grid>
+                    <Grid sm={12}>备注 ________</Grid>
+                    <Grid sm={12} justify="space-around">
+                        <Grid sm={true}>
                             <Button color="default">
                                 <Icon text="close" />
                             </Button>
                         </Grid>
-                        <Grid item sm="auto">
+                        <Grid sm="auto">
                             <Button color="primary">
                                 <Icon text="close" /> 编辑
                             </Button>

@@ -50,18 +50,17 @@ const NavigationBar: React.FC<INavigationBarProps> = props => {
                 gap={1}
                 className={styles['navbar-grid']}
             >
-                <Grid item sm={4} className={styles['close-box']}>
+                <Grid sm={4} className={styles['close-box']}>
                     {leftChildren && leftChildren}
                 </Grid>
                 <Grid
-                    item
                     sm={true}
                     direction="column"
                     className={styles['title-box']}
                 >
                     {middleChildren}
                 </Grid>
-                <Grid item sm={4} className={styles.tools}>
+                <Grid sm={4} className={styles.tools}>
                     {rightChildren && rightChildren}
                 </Grid>
             </Grid>

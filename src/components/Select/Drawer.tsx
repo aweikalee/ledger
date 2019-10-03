@@ -58,7 +58,7 @@ const SelectDrawer = React.forwardRef<HTMLElement, ISelectDrawerProps>(
                     alignItems="center"
                     gap={2}
                 >
-                    <Grid item sm={3}>
+                    <Grid sm={3}>
                         {(onClickCancel || onClose) && (
                             <Button
                                 type="text"
@@ -73,12 +73,12 @@ const SelectDrawer = React.forwardRef<HTMLElement, ISelectDrawerProps>(
                             </Button>
                         )}
                     </Grid>
-                    <Grid item sm={6} justify="center">
+                    <Grid sm={6} justify="center">
                         {title && (
                             <div data-role="select-drawer-title">{title}</div>
                         )}
                     </Grid>
-                    <Grid item sm={3} justify="flex-end">
+                    <Grid sm={3} justify="flex-end">
                         {onConfirm && (
                             <Button
                                 type="text"

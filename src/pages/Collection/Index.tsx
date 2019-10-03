@@ -45,7 +45,7 @@ const CollectionIndex: React.FC = () => {
                                 classNames={classnamesItem}
                                 key={item.id}
                             >
-                                <Grid item sm={12} md={6}>
+                                <Grid sm={12} md={6}>
                                     <Ledger {...item} />
                                 </Grid>
                             </DelayCSSTransition>

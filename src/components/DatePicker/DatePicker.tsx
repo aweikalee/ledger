@@ -163,7 +163,6 @@ const Component = React.forwardRef<HTMLElement, IDatePickerProps>(
 Component.displayName = 'DatePicker'
 export default Component
 
-
 function cloneDate(date: Date) {
     return new Date(date.valueOf())
 }
@@ -197,12 +196,11 @@ function displayRenderer(
     if ((year || date) === time) {
         return (
             <>
-                <Grid item direction="column">
+                <Grid direction="column">
                     {year && (
                         <Grid
                             data-role="datepicker-header-text"
                             data-size={date ? 'small' : 'large'}
-                            item
                         >
                             {format(value, 'yyyy')}
                         </Grid>
@@ -211,7 +209,6 @@ function displayRenderer(
                         <Grid
                             data-role="datepicker-header-text"
                             data-size={year ? 'medium' : 'large'}
-                            item
                         >
                             {format(
                                 value,
@@ -223,7 +220,7 @@ function displayRenderer(
                         </Grid>
                     )}
                 </Grid>
-                <Grid data-role="datepicker-header-text" data-size="large" item>
+                <Grid data-role="datepicker-header-text" data-size="large">
                     {format(
                         value,
                         getFormat({
@@ -237,7 +234,7 @@ function displayRenderer(
         )
     } else {
         return (
-            <Grid data-role="datepicker-header-text" data-size="large" item>
+            <Grid data-role="datepicker-header-text" data-size="large">
                 {format(
                     value,
                     getFormat({

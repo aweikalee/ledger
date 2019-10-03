@@ -47,7 +47,6 @@ const Ledger: React.FC<
 
     const childIcon = (
         <Grid
-            item
             className={clsx(styles.icon, color[`${recordType.color}-bg`])}
             sm="auto"
             justify="center"
@@ -59,7 +58,6 @@ const Ledger: React.FC<
     const childTime = (
         <Grid
             className={styles.time}
-            item
             sm="auto"
             alignItems="center"
             title={`${format(new Date(datetime), config.datetimeFormat)}`}
@@ -83,7 +81,6 @@ const Ledger: React.FC<
                 styles.amount,
                 amount > 0 ? styles.income : styles.outgoing
             )}
-            item
             block
             sm
             wrap="nowrap"
@@ -94,16 +91,12 @@ const Ledger: React.FC<
     )
 
     const childDetail = (
-        <Grid item sm>
+        <Grid sm>
             <div className={styles.detail}>{detail}</div>
         </Grid>
     )
 
-    const childCurrency = (
-        <Grid className={styles.currency} item>
-            {currency}
-        </Grid>
-    )
+    const childCurrency = <Grid className={styles.currency}>{currency}</Grid>
 
     return (
         <Link
@@ -113,12 +106,12 @@ const Ledger: React.FC<
         >
             <Grid container justify="center" alignItems="center">
                 {childIcon}
-                <Grid className={styles.main} item sm direction="column">
-                    <Grid item sm={12} alignItems="baseline">
+                <Grid className={styles.main} sm direction="column">
+                    <Grid sm={12} alignItems="baseline">
                         {childTime}
                         {childAmount}
                     </Grid>
-                    <Grid item sm={12} alignItems="baseline">
+                    <Grid sm={12} alignItems="baseline">
                         {childDetail}
                         {childCurrency}
                     </Grid>

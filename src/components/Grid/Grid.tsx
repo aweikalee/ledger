@@ -22,7 +22,6 @@ export type IGridSizes =
 
 export interface IGirdProps extends React.HTMLAttributes<HTMLElement> {
     container?: boolean
-    item?: boolean
     block?: boolean
     gap?: 0 | 1 | 2 | 3 | 4 | 5 | 6
     sm?: IGridSizes
@@ -52,7 +51,6 @@ const Component = React.forwardRef<HTMLDivElement, IGirdProps>((props, ref) => {
         className: classNameProp,
         children,
         container,
-        item,
         block,
         gap,
         sm,

@@ -31,10 +31,10 @@ const ToolBar: React.FC<IToolBarProps> = props => {
                 wrap="nowrap"
                 className={styles['toolbar-grid']}
             >
-                <Grid item>
+                <Grid>
                     <ToolBarButton icon="gear" title="设置" />
                 </Grid>
-                <Grid item>
+                <Grid>
                     <ToolBarButton
                         icon="plus"
                         title="添加"
@@ -43,7 +43,7 @@ const ToolBar: React.FC<IToolBarProps> = props => {
                         active
                     />
                 </Grid>
-                <Grid item>
+                <Grid>
                     <ToolBarButton icon="user" title="我的" />
                 </Grid>
             </Grid>
