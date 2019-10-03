@@ -5,13 +5,14 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    @include font(body);
 
     & [data-role='radio-radio'] {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 1em;
-        height: 1em;
+        width: 1.3em;
+        height: 1.3em;
         border-radius: 50%;
         border: 2px solid color(grey, 5);
         box-sizing: border-box;
@@ -79,26 +80,26 @@
             &:hover,
             &:focus {
                 &::after {
-                    opacity: 0.5;
-                    transform: scale(2);
+                    opacity: 0.3;
+                    transform: scale(1.5);
                 }
             }
 
             &:active {
                 &::after {
-                    transform: scale(2.5);
+                    opacity: 0.5;
+                    transform: scale(1.8);
                 }
             }
         }
     }
 }
 
-
 .group {
     display: flex;
     flex-wrap: wrap;
 
-    & [data-role="radio"] {
+    & [data-role='radio'] {
         margin: $gap / 4;
     }
 }
