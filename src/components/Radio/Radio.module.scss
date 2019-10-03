@@ -58,7 +58,7 @@
         white-space: nowrap;
     }
 
-    &[aria-selected='true'] {
+    &[aria-checked='true'] {
         & [data-role='radio-radio'] {
             border-color: color(primary, 6);
             background-color: color(primary, 2);

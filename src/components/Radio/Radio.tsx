@@ -7,7 +7,7 @@ export interface IRadioProps extends React.HTMLAttributes<HTMLElement> {
     value?: number | string
 
     // Status
-    selected?: boolean
+    checked?: boolean
     disabled?: boolean
 }
 const Component = React.forwardRef<HTMLElement, IRadioProps>((props, ref) => {
@@ -19,7 +19,7 @@ const Component = React.forwardRef<HTMLElement, IRadioProps>((props, ref) => {
         value,
 
         // Status
-        selected,
+        checked,
         disabled,
 
         // Display
@@ -35,7 +35,6 @@ const Component = React.forwardRef<HTMLElement, IRadioProps>((props, ref) => {
     const className = clsx(styles.radio, classNameProp)
     const bindProps = {
         className,
-        'aria-selected': !disabled && selected ? true : undefined,
         'aria-disabled': disabled ? true : undefined,
         ...other
     }
@@ -44,6 +43,7 @@ const Component = React.forwardRef<HTMLElement, IRadioProps>((props, ref) => {
         <div
             data-role="radio"
             role="radio"
+            aria-checked={!disabled && checked ? true : undefined}
             ref={el}
             data-value={value}
             {...bindProps}

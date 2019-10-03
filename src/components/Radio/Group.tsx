@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useRef } from 'react'
 import clsx from 'clsx'
-import ReactList, { ReactListProps } from 'react-list'
-import { getScrollBarWidth } from '../utils/scrollBar'
 import { IRadioProps } from './Radio'
 import styles from './Radio.module.scss'
 
@@ -59,15 +57,15 @@ const Component = React.forwardRef<HTMLElement, IRadioGroupProps>(
                 return null
             }
 
-            const selected =
+            const checked =
                 !child.props.disabled && valueProp === child.props.value
 
             return React.cloneElement(child, {
                 role: 'radio',
                 value: undefined,
                 'data-value': child.props.value,
-                selected: selected,
-                'aria-selected': selected,
+                checked: checked,
+                'aria-checked': checked,
                 onClick: onClickItem(child)
             } as React.HTMLAttributes<HTMLElement>)
         })

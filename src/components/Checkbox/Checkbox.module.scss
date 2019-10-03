@@ -55,7 +55,7 @@
         white-space: nowrap;
     }
 
-    &[aria-selected='true'] {
+    &[aria-checked='true'] {
         & [data-role='checkbox-checkbox'] {
             border-color: color(primary, 6);
             background-color: color(primary, 2);
