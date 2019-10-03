@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import Grid from '@/components/Grid'
@@ -29,6 +29,8 @@ export interface IRecord {
 const Ledger: React.FC<
     IRecord & {
         recordType: IRecordType
+        style?: CSSProperties
+        className?: React.HTMLAttributes<HTMLElement>['className']
     }
 > = props => {
     const {
@@ -38,7 +40,9 @@ const Ledger: React.FC<
         datetime,
         amount,
         currency,
-        detail
+        detail,
+        style,
+        className
     }: typeof props = props
 
     const childIcon = (
@@ -62,7 +66,9 @@ const Ledger: React.FC<
         >
             {/* 类型、时间 */}
             <span title={recordType.text}>{recordType.text}</span>
-            <span title={format(new Date(datetime), 'yyyy-MM-dd HH:mm:ss')}>{format(new Date(datetime), 'HH:mm')}</span>
+            <span title={format(new Date(datetime), 'yyyy-MM-dd HH:mm:ss')}>
+                {format(new Date(datetime), 'HH:mm')}
+            </span>
             {/* 时区 */}
             {timezone !== localTimeOffset ? (
                 <span className={styles.timezone}>{offsetToUTC(timezone)}</span>
@@ -100,7 +106,11 @@ const Ledger: React.FC<
     )
 
     return (
-        <Link to={`/record/${id}`} className={styles.record}>
+        <Link
+            to={`/record/${id}`}
+            className={clsx(styles.record, className)}
+            style={style}
+        >
             <Grid container justify="center" alignItems="center">
                 {childIcon}
                 <Grid className={styles.main} item sm>

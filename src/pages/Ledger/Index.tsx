@@ -152,10 +152,11 @@ const LedgerIndex: React.FC = props => {
                         data.records &&
                         (data.records.content || []).map((item, index) => {
                             const type = getType(item.type)
+                            const delay = (index % 10) * 100 // 10为一页的数量，records请求中的limit
                             return (
                                 <DelayCSSTransition
                                     timeout={400}
-                                    enterDelay={index * 100}
+                                    enterDelay={delay}
                                     exitDelay={0}
                                     classNames={classnamesItem}
                                     key={item.id}
@@ -165,7 +166,11 @@ const LedgerIndex: React.FC = props => {
                             )
                         })}
                 </TransitionGroup>
-                <Loading.More handler={fetchMoreFn} loading={loading} delay={100} />
+                <Loading.More
+                    handler={fetchMoreFn}
+                    loading={loading}
+                    delay={100}
+                />
             </ContentBody>
             <ToolBar />
         </>
