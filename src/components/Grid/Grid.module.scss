@@ -1,90 +1,91 @@
 @import '@/style/index.scss';
 
-.container,
-.item {
+.grid {
     display: flex;
     box-sizing: border-box;
-}
-.container {
-    width: 100%;
-}
-.item {
     margin: 0;
-}
-.block {
-    display: block;
-}
 
-.gap {
+    &[data-container='true'] {
+        width: 100%;
+    }
+
+    &[data-block='true'] {
+        display: block;
+    }
+
+    /* gap */
     @each $size in 0, 1, 2, 3, 4, 5, 6 {
-        $_gap: $size * $gap * 0.25;
-        &-#{$size} {
-            & > .item {
+        $_gap: $size * $gap * 0.25 / 2;
+        &[data-gap='#{$size}'] {
+            padding: $_gap;
+            & > .grid {
                 padding: $_gap;
+                &[data-gap] {
+                    padding: 0;
+                }
             }
         }
     }
-}
 
-.direction-- {
+    /* direction */
     @each $var in row, row-reverse, column, column-reverse {
-        &#{$var} {
+        &[data-direction='#{$var}'] {
             flex-direction: $var;
         }
     }
-}
-.wrap-- {
+
+    /* wrap */
     @each $var in nowrap, wrap, wrap-reverse {
-        &#{$var} {
+        &[data-wrap='#{$var}'] {
             flex-wrap: $var;
         }
     }
-}
-.justify-- {
+
+    /* justify */
     @each $var in flex-start, flex-end, center, space-between, space-around {
-        &#{$var} {
+        &[data-justify='#{$var}'] {
             justify-content: $var;
         }
     }
-}
-.align-items-- {
+
+    /* align-items */
     @each $var in flex-start, flex-end, center, baseline, stretch {
-        &#{$var} {
+        &[data-align-items='#{$var}'] {
             align-items: $var;
         }
     }
-}
-.align-content-- {
+
+    /* align-content */
     @each $var in flex-start, flex-end, center, space-between, space-around,
         stretch
     {
-        &#{$var} {
+        &[data-align-content='#{$var}'] {
             align-content: $var;
         }
     }
-}
 
-/* .sm .md .lg .xl */
-@each $size in sm, md, lg, xl {
-    @media #{screen-media-min($size)} {
-        .#{$size}-auto {
-            max-width: none;
-            flex-basis: auto;
-            flex-grow: 0;
-            flex-shrink: 0;
-        }
-        .#{$size}-true {
-            width: 0;
-            max-width: 100%;
-            flex-basis: 0;
-            flex-grow: 1;
-        }
-        @each $grid in 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 {
-            $width: ($grid / 12) * 100%;
-            .#{$size}-#{$grid} {
-                width: $width;
-                flex-basis: $width;
+    /* sm md lg xl */
+    @each $size in sm, md, lg, xl {
+        @media #{screen-media-min($size)} {
+            &[data-#{$size}='auto'] {
+                max-width: none;
+                flex-basis: auto;
                 flex-grow: 0;
+                flex-shrink: 0;
+            }
+            &[data-#{$size}='true'] {
+                width: 0;
+                max-width: 100%;
+                flex-basis: 0;
+                flex-grow: 1;
+            }
+            @each $grid in 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 {
+                $width: ($grid / 12) * 100%;
+                &[data-#{$size}='#{$grid}'] {
+                    width: $width;
+                    flex-basis: $width;
+                    flex-grow: 0;
+                }
             }
         }
     }

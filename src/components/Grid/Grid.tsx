@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import clsx from 'clsx'
 import styles from './Grid.module.scss'
 
@@ -47,7 +47,7 @@ export interface IGirdProps extends React.HTMLAttributes<HTMLElement> {
         | 'stretch'
 }
 
-const Grid: React.FC<IGirdProps> = props => {
+const Component = React.forwardRef<HTMLDivElement, IGirdProps>((props, ref) => {
     const {
         className: classNameProp,
         children,
@@ -67,34 +67,34 @@ const Grid: React.FC<IGirdProps> = props => {
         ...other
     }: typeof props = props
 
-    const className = clsx(
-        {
-            [styles.container]: container,
-            [styles.item]: item,
-            [styles.block]: block,
-            [styles[`gap`]]: gap !== undefined,
-            [styles[`gap-${gap}`]]: gap !== undefined,
-            [styles[`sm-${sm}`]]: sm,
-            [styles[`md-${md}`]]: md,
-            [styles[`lg-${lg}`]]: lg,
-            [styles[`xl-${xl}`]]: xl,
-            [styles[`direction--${direction}`]]: direction,
-            [styles[`wrap--${wrap}`]]: wrap,
-            [styles[`justify--${justify}`]]: justify,
-            [styles[`align-items--${alignItems}`]]: alignItems,
-            [styles[`align-content--${alignContent}`]]: alignContent
-        },
-        classNameProp
-    )
+    const el = useRef<HTMLDivElement>(null)
+    React.useImperativeHandle(ref, () => el.current!)
+
+    const className = clsx(styles.grid, classNameProp)
     const bindProps = {
         className,
         ...other
     }
+    const flexProp = {
+        'data-container': container,
+        'data-block': block,
+        'data-gap': gap,
+        'data-sm': sm,
+        'data-md': md,
+        'data-lg': lg,
+        'data-xl': xl,
+        'data-direction': direction,
+        'data-wrap': wrap,
+        'data-justify': justify,
+        'data-align-items': alignItems,
+        'data-content': alignContent
+    }
     return (
-        <div data-role="grid" {...bindProps}>
+        <div data-role="grid" ref={el} {...flexProp} {...bindProps}>
             {children}
         </div>
     )
-}
+})
 
-export default Grid
+Component.displayName = 'Grid'
+export default Component
