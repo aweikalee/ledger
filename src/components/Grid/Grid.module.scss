@@ -17,14 +17,10 @@
 
 .gap {
     @each $size in 0, 1, 2, 3, 4, 5, 6 {
-        $_gap: $size * $gap * 0.25 / 2;
+        $_gap: $size * $gap * 0.25;
         &-#{$size} {
-            padding: $_gap;
             & > .item {
                 padding: $_gap;
-                &.gap {
-                    padding: 0;
-                }
             }
         }
     }
