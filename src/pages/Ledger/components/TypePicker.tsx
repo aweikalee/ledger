@@ -31,7 +31,6 @@ const TypePicker: React.FC<ITypePickerProps> = props => {
                     }}
                 >
                     <Grid
-                        container
                         className={clsx(styles.icon, color[`${item.color}-bg`])}
                         justify="center"
                         alignItems="center"
