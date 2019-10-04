@@ -3,6 +3,7 @@
 .screen,
 .screen-mini {
     @include font(large-title);
+    width: 100%;
 }
 .screen {
     text-align: right;
