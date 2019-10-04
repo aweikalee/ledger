@@ -17,7 +17,9 @@ import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
 import TypePicker from './components/TypePicker'
 import { IRecordType } from './components/Record'
+import MemberList, { IMember } from './components/MemberList'
 import config from '@/config'
+import styles from './Index.module.scss'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -32,6 +34,9 @@ export interface IForm {
     type?: string
     detail?: string
     datetime?: string
+    payer?: string[]
+    participator?: string[]
+    settled?: string[]
 }
 
 const LedgerAdd: React.FC = props => {
@@ -48,7 +53,10 @@ const LedgerAdd: React.FC = props => {
         amount: '0',
         currency: 'CNY',
         type: '',
-        datetime: format(new Date(), config.datetimeFormat)
+        datetime: format(new Date(), config.datetimeFormat),
+        payer: [],
+        participator: [],
+        settled: []
     }))
     const { register, setValue, triggerValidation } = useForm<IForm>({
         mode: 'onChange',
@@ -56,7 +64,10 @@ const LedgerAdd: React.FC = props => {
             amount: forms.amount,
             currency: forms.currency,
             type: forms.type,
-            detail: ''
+            detail: '',
+            payer: forms.payer,
+            participator: forms.participator,
+            settled: forms.settled
         }
     })
 
@@ -137,6 +148,22 @@ const LedgerAdd: React.FC = props => {
                 }
             }
         )
+
+        register(
+            {
+                name: 'payer'
+            },
+            {
+                validate: value => {
+                    return valid.queue<string>(
+                        [valid.isRequire(), valid.isDate()],
+                        {
+                            name: '时间'
+                        }
+                    )(value)
+                }
+            }
+        )
     }, [register])
 
     /* Amount */
@@ -186,6 +213,7 @@ const LedgerAdd: React.FC = props => {
             type="text"
             color="default"
             size="medium"
+            block
             onClick={() => setShowDate(true)}
         >
             {format(new Date(forms.datetime!), config.dateFormat)}
@@ -195,11 +223,31 @@ const LedgerAdd: React.FC = props => {
         <Button
             type="text"
             color="default"
-            size="large"
+            size="medium"
+            block
             onClick={() => setShowTime(true)}
         >
             {format(new Date(forms.datetime!), config.timeFormat)}
         </Button>
+    )
+
+    /* Member */
+    const { data: dataMember } = useQuery<{
+        members: IMember[]
+    }>(
+        gql`
+            query($id: ID!) {
+                members(pid: $id) {
+                    id
+                    name
+                }
+            }
+        `,
+        {
+            variables: {
+                id: id
+            }
+        }
     )
 
     return (
@@ -269,7 +317,7 @@ const LedgerAdd: React.FC = props => {
 
                 <Grid container gap={2}>
                     {/* detail */}
-                    <Grid item sm={12}>
+                    <Grid sm={12}>
                         <Input.Control>
                             <Input.Label htmlFor="detail">描述</Input.Label>
                             <Input.TextArea
@@ -282,57 +330,98 @@ const LedgerAdd: React.FC = props => {
                     </Grid>
 
                     {/* datetime */}
-                    <Grid item sm={12}>
+                    <Grid sm={12}>
                         <Input.Control>
                             <Input.Label htmlFor="datetime">时间</Input.Label>
                             <Input.Input
                                 name="datetime"
                                 id="datetime"
                                 disabled
+                                className={styles['input-datetime']}
                                 before={dateChild}
                                 after={timeChild}
                             />
                         </Input.Control>
                     </Grid>
+
+                    <DatePicker.Modal
+                        show={showDate}
+                        onClickOverlay={() => setShowDate(false)}
+                    >
+                        <DatePicker.DatePicker
+                            value={new Date(forms.datetime!)}
+                            onConfirm={value => {
+                                updateForms(
+                                    'datetime',
+                                    format(value, config.datetimeFormat)
+                                )
+                                setShowDate(false)
+                            }}
+                            disabledHours
+                            disabledMinutes
+                            disabledSeconds
+                        ></DatePicker.DatePicker>
+                    </DatePicker.Modal>
+
+                    <DatePicker.Modal
+                        show={showTime}
+                        onClickOverlay={() => setShowTime(false)}
+                    >
+                        <DatePicker.DatePicker
+                            value={new Date(forms.datetime!)}
+                            onConfirm={value => {
+                                updateForms(
+                                    'datetime',
+                                    format(value, config.datetimeFormat)
+                                )
+                                setShowTime(false)
+                            }}
+                            disabledYears
+                            disabledMonths
+                            disabledDays
+                        ></DatePicker.DatePicker>
+                    </DatePicker.Modal>
+
+                    {/* member */}
+                    <Grid sm={12}>
+                        <Input.Label
+                            description={
+                                <Grid justify="flex-end">
+                                    <Grid
+                                        className={styles['member-title']}
+                                        justify="space-around"
+                                    >
+                                        <Grid>支付</Grid>
+                                        <Grid>消费</Grid>
+                                        <Grid>还清</Grid>
+                                    </Grid>
+                                </Grid>
+                            }
+                        >
+                            成员
+                        </Input.Label>
+
+                        <MemberList
+                            members={dataMember && dataMember.members}
+                            payer={forms.payer}
+                            participator={forms.participator}
+                            settled={forms.settled}
+                            onUpdate={(type, value) => {
+                                const newValue = [...(forms[type] || [])]
+                                const index = newValue.indexOf(value)
+                                if (index === -1) {
+                                    newValue.push(value)
+                                } else {
+                                    newValue.splice(index, 1)
+                                }
+                                updateForms(type, newValue)
+                            }}
+                        />
+
+                        {/* 编辑时可能出现 payer, participator, settled 中存在而 members 中不存在的情况
+                           需要抛出提示，并给出清除按钮 */}
+                    </Grid>
                 </Grid>
-
-                <DatePicker.Modal
-                    show={showDate}
-                    onClickOverlay={() => setShowDate(false)}
-                >
-                    <DatePicker.DatePicker
-                        value={new Date(forms.datetime!)}
-                        onConfirm={value => {
-                            updateForms(
-                                'datetime',
-                                format(value, config.datetimeFormat)
-                            )
-                            setShowDate(false)
-                        }}
-                        disabledHours
-                        disabledMinutes
-                        disabledSeconds
-                    ></DatePicker.DatePicker>
-                </DatePicker.Modal>
-
-                <DatePicker.Modal
-                    show={showTime}
-                    onClickOverlay={() => setShowTime(false)}
-                >
-                    <DatePicker.DatePicker
-                        value={new Date(forms.datetime!)}
-                        onConfirm={value => {
-                            updateForms(
-                                'datetime',
-                                format(value, config.datetimeFormat)
-                            )
-                            setShowTime(false)
-                        }}
-                        disabledYears
-                        disabledMonths
-                        disabledDays
-                    ></DatePicker.DatePicker>
-                </DatePicker.Modal>
             </ContentBody>
             <ToolBar />
         </>

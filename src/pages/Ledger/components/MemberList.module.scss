@@ -1,0 +1,21 @@
+@import '@/style/index.scss';
+
+.list {
+    padding: $gap / 2 0;
+}
+
+.item {
+    width: 100%;
+    padding: $gap / 2 0;
+    border-bottom: 1px dashed color(grey, 2);
+}
+
+.name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.checkbox {
+    width: rem(150);
+}
