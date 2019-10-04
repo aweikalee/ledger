@@ -258,55 +258,73 @@ const LedgerAdd: React.FC = props => {
                 left={<BackButton href="/" />}
             />
             <ContentBody>
-                {/* Currency */}
-                <Button onClick={() => setShowCurrency(true)}>
-                    {forms.currency}
-                </Button>
-                <Popup
-                    show={showCurrency}
-                    onClose={() => setShowCurrency(false)}
-                    header
-                    title="选择货币种类"
-                    contentPadding
-                >
-                    {dataCurrency &&
-                        dataCurrency.currencys &&
-                        dataCurrency.currencys.map(item => (
-                            <Button
-                                type={
-                                    item.name === forms.currency
-                                        ? 'contained'
-                                        : 'outlined'
-                                }
-                                color={
-                                    item.name === forms.currency
-                                        ? 'primary'
-                                        : 'default'
-                                }
-                                border="round"
-                                size="large"
-                                key={item.name}
-                                onClick={() => {
-                                    updateForms('currency', item.name)
-                                    setShowCurrency(false)
-                                }}
-                            >
-                                {item.name}
+                <Grid container gap={2}>
+                    <Grid
+                        container
+                        gap={2}
+                        alignItems="center"
+                        className={styles.amount}
+                    >
+                        <Grid>
+                            {/* Currency */}
+                            <Button onClick={() => setShowCurrency(true)}>
+                                {forms.currency}
                             </Button>
-                        ))}
-                </Popup>
 
-                {/* Amount */}
-                <ScreenMini
-                    value={forms.amount}
-                    onClick={() => setCalculatorShow(true)}
-                ></ScreenMini>
-                <Calculator
-                    value={forms.amount}
-                    onUpdate={value => updateForms('amount', value)}
-                    show={calculatorShow}
-                    onBlur={() => setCalculatorShow(false)}
-                />
+                            <Popup
+                                show={showCurrency}
+                                onClose={() => setShowCurrency(false)}
+                                header
+                                title="选择货币种类"
+                                contentPadding
+                            >
+                                {dataCurrency &&
+                                    dataCurrency.currencys &&
+                                    dataCurrency.currencys.map(item => (
+                                        <Button
+                                            type={
+                                                item.name === forms.currency
+                                                    ? 'contained'
+                                                    : 'outlined'
+                                            }
+                                            color={
+                                                item.name === forms.currency
+                                                    ? 'primary'
+                                                    : 'default'
+                                            }
+                                            border="round"
+                                            size="large"
+                                            key={item.name}
+                                            onClick={() => {
+                                                updateForms(
+                                                    'currency',
+                                                    item.name
+                                                )
+                                                setShowCurrency(false)
+                                            }}
+                                        >
+                                            {item.name}
+                                        </Button>
+                                    ))}
+                            </Popup>
+                        </Grid>
+
+                        <Grid sm>
+                            {/* Amount */}
+                            <ScreenMini
+                                className={styles['amount-screen']}
+                                value={forms.amount}
+                                onClick={() => setCalculatorShow(true)}
+                            />
+                            <Calculator
+                                value={forms.amount}
+                                onUpdate={value => updateForms('amount', value)}
+                                show={calculatorShow}
+                                onBlur={() => setCalculatorShow(false)}
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
 
                 {/* type */}
                 <TypePicker

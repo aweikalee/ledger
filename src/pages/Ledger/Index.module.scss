@@ -19,6 +19,23 @@
     transition: opacity 400ms, transform 400ms $ease-in;
 }
 
+.amount {
+    position: relative;
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom: 2px solid color(grey, 5);
+        transform: scaleX(1);
+    }
+}
+
+.amount-screen {
+    text-align: right;
+}
+
 .input-datetime {
     padding: 0;
 }
