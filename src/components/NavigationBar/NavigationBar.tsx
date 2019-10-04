@@ -60,7 +60,7 @@ const NavigationBar: React.FC<INavigationBarProps> = props => {
                 >
                     {middleChildren}
                 </Grid>
-                <Grid sm={4} className={styles.tools}>
+                <Grid sm={4} className={styles.tools} justify="flex-end">
                     {rightChildren && rightChildren}
                 </Grid>
             </Grid>

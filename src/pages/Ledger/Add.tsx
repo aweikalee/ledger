@@ -13,6 +13,7 @@ import * as DatePicker from '@/components/DatePicker'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
 import Button from '@/components/Button'
+import Icon from '@/components/Icon'
 import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
 import TypePicker from './components/TypePicker'
@@ -255,7 +256,12 @@ const LedgerAdd: React.FC = props => {
             <NavigationBar
                 title="新增账单"
                 subTitle="旅行账簿"
-                left={<BackButton href="/" />}
+                left={<BackButton icon="close" href="/" />}
+                right={
+                    <Button color="default" size="medium" style={{fontSize: '1.6em'}}>
+                        <Icon text="confirm"></Icon>
+                    </Button>
+                }
             />
             <ContentBody>
                 <Grid container gap={2}>
