@@ -46,6 +46,25 @@ const currencys = [
     }
 ]
 
+const members = [
+    {
+        id: 'de3665c2-dd62-42a6-9139-164e6fd11fcc',
+        name: '张三'
+    },
+    {
+        id: '65a4ce58-ffec-4ac6-805f-0a448fa45c23',
+        name: '李四'
+    },
+    {
+        id: 'f0f42ce9-85d9-404f-8e3b-99336ba6687e',
+        name: '王五'
+    },
+    {
+        id: '1cef23a5-ebe2-439c-88e6-60ca86477c37',
+        name: '赵六六六'
+    }
+]
+
 const mocks = {
     String: () => Mock.mock('@csentence'),
     Query: () => ({
@@ -68,7 +87,17 @@ const mocks = {
         recordType: () => recordType(),
         recordTypes: () => recordTypes,
         currency: (obj, { name }) => currencys.find(v => v.name === name),
-        currencys: () => currencys
+        currencys: () => currencys,
+        members: (obj, { pid }) => {
+            const arr = [...members]
+            const output = []
+            for (let i = Mock.mock('@integer(1,4)'); i > 0; i -= 1) {
+                const index = Mock.mock(`@integer(0,${arr.length - 1})`)
+                const member = arr.splice(index, 1)[0]
+                output.push(Object.assign({ pid }, member))
+            }
+            return output
+        }
     }),
     Ledger: () => ({
         title: () => Mock.mock('@csentence(2,6)')
@@ -91,7 +120,8 @@ const mocks = {
         }[result.currency]
 
         return result
-    }
+    },
+    Member: () => Mock.mock({ 'array|1': members }).array
 }
 
 module.exports = mocks
