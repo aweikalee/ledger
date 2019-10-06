@@ -556,6 +556,15 @@ const LedgerAdd: React.FC = props => {
                             }
                         >
                             成员
+                            <Button
+                                type="outlined"
+                                color="primary"
+                                size="small"
+                                border="round"
+                                className={styles['member-option-button']}
+                            >
+                                <Icon text="gear" /> 管理
+                            </Button>
                         </Input.Label>
 
                         <MemberList

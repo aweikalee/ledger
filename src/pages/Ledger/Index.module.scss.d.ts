@@ -9,6 +9,7 @@ export type ILedgerClass = {
     'amount-screen': string
     'input-datetime': string
     'member-title': string
+    'member-option-button': string
 }
 
 const styles: ILedgerClass
