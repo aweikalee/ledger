@@ -10,7 +10,7 @@ import Grid from '@/components/Grid'
 import { DelayCSSTransition } from '@/components/Animation'
 import * as Loading from '@/components/Loading'
 import { ILoadMoreProps } from '@/components/Loading/More'
-import Record, { IRecord, IRecordType } from './components/Record'
+import Record, { IRecord, IClassify } from './components/Record'
 import styles from './Index.module.scss'
 import { format } from 'date-fns'
 import config from '@/config'
@@ -44,6 +44,7 @@ const LedgerIndex: React.FC = props => {
                     content {
                         id
                         type
+                        classify
                         timezone
                         datetime
                         detail
@@ -101,12 +102,12 @@ const LedgerIndex: React.FC = props => {
     }
 
     /* Types */
-    const { data: dataTypes } = useQuery<{
-        recordTypes: IRecordType[]
+    const { data: dataClassifies } = useQuery<{
+        classifies: IClassify[]
     }>(
         gql`
             query($pid: ID!) {
-                recordTypes(pid: $pid) {
+                classifies(pid: $pid) {
                     id
                     text
                     icon
@@ -127,7 +128,7 @@ const LedgerIndex: React.FC = props => {
         exit: styles['item-exit'],
         exitActive: styles['item-exit-active']
     }
-    const types = (dataTypes && dataTypes.recordTypes) || []
+    const types = (dataClassifies && dataClassifies.classifies) || []
     const getType = (id: string) => {
         return (
             types.find(v => v.id === id) || {
@@ -151,7 +152,7 @@ const LedgerIndex: React.FC = props => {
                     {data &&
                         data.records &&
                         (data.records.content || []).map((item, index) => {
-                            const type = getType(item.type)
+                            const type = getType(item.classify)
                             const delay = (index % 10) * 100 // 10为一页的数量，records请求中的limit
                             return (
                                 <DelayCSSTransition
@@ -161,7 +162,7 @@ const LedgerIndex: React.FC = props => {
                                     classNames={classnamesItem}
                                     key={item.id}
                                 >
-                                    <Record {...item} recordType={type} />
+                                    <Record {...item} classifyData={type} />
                                 </DelayCSSTransition>
                             )
                         })}

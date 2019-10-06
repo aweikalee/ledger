@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 import { localTimeOffset, offsetToUTC } from '@/utils/timeZone'
 import config from '@/config'
 
-export interface IRecordType {
+export interface IClassify {
     id: string
     text: string
     icon: IIconProps['text']
@@ -18,7 +18,8 @@ export interface IRecordType {
 }
 export interface IRecord {
     id: string
-    type: string
+    type: -1 | 0 | 1
+    classify: string
     timezone: number
     datetime: string
     amount: number
@@ -28,14 +29,14 @@ export interface IRecord {
 
 const Ledger: React.FC<
     IRecord & {
-        recordType: IRecordType
+        classifyData: IClassify
         style?: CSSProperties
         className?: React.HTMLAttributes<HTMLElement>['className']
     }
 > = props => {
     const {
         id,
-        recordType,
+        classifyData,
         timezone,
         datetime,
         amount,
@@ -47,12 +48,12 @@ const Ledger: React.FC<
 
     const childIcon = (
         <Grid
-            className={clsx(styles.icon, color[`${recordType.color}-bg`])}
+            className={clsx(styles.icon, color[`${classifyData.color}-bg`])}
             sm="auto"
             justify="center"
             alignItems="center"
         >
-            <Icon text={recordType.icon as IIconProps['text']} />
+            <Icon text={classifyData.icon as IIconProps['text']} />
         </Grid>
     )
     const childTime = (
@@ -63,7 +64,7 @@ const Ledger: React.FC<
             title={`${format(new Date(datetime), config.datetimeFormat)}`}
         >
             {/* 类型、时间 */}
-            <span title={recordType.text}>{recordType.text}</span>
+            <span title={classifyData.text}>{classifyData.text}</span>
             <span title={format(new Date(datetime), 'yyyy-MM-dd HH:mm:ss')}>
                 {format(new Date(datetime), 'HH:mm')}
             </span>

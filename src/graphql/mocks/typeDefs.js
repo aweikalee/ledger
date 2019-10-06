@@ -6,8 +6,8 @@ module.exports = gql`
         ledgers: [Ledger]
         record(id: ID!): Record
         records(pid: ID!, date: String, cursor: ID, limit: Int): Records
-        recordType(id: ID!): RecordType
-        recordTypes(pid: ID!): [RecordType]
+        classify(id: ID!): Classify
+        classifies(pid: ID!): [Classify]
         currency(name: String!): Currency
         currencys: [Currency]
         member(id: ID!): Member
@@ -63,7 +63,7 @@ module.exports = gql`
         content: [Record]
     }
 
-    type RecordType {
+    type Classify {
         id: ID!
         text: String!
         icon: String!

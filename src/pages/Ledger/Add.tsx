@@ -17,7 +17,7 @@ import Icon from '@/components/Icon'
 import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
 import ClassifyPicker from './components/ClassifyPicker'
-import { IRecordType } from './components/Record'
+import { IClassify } from './components/Record'
 import MemberList, { IMember } from './components/MemberList'
 import { IReport } from '@/types/graphql'
 import config from '@/config'
@@ -244,12 +244,12 @@ const LedgerAdd: React.FC = props => {
     )
 
     /* Types */
-    const { data: dataTypes } = useQuery<{
-        recordTypes: IRecordType[]
+    const { data: dataClassifies } = useQuery<{
+        classifies: IClassify[]
     }>(
         gql`
             query($pid: ID!) {
-                recordTypes(pid: $pid) {
+                classifies(pid: $pid) {
                     id
                     text
                     icon
@@ -482,7 +482,7 @@ const LedgerAdd: React.FC = props => {
 
                 {/* classify */}
                 <ClassifyPicker
-                    data={dataTypes ? dataTypes.recordTypes : []}
+                    data={dataClassifies ? dataClassifies.classifies : []}
                     active={forms.classify || ''}
                     onChange={value => updateForms('classify', value)}
                 />

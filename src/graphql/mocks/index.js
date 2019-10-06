@@ -1,7 +1,7 @@
 const { MockList } = require('apollo-server-express')
 const Mock = require('mockjs')
 
-const recordTypes = [
+const classfies = [
     {
         text: '餐饮',
         id: '2c438dca-3814-48be-b42a-0364a91f769b',
@@ -21,7 +21,7 @@ const recordTypes = [
         color: 'purple'
     }
 ]
-const recordType = () => recordTypes[Mock.mock('@integer(0,2)')]
+const recordType = () => classfies[Mock.mock('@integer(0,2)')]
 
 const currencys = [
     {
@@ -84,8 +84,8 @@ const mocks = {
                     return base
                 })
         }),
-        recordType: () => recordType(),
-        recordTypes: () => recordTypes,
+        classify: () => recordType(),
+        classifies: () => classfies,
         currency: (obj, { name }) => currencys.find(v => v.name === name),
         currencys: () => currencys,
         members: (obj, { pid }) => {
@@ -112,7 +112,7 @@ const mocks = {
         const result = Mock.mock({
             'currency|1': currencys.map(v => v.name),
             type: Mock.mock('@integer(-1, 1)'),
-            'classify|1': recordTypes.map(type => type.id),
+            'classify|1': classfies.map(type => type.id),
             amount: Mock.mock('@integer(0, 99999)'),
             timezone: Mock.mock('@boolean(1, 5, true)')
                 ? Mock.mock('@integer(-24, 24)') * 30

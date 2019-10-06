@@ -3,12 +3,12 @@ import Grid from '@/components/Grid'
 import Icon from '@/components/Icon'
 import styles from './ClassifyPicker.module.scss'
 import Button from '@/components/Button'
-import { IRecordType } from './Record'
+import { IClassify } from './Record'
 import color from '../../../style/color.module.scss'
 import clsx from 'clsx'
 
 export interface IClassifyPickerProps {
-    data: IRecordType[]
+    data: IClassify[]
     active: string
     onChange: (id: string) => void
 }
