@@ -22,6 +22,7 @@ import MemberList, { IMember } from './components/MemberList'
 import { IReport } from '@/types/graphql'
 import config from '@/config'
 import styles from './Index.module.scss'
+import { RouteChildrenProps } from 'react-router'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -43,13 +44,11 @@ export interface IForm {
 }
 
 const LedgerAdd: React.FC = props => {
-    const {
-        params: { id }
-    } = (props as any).match as {
-        params: {
-            id: string
-        }
-    }
+    const { match, history } = props as RouteChildrenProps<{
+        id: string
+    }>
+
+    const id = (match && match.params.id!) || ''
 
     /* initialization */
     const [forms, setForms] = useState<IForm>(() => ({
@@ -336,6 +335,7 @@ const LedgerAdd: React.FC = props => {
         }).then(({ data }) => {
             if (data && data.createRecord.code === 201) {
                 console.log('创建记录成功')
+                history.push(`/ledger/${id}`)
             } else {
                 console.log('创建记录失败')
             }
