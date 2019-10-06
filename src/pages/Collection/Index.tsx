@@ -35,7 +35,7 @@ const CollectionIndex: React.FC = () => {
         <>
             <NavigationBar title="账簿盒" />
             <ContentBody>
-                <TransitionGroup component={Grid} container gap={2}>
+                <TransitionGroup component={Grid} container gap={2} style={{overflowX: 'hidden'}}>
                     {data &&
                         (data.ledgers || []).map((item, index) => (
                             <DelayCSSTransition
