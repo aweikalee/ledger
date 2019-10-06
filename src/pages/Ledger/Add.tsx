@@ -61,13 +61,20 @@ const LedgerAdd: React.FC = props => {
         participator: [],
         settled: []
     }))
-    const { register, setValue, triggerValidation } = useForm<IForm>({
+    const {
+        register,
+        setValue,
+        triggerValidation,
+        handleSubmit,
+        errors
+    } = useForm<IForm>({
         mode: 'onChange',
         defaultValues: {
             type: forms.type,
             amount: forms.amount,
             currency: forms.currency,
             classify: forms.classify,
+            datetime: forms.datetime,
             detail: '',
             payer: forms.payer,
             participator: forms.participator,
@@ -184,12 +191,35 @@ const LedgerAdd: React.FC = props => {
             },
             {
                 validate: value => {
-                    return valid.queue<string>(
-                        [valid.isRequire(), valid.isDate()],
-                        {
-                            name: '时间'
-                        }
-                    )(value)
+                    return valid.queue<string>([], {
+                        name: '支付方'
+                    })(value)
+                }
+            }
+        )
+
+        register(
+            {
+                name: 'particaptor'
+            },
+            {
+                validate: value => {
+                    return valid.queue<string>([], {
+                        name: '消费方'
+                    })(value)
+                }
+            }
+        )
+
+        register(
+            {
+                name: 'settled'
+            },
+            {
+                validate: value => {
+                    return valid.queue<string>([], {
+                        name: '已还清'
+                    })(value)
                 }
             }
         )
@@ -279,6 +309,11 @@ const LedgerAdd: React.FC = props => {
         }
     )
 
+    /* Submit */
+    const onSubmit = () => {
+        console.log('submit')
+    }
+
     return (
         <>
             <NavigationBar
@@ -290,6 +325,7 @@ const LedgerAdd: React.FC = props => {
                         color="default"
                         size="medium"
                         style={{ fontSize: '1.6em' }}
+                        onClick={handleSubmit(onSubmit)}
                     >
                         <Icon text="confirm"></Icon>
                     </Button>
@@ -297,6 +333,7 @@ const LedgerAdd: React.FC = props => {
             />
             <ContentBody>
                 <Grid container gap={2}>
+                    {/* type */}
                     <Grid container justify="center">
                         <ButtonGroup className={styles['type-bar']}>
                             {[
@@ -331,6 +368,11 @@ const LedgerAdd: React.FC = props => {
                                 </Button>
                             ))}
                         </ButtonGroup>
+                        <Grid sm={12} justify="center">
+                            <Input.Helper error>
+                                {errors.type && errors.type.message}
+                            </Input.Helper>
+                        </Grid>
                     </Grid>
 
                     <Grid
@@ -398,19 +440,36 @@ const LedgerAdd: React.FC = props => {
                             />
                         </Grid>
                     </Grid>
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {errors.currency && errors.currency.message}
+                        </Input.Helper>
+                    </Grid>
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {errors.amount && errors.amount.message}
+                        </Input.Helper>
+                    </Grid>
                 </Grid>
 
-                {/* type */}
+                {/* classify */}
                 <ClassifyPicker
                     data={dataTypes ? dataTypes.recordTypes : []}
                     active={forms.classify || ''}
                     onChange={value => updateForms('classify', value)}
                 />
+                <Grid container gap={2}>
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {errors.currency && errors.currency.message}
+                        </Input.Helper>
+                    </Grid>
+                </Grid>
 
                 <Grid container gap={2}>
                     {/* detail */}
                     <Grid sm={12}>
-                        <Input.Control>
+                        <Input.Control error={!!errors.detail}>
                             <Input.Label htmlFor="detail">描述</Input.Label>
                             <Input.TextArea
                                 name="detail"
@@ -418,12 +477,15 @@ const LedgerAdd: React.FC = props => {
                                 ref={register}
                                 autosize
                             />
+                            <Input.Helper>
+                                {errors.detail && errors.detail.message}
+                            </Input.Helper>
                         </Input.Control>
                     </Grid>
 
                     {/* datetime */}
                     <Grid sm={12}>
-                        <Input.Control>
+                        <Input.Control error={!!errors.datetime}>
                             <Input.Label htmlFor="datetime">时间</Input.Label>
                             <Input.Input
                                 name="datetime"
@@ -433,6 +495,9 @@ const LedgerAdd: React.FC = props => {
                                 before={dateChild}
                                 after={timeChild}
                             />
+                            <Input.Helper>
+                                {errors.datetime && errors.datetime.message}
+                            </Input.Helper>
                         </Input.Control>
                     </Grid>
 
@@ -512,6 +577,12 @@ const LedgerAdd: React.FC = props => {
 
                         {/* 编辑时可能出现 payer, participator, settled 中存在而 members 中不存在的情况
                            需要抛出提示，并给出清除按钮 */}
+
+                        <Input.Helper error>
+                            {errors.payer && errors.payer.message}
+                            {errors.participator && errors.participator.message}
+                            {errors.settled && errors.settled.message}
+                        </Input.Helper>
                     </Grid>
                 </Grid>
             </ContentBody>
