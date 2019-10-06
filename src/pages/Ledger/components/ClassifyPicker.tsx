@@ -1,19 +1,19 @@
 import React from 'react'
 import Grid from '@/components/Grid'
 import Icon from '@/components/Icon'
-import styles from './TypePicker.module.scss'
+import styles from './ClassifyPicker.module.scss'
 import Button from '@/components/Button'
 import { IRecordType } from './Record'
 import color from '../../../style/color.module.scss'
 import clsx from 'clsx'
 
-export interface ITypePickerProps {
+export interface IClassifyPickerProps {
     data: IRecordType[]
     active: string
     onChange: (id: string) => void
 }
 
-const TypePicker: React.FC<ITypePickerProps> = props => {
+const ClassifyPicker: React.FC<IClassifyPickerProps> = props => {
     const { data = [], active, onChange = () => {} }: typeof props = props
 
     return (
@@ -44,4 +44,4 @@ const TypePicker: React.FC<ITypePickerProps> = props => {
     )
 }
 
-export default TypePicker
+export default ClassifyPicker

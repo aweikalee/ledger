@@ -12,11 +12,11 @@ import { Popup } from '@/components/Popup'
 import * as DatePicker from '@/components/DatePicker'
 import * as valid from '@/utils/valid'
 import BigNumberOrigin from 'bignumber.js'
-import Button from '@/components/Button'
+import { Button, Group as ButtonGroup } from '@/components/Button'
 import Icon from '@/components/Icon'
 import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
-import TypePicker from './components/TypePicker'
+import ClassifyPicker from './components/ClassifyPicker'
 import { IRecordType } from './components/Record'
 import MemberList, { IMember } from './components/MemberList'
 import config from '@/config'
@@ -32,7 +32,8 @@ export interface ICurrency {
 export interface IForm {
     amount?: string
     currency?: string
-    type?: string
+    type?: number
+    classify?: string
     detail?: string
     datetime?: string
     payer?: string[]
@@ -51,9 +52,10 @@ const LedgerAdd: React.FC = props => {
 
     /* initialization */
     const [forms, setForms] = useState<IForm>(() => ({
+        type: -1,
         amount: '0',
         currency: 'CNY',
-        type: '',
+        classify: '',
         datetime: format(new Date(), config.datetimeFormat),
         payer: [],
         participator: [],
@@ -62,9 +64,10 @@ const LedgerAdd: React.FC = props => {
     const { register, setValue, triggerValidation } = useForm<IForm>({
         mode: 'onChange',
         defaultValues: {
+            type: forms.type,
             amount: forms.amount,
             currency: forms.currency,
-            type: forms.type,
+            classify: forms.classify,
             detail: '',
             payer: forms.payer,
             participator: forms.participator,
@@ -82,6 +85,31 @@ const LedgerAdd: React.FC = props => {
     }
 
     React.useEffect(() => {
+        register(
+            {
+                name: 'type'
+            },
+            {
+                validate: value => {
+                    return valid.queue<number>(
+                        [
+                            (value, options = {}) => {
+                                return (
+                                    value === -1 ||
+                                    value === 1 ||
+                                    value === 0 ||
+                                    valid.errorFactory('{name}不合法', options)
+                                )
+                            }
+                        ],
+                        {
+                            name: '类型'
+                        }
+                    )(value)
+                }
+            }
+        )
+
         register(
             {
                 name: 'amount'
@@ -123,12 +151,12 @@ const LedgerAdd: React.FC = props => {
 
         register(
             {
-                name: 'type'
+                name: 'classify'
             },
             {
                 validate: value => {
                     return valid.queue<string>([valid.isRequire()], {
-                        name: '类型'
+                        name: '分类'
                     })(value)
                 }
             }
@@ -258,13 +286,53 @@ const LedgerAdd: React.FC = props => {
                 subTitle="旅行账簿"
                 left={<BackButton icon="close" href="/" />}
                 right={
-                    <Button color="default" size="medium" style={{fontSize: '1.6em'}}>
+                    <Button
+                        color="default"
+                        size="medium"
+                        style={{ fontSize: '1.6em' }}
+                    >
                         <Icon text="confirm"></Icon>
                     </Button>
                 }
             />
             <ContentBody>
                 <Grid container gap={2}>
+                    <Grid container justify="center">
+                        <ButtonGroup className={styles['type-bar']}>
+                            {[
+                                {
+                                    value: -1,
+                                    text: '支出'
+                                },
+                                {
+                                    value: 0,
+                                    text: '转账'
+                                },
+                                {
+                                    value: 1,
+                                    text: '收入'
+                                }
+                            ].map(item => (
+                                <Button
+                                    type={
+                                        forms.type === item.value
+                                            ? 'contained'
+                                            : 'outlined'
+                                    }
+                                    color="primary"
+                                    size="small"
+                                    border="round"
+                                    key={item.value}
+                                    onClick={() => {
+                                        updateForms('type', item.value)
+                                    }}
+                                >
+                                    {item.text}
+                                </Button>
+                            ))}
+                        </ButtonGroup>
+                    </Grid>
+
                     <Grid
                         container
                         gap={2}
@@ -333,10 +401,10 @@ const LedgerAdd: React.FC = props => {
                 </Grid>
 
                 {/* type */}
-                <TypePicker
+                <ClassifyPicker
                     data={dataTypes ? dataTypes.recordTypes : []}
-                    active={forms.type || ''}
-                    onChange={value => updateForms('type', value)}
+                    active={forms.classify || ''}
+                    onChange={value => updateForms('classify', value)}
                 />
 
                 <Grid container gap={2}>

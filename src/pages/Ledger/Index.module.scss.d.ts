@@ -4,6 +4,7 @@ export type ILedgerClass = {
     'item-exit': string
     'item-exit-active': string
 
+    'type-bar': string
     'amount': string
     'amount-screen': string
     'input-datetime': string

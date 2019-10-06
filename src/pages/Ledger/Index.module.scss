@@ -19,8 +19,21 @@
     transition: opacity 400ms, transform 400ms $ease-in;
 }
 
+.type-bar {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: $gap / 2;
+    & > [data-role="button"] {
+        width: rem(80);
+        max-width: 30%;
+    }
+}
+
 .amount {
     position: relative;
+    margin-top: $gap / 2;
+    margin-bottom: $gap / 2;
     &::before {
         content: '';
         position: absolute;
