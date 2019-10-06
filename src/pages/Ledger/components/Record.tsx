@@ -8,7 +8,12 @@ import color from '../../../style/color.module.scss'
 import { IIconProps } from '@/components/Icon/Icon'
 import { format } from 'date-fns'
 import { localTimeOffset, offsetToUTC } from '@/utils/timeZone'
+import { format as amountFormatUtil } from '@/utils/amount'
 import config from '@/config'
+import { FORMAT_OPTIONS } from '@/components/Calculator/config'
+import BigNumberOrigin from 'bignumber.js'
+
+const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
 export interface IClassify {
     id: string
@@ -22,7 +27,7 @@ export interface IRecord {
     classify: string
     timezone: number
     datetime: string
-    amount: number
+    amount: string
     currency: string
     detail: string
 }
@@ -36,6 +41,7 @@ const Ledger: React.FC<
 > = props => {
     const {
         id,
+        type,
         classifyData,
         timezone,
         datetime,
@@ -75,13 +81,17 @@ const Ledger: React.FC<
         </Grid>
     )
 
-    const [amountInt, amountFloat] = formatAmount(amount)
+    const [amountInt, amountFloat] = formatAmount(type, amount)
     const childAmount = (
         <Grid sm wrap="nowrap" justify="flex-end" alignItems="baseline">
             <div
                 className={clsx(
                     styles.amount,
-                    amount > 0 ? styles.income : styles.outgoing
+                    {
+                        '-1': styles.outgoing,
+                        '0': styles.outgoing,
+                        '1': styles.income
+                    }[type]
                 )}
             >
                 {amountInt}
@@ -123,9 +133,18 @@ const Ledger: React.FC<
 
 export default Ledger
 
-function formatAmount(amount: number) {
-    const symbol = amount > 0 ? '+' : '-'
-    const int = Math.floor(amount)
-    const float = (amount - int).toFixed(2)
-    return [`${symbol}${Math.abs(int)}`, `${float}`.slice(-3)]
+const TYPE_TO_SYMBOL = {
+    '-1': '-',
+    '0': '',
+    '1': '+'
+}
+function formatAmount(type: IRecord['type'], value: IRecord['amount']) {
+    const bignumber = new BigNumber(value)
+    const symbol = TYPE_TO_SYMBOL[type]
+    const str = amountFormatUtil(bignumber.toFixed(2), FORMAT_OPTIONS)
+    const result = str.split('.')
+    result[0] = `${symbol}${result[0]}`
+    result[1] = `.${result[1]}`
+
+    return result
 }
