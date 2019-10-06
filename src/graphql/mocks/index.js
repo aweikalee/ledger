@@ -99,13 +99,21 @@ const mocks = {
             return output
         }
     }),
+    Mutation: () => ({
+        createRecord: () => ({
+            code: 201,
+            message: '创建记录成功'
+        })
+    }),
     Ledger: () => ({
         title: () => Mock.mock('@csentence(2,6)')
     }),
     Record: () => {
         const result = Mock.mock({
             'currency|1': currencys.map(v => v.name),
-            'type|1': recordTypes.map(type => type.id),
+            type: Mock.mock('@integer(-1, 1)'),
+            'classify|1': recordTypes.map(type => type.id),
+            amount: Mock.mock('@integer(0, 99999)'),
             timezone: Mock.mock('@boolean(1, 5, true)')
                 ? Mock.mock('@integer(-24, 24)') * 30
                 : new Date().getTimezoneOffset(),

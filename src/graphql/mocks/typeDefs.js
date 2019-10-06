@@ -15,6 +15,10 @@ module.exports = gql`
         user(id: ID!): User
     }
 
+    type Mutation {
+        createRecord(data: RecordInput): Report
+    }
+
     interface BasePagination {
         next: ID
     }
@@ -25,14 +29,30 @@ module.exports = gql`
     }
 
     type Record {
-        id: ID!
-        type: ID!
+        id: ID
+        type: Int
+        classify: ID
         timezone: Int
         datetime: String
         detail: String
-        amount: Float
-        currency: String!
-        rate: Float
+        amount: String
+        currency: String
+        rate: Float # 暂时不实现 rate
+        payer: [ID]
+        participator: [ID]
+        settled: [ID]
+    }
+
+    input RecordInput {
+        id: ID
+        type: Int
+        classify: ID
+        timezone: Int
+        datetime: String
+        detail: String
+        amount: String
+        currency: String
+        rate: Float # 暂时不实现 rate
         payer: [ID]
         participator: [ID]
         settled: [ID]
@@ -66,5 +86,10 @@ module.exports = gql`
         id: ID!
         username: String!
         nickname: String!
+    }
+
+    type Report {
+        code: Int
+        message: String
     }
 `

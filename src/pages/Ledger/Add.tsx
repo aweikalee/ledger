@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import useForm from 'react-hook-form'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { format } from 'date-fns'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
@@ -19,6 +19,7 @@ import Grid from '@/components/Grid'
 import ClassifyPicker from './components/ClassifyPicker'
 import { IRecordType } from './components/Record'
 import MemberList, { IMember } from './components/MemberList'
+import { IReport } from '@/types/graphql'
 import config from '@/config'
 import styles from './Index.module.scss'
 
@@ -308,10 +309,37 @@ const LedgerAdd: React.FC = props => {
             }
         }
     )
+    const [createRecord] = useMutation<
+        {
+            createRecord: IReport
+        },
+        {
+            data: IForm
+        }
+    >(
+        gql`
+            mutation($data: RecordInput) {
+                createRecord(data: $data) {
+                    code
+                    message
+                }
+            }
+        `
+    )
 
     /* Submit */
     const onSubmit = () => {
-        console.log('submit')
+        createRecord({
+            variables: {
+                data: forms
+            }
+        }).then(({ data }) => {
+            if (data && data.createRecord.code === 201) {
+                console.log('创建记录成功')
+            } else {
+                console.log('创建记录失败')
+            }
+        })
     }
 
     return (
@@ -461,7 +489,7 @@ const LedgerAdd: React.FC = props => {
                 <Grid container gap={2}>
                     <Grid sm={12}>
                         <Input.Helper error>
-                            {errors.currency && errors.currency.message}
+                            {errors.classify && errors.classify.message}
                         </Input.Helper>
                     </Grid>
                 </Grid>
