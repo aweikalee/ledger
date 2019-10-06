@@ -148,10 +148,13 @@
 }
 
 .helper {
-    width: 100%;
     @include font(callout);
     color: color(grey, 5);
     margin-top: $gap / 4;
+
+    &[data-error="true"] {
+        color: color(red, 5);
+    }
 }
 
 .control {
@@ -182,10 +185,6 @@
                 border-bottom-color: color(yellow, 5);
             }
         }
-
-        & .helper {
-            color: color(red, 5);
-        }
     }
 
     &[data-disabled='true'] {
@@ -198,5 +197,9 @@
                 cursor: not-allowed;
             }
         }
+    }
+
+    & .helper {
+        width: 100%;
     }
 }
