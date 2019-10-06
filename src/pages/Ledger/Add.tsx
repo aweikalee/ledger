@@ -84,10 +84,10 @@ const LedgerAdd: React.FC = props => {
 
     const updateForms = (field: keyof IForm, value: IForm[typeof field]) => {
         setValue(field, value)
-        setForms({
+        setForms(forms => ({
             ...forms,
             [field]: value
-        })
+        }))
         triggerValidation([{ name: field }])
     }
 
@@ -325,6 +325,28 @@ const LedgerAdd: React.FC = props => {
             }
         `
     )
+
+    const checkGhost = () => {
+        const members = (dataMember && dataMember.members) || []
+        return (
+            checkMembers(members, forms.payer || []) &&
+            checkMembers(members, forms.participator || []) &&
+            checkMembers(members, forms.settled || [])
+        )
+    }
+
+    const clearGhost = () => {
+        const members = (dataMember && dataMember.members) || []
+
+        const filter = (arr: string[] = []) => {
+            return arr.filter(v => {
+                return !!members.find(member => member.id === v)
+            })
+        }
+        updateForms('payer', filter(forms.payer))
+        updateForms('participator', filter(forms.participator))
+        updateForms('settled', filter(forms.settled))
+    }
 
     /* Submit */
     const onSubmit = () => {
@@ -612,8 +634,22 @@ const LedgerAdd: React.FC = props => {
                             }}
                         />
 
-                        {/* 编辑时可能出现 payer, participator, settled 中存在而 members 中不存在的情况
-                           需要抛出提示，并给出清除按钮 */}
+                        <Input.Helper error>
+                            {checkGhost() || (
+                                <>
+                                    存在幽灵成员，请点击{' '}
+                                    <Button
+                                        type="contained"
+                                        color="error"
+                                        size="small"
+                                        border="round"
+                                        onClick={clearGhost}
+                                    >
+                                        清除
+                                    </Button>
+                                </>
+                            )}
+                        </Input.Helper>
 
                         <Input.Helper error>
                             {errors.payer && errors.payer.message}
@@ -629,3 +665,9 @@ const LedgerAdd: React.FC = props => {
 }
 
 export default LedgerAdd
+
+function checkMembers(members: IMember[], ids: string[]) {
+    return !ids.find(id => {
+        return !members.find(member => member.id === id)
+    })
+}
