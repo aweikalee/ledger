@@ -8,6 +8,7 @@ import { AsyncComponent } from '@/components/AsyncComponent'
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 import RecordIndex from './Record/Index'
+import MemberIndex from './Member/Index'
 
 import LedgerAdd from './Ledger/Add'
 
@@ -41,6 +42,12 @@ const App: React.FC = () => {
                             exact
                             path="/ledger/:id/add"
                             component={LedgerAdd}
+                        />
+
+                        <Route
+                            exact
+                            path="/member/:id"
+                            component={MemberIndex}
                         />
 
                         {process.env.NODE_ENV === 'development' && (
