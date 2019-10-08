@@ -16,7 +16,7 @@ export interface ISelectDrawerProps extends IDrawerProps {
     title?: string
 }
 
-const SelectDrawer = React.forwardRef<HTMLElement, ISelectDrawerProps>(
+const Component = React.forwardRef<HTMLElement, ISelectDrawerProps>(
     (props, ref) => {
         const {
             className: classNameProp,
@@ -26,8 +26,8 @@ const SelectDrawer = React.forwardRef<HTMLElement, ISelectDrawerProps>(
             onUpdate,
             onConfirm,
             onClickOverlay,
-            onClose,
             onClickCancel,
+            onClose,
 
             // Other
             title,
@@ -43,8 +43,11 @@ const SelectDrawer = React.forwardRef<HTMLElement, ISelectDrawerProps>(
             className,
             anchor: 'bottom',
             onClickOverlay() {
-                onClickOverlay && onClickOverlay()
-                onClose && onClose()
+                if (onClickOverlay) {
+                    onClickOverlay()
+                } else if (onClose) {
+                    onClose()
+                }
             },
             ...other
         }
@@ -65,8 +68,11 @@ const SelectDrawer = React.forwardRef<HTMLElement, ISelectDrawerProps>(
                                 color="default"
                                 size="small"
                                 onClick={() => {
-                                    onClickCancel && onClickCancel()
-                                    onClose && onClose()
+                                    if (onClickCancel) {
+                                        onClickCancel()
+                                    } else if (onClose) {
+                                        onClose()
+                                    }
                                 }}
                             >
                                 取消
@@ -101,4 +107,5 @@ const SelectDrawer = React.forwardRef<HTMLElement, ISelectDrawerProps>(
     }
 )
 
-export default SelectDrawer
+Component.displayName = 'SelectDrawer'
+export default Component
