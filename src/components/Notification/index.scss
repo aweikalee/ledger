@@ -1,0 +1,122 @@
+@import '@/style/index.scss';
+
+.rc-notification {
+    position: fixed;
+    z-index: 10000;
+    top: $gap;
+    right: $gap;
+    max-width: calc(100% - #{$gap * 2});
+}
+.rc-notification-notice {
+    padding: $gap / 2;
+    border-radius: $border-radius;
+    box-shadow: shadow(3);
+    background: #fff;
+    display: block;
+    width: auto;
+    max-width: 100%;
+    line-height: 1.5;
+    vertical-align: middle;
+    position: relative;
+    overflow: hidden;
+
+    & + & {
+        margin-top: $gap;
+    }
+}
+.rc-notification-notice-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #000;
+    cursor: pointer;
+    outline: none;
+    @include font(body);
+    line-height: 1;
+    opacity: 0.5;
+    text-decoration: none;
+}
+.rc-notification-notice-close-x:after {
+    content: '×';
+}
+.rc-notification-notice-closable {
+    padding-right: $gap * 2;
+}
+.rc-notification-fade-enter {
+    opacity: 0;
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+    animation-play-state: paused;
+}
+.rc-notification-fade-leave {
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+    animation-play-state: paused;
+}
+.rc-notification-fade-enter.rc-notification-fade-enter-active {
+    animation-name: rcNotificationFadeIn;
+    animation-play-state: running;
+}
+.rc-notification-fade-leave.rc-notification-fade-leave-active {
+    animation-name: rcDialogFadeOut;
+    animation-play-state: running;
+}
+@keyframes rcNotificationFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes rcDialogFadeOut {
+    0% {
+        opacity: 1;
+        max-height: rem(75);
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        transform: scale(0);
+    }
+}
+
+.rc-notification-wapper {
+    display: flex;
+    align-items: stretch;
+}
+
+.rc-notification-icon {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-right: $gap / 2;
+    @include font(title-2);
+
+    &[data-type='info'] {
+        color: color(grey, 3);
+    }
+
+    &[data-type='success'] {
+        color: color(green, 3);
+    }
+
+    &[data-type='error'] {
+        color: color(red, 3);
+    }
+
+    &[data-type='warn'] {
+        color: color(yellow, 3);
+    }
+}
+
+.rc-notification-content {
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+    word-wrap: break-word;
+    @include font(body);
+    color: color(grey, 5);
+}

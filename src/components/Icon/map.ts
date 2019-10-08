@@ -10,4 +10,8 @@ export default {
     traffic: '\uf1b9',
     food: '\uf2e7',
     lodging: '\uf015',
+    success: '\uf058',
+    info: '\uf06a',
+    error: '\uf057',
+    warn: '\uf071'
 }
