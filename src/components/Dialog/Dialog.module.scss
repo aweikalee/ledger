@@ -1,0 +1,71 @@
+@import '@/style/index.scss';
+
+.dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+
+    & [data-role='dialog'] {
+        background-color: #fff;
+        width: calc(100% - #{$gap * 4});
+        box-sizing: border-box;
+        border-radius: $border-radius;
+        box-shadow: shadow(10);
+        max-width: screen-boundary(sm-md);
+    }
+    & [data-role='dialog-header'] {
+        padding: $gap;
+        padding-bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    & [data-role='dialog-title'] {
+        @include font(headline);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    & [data-role='dialog-close'] {
+        & [data-role='icon'] {
+            transform: rotate(45deg);
+            display: block;
+        }
+    }
+    & [data-role='dialog-content'] {
+        padding: $gap;
+        color: color(grey, 5);
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+    & [data-role='dialog-footer'] {
+        display: flex;
+        justify-content: flex-end;
+        padding: $gap;
+        padding-top: 0;
+        & > [data-role='button'] {
+            width: rem(80);
+            & + [data-role='button'] {
+                margin-left: $gap;
+            }
+        }
+    }
+}
+
+.appear,
+.enter {
+    transform: scale(1.5);
+}
+.appear-active,
+.enter-active {
+    transform: scale(1);
+    transition: transform 400ms $ease-out;
+}
+.exit {
+    transform: scale(1);
+}
+.exit-active {
+    transform: scale(0);
+    transition: transform 400ms;
+}
