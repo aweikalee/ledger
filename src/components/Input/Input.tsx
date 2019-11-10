@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useLayoutEffect } from 'react'
+import React, { useRef, useContext } from 'react'
 import clsx from 'clsx'
 import styles from './Input.module.scss'
 import Icon from '../Icon'
@@ -35,15 +35,7 @@ const Input = React.forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
     const context = useContext(InputContext)
 
     const el = useRef<HTMLInputElement>(null)
-    useLayoutEffect(() => {
-        if (ref) {
-            if ('current' in ref) {
-                ;(ref as any).current = el.current
-            } else {
-                ref(el.current)
-            }
-        }
-    }, [el, ref])
+    React.useImperativeHandle(ref, () => el.current!)
 
     const onChange: React.InputHTMLAttributes<
         HTMLInputElement
