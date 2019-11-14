@@ -5,7 +5,6 @@ import gql from 'graphql-tag'
 import { format } from 'date-fns'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
-import ToolBar from '@/components/ToolBar'
 import Calculator from '@/components/Calculator/Calculator'
 import { ScreenMini } from '@/components/Calculator'
 import { Popup } from '@/components/Popup'
@@ -22,7 +21,7 @@ import MemberList, { IMember } from './components/MemberList'
 import { IReport } from '@/types/graphql'
 import config from '@/config'
 import styles from './Index.module.scss'
-import { RouteChildrenProps } from 'react-router'
+import { RouteComponentProps } from 'react-router'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -43,12 +42,19 @@ export interface IForm {
     settled?: string[]
 }
 
-const LedgerAdd: React.FC = props => {
-    const { match, history } = props as RouteChildrenProps<{
-        id: string
-    }>
+export interface ILedgerAddRouteProps {
+    id: string
+}
 
-    const id = (match && match.params.id!) || ''
+const LedgerAdd: React.FC<
+    RouteComponentProps<ILedgerAddRouteProps>
+> = props => {
+    const {
+        history,
+        match: {
+            params: { id }
+        }
+    } = props
 
     /* initialization */
     const [forms, setForms] = useState<IForm>(() => ({
@@ -369,7 +375,7 @@ const LedgerAdd: React.FC = props => {
             <NavigationBar
                 title="新增账单"
                 subTitle="旅行账簿"
-                left={<BackButton icon="close" href="/" />}
+                left={<BackButton icon="close" href={`/ledger/${id}`} />}
                 right={
                     <Button
                         color="default"
@@ -659,7 +665,6 @@ const LedgerAdd: React.FC = props => {
                     </Grid>
                 </Grid>
             </ContentBody>
-            <ToolBar />
         </>
     )
 }

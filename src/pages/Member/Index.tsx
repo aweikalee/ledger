@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import useForm from 'react-hook-form'
-import { RouteChildrenProps } from 'react-router'
+import { RouteComponentProps } from 'react-router'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
@@ -24,12 +24,17 @@ export interface IForm {
     name?: string
 }
 
-const Member: React.FC = props => {
-    const { match, history } = props as RouteChildrenProps<{
-        id: string
-    }>
+export interface IMemberRouteProps {
+    id: string
+}
 
-    const id = (match && match.params.id) || ''
+const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
+    const {
+        history,
+        match: {
+            params: { id }
+        }
+    } = props
 
     const { data } = useQuery<{
         members: IMember[]
@@ -56,12 +61,7 @@ const Member: React.FC = props => {
         id: '',
         name: ''
     }))
-    const {
-        register,
-        setValue,
-        handleSubmit,
-        errors
-    } = useForm<IForm>({
+    const { register, setValue, handleSubmit, errors } = useForm<IForm>({
         mode: 'onChange',
         defaultValues: {
             id: forms.id,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { TransitionGroup } from 'react-transition-group'
@@ -15,15 +16,18 @@ import styles from './Index.module.scss'
 import { format } from 'date-fns'
 import config from '@/config'
 
-const LedgerIndex: React.FC = props => {
-    const {
-        params: { id }
-    } = (props as any).match as {
-        params: {
-            id: string
-        }
-    }
+export interface ILedgerIndexRouteProps {
+    id: string
+}
 
+const LedgerIndex: React.FC<
+    RouteComponentProps<ILedgerIndexRouteProps>
+> = props => {
+    const {
+        match: {
+            params: { id }
+        }
+    } = props
     const [cursor, setCursor] = useState('')
 
     const [date] = useState(format(new Date(), config.datetimeFormat))
@@ -173,7 +177,14 @@ const LedgerIndex: React.FC = props => {
                     delay={100}
                 />
             </ContentBody>
-            <ToolBar />
+            <ToolBar
+                active={{
+                    main: true
+                }}
+                href={{
+                    main: `/ledger/${id}/add`
+                }}
+            />
         </>
     )
 }

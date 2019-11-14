@@ -35,7 +35,12 @@ const CollectionIndex: React.FC = () => {
         <>
             <NavigationBar title="账簿盒" />
             <ContentBody>
-                <TransitionGroup component={Grid} container gap={2} style={{overflowX: 'hidden'}}>
+                <TransitionGroup
+                    component={Grid}
+                    container
+                    gap={2}
+                    style={{ overflowX: 'hidden' }}
+                >
                     {data &&
                         (data.ledgers || []).map((item, index) => (
                             <DelayCSSTransition
@@ -53,7 +58,14 @@ const CollectionIndex: React.FC = () => {
                 </TransitionGroup>
                 <Loading show={loading} delay={100} />
             </ContentBody>
-            <ToolBar />
+            <ToolBar
+                active={{
+                    main: true
+                }}
+                href={{
+                    main: '/add'
+                }}
+            />
         </>
     )
 }

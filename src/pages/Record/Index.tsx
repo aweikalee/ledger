@@ -49,7 +49,14 @@ const LedgerIndex: React.FC<RouteChildrenProps> = props => {
                 </Grid>
             </ContentBody>
             <div ref={refMask} className={styles.mask} onClick={onMaskClick} />
-            <ToolBar />
+            <ToolBar
+                active={{
+                    main: true
+                }}
+                href={{
+                    main: `/ledger/:id/add`
+                }}
+            />
         </>
     )
 }

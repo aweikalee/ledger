@@ -14,7 +14,9 @@ import LedgerAdd from './Ledger/Add'
 
 import './App.module.scss'
 
-const Test = AsyncComponent(() => import(/* webpackChunkName: 'Test' */'./Test/Index'))
+const Test = AsyncComponent(() =>
+    import(/* webpackChunkName: 'Test' */ './Test/Index')
+)
 
 const client = new ApolloClient({
     uri: '/graphql'
