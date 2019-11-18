@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { RouteComponentProps } from 'react-router'
 import useForm from 'react-hook-form'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
@@ -16,12 +17,11 @@ import Icon from '@/components/Icon'
 import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
 import ClassifyPicker from './components/ClassifyPicker'
-import { IClassify } from './components/Record'
 import MemberList, { IMember } from './components/MemberList'
 import { IReport } from '@/types/graphql'
 import config from '@/config'
 import styles from './Index.module.scss'
-import { RouteComponentProps } from 'react-router'
+import { IClassify } from '@/types/classify'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -46,9 +46,9 @@ export interface ILedgerAddRouteProps {
     id: string
 }
 
-const LedgerAdd: React.FC<
-    RouteComponentProps<ILedgerAddRouteProps>
-> = props => {
+const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
+    props
+) => {
     const {
         history,
         match: {
@@ -90,7 +90,7 @@ const LedgerAdd: React.FC<
 
     const updateForms = (field: keyof IForm, value: IForm[typeof field]) => {
         setValue(field, value)
-        setForms(forms => ({
+        setForms((forms) => ({
             ...forms,
             [field]: value
         }))
@@ -103,7 +103,7 @@ const LedgerAdd: React.FC<
                 name: 'type'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<number>(
                         [
                             (value, options = {}) => {
@@ -128,7 +128,7 @@ const LedgerAdd: React.FC<
                 name: 'amount'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<string>(
                         [
                             (value, options = {}) => {
@@ -154,7 +154,7 @@ const LedgerAdd: React.FC<
                 name: 'currency'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<string>([valid.isRequire()], {
                         name: '货币种类'
                     })(value)
@@ -167,7 +167,7 @@ const LedgerAdd: React.FC<
                 name: 'classify'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<string>([valid.isRequire()], {
                         name: '分类'
                     })(value)
@@ -180,7 +180,7 @@ const LedgerAdd: React.FC<
                 name: 'datetime'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<string>(
                         [valid.isRequire(), valid.isDate()],
                         {
@@ -196,7 +196,7 @@ const LedgerAdd: React.FC<
                 name: 'payer'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<string>([], {
                         name: '支付方'
                     })(value)
@@ -209,7 +209,7 @@ const LedgerAdd: React.FC<
                 name: 'particaptor'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<string>([], {
                         name: '消费方'
                     })(value)
@@ -222,7 +222,7 @@ const LedgerAdd: React.FC<
                 name: 'settled'
             },
             {
-                validate: value => {
+                validate: (value) => {
                     return valid.queue<string>([], {
                         name: '已还清'
                     })(value)
@@ -345,8 +345,8 @@ const LedgerAdd: React.FC<
         const members = (dataMember && dataMember.members) || []
 
         const filter = (arr: string[] = []) => {
-            return arr.filter(v => {
-                return !!members.find(member => member.id === v)
+            return arr.filter((v) => {
+                return !!members.find((member) => member.id === v)
             })
         }
         updateForms('payer', filter(forms.payer))
@@ -405,7 +405,7 @@ const LedgerAdd: React.FC<
                                     value: 1,
                                     text: '收入'
                                 }
-                            ].map(item => (
+                            ].map((item) => (
                                 <Button
                                     type={
                                         forms.type === item.value
@@ -452,7 +452,7 @@ const LedgerAdd: React.FC<
                             >
                                 {dataCurrency &&
                                     dataCurrency.currencys &&
-                                    dataCurrency.currencys.map(item => (
+                                    dataCurrency.currencys.map((item) => (
                                         <Button
                                             type={
                                                 item.name === forms.currency
@@ -490,7 +490,9 @@ const LedgerAdd: React.FC<
                             />
                             <Calculator
                                 value={forms.amount}
-                                onUpdate={value => updateForms('amount', value)}
+                                onUpdate={(value) =>
+                                    updateForms('amount', value)
+                                }
                                 show={calculatorShow}
                                 onBlur={() => setCalculatorShow(false)}
                             />
@@ -512,7 +514,7 @@ const LedgerAdd: React.FC<
                 <ClassifyPicker
                     data={dataClassifies ? dataClassifies.classifies : []}
                     active={forms.classify || ''}
-                    onChange={value => updateForms('classify', value)}
+                    onChange={(value) => updateForms('classify', value)}
                 />
                 <Grid container gap={2}>
                     <Grid sm={12}>
@@ -563,7 +565,7 @@ const LedgerAdd: React.FC<
                     >
                         <DatePicker.DatePicker
                             value={new Date(forms.datetime!)}
-                            onConfirm={value => {
+                            onConfirm={(value) => {
                                 updateForms(
                                     'datetime',
                                     format(value, config.datetimeFormat)
@@ -582,7 +584,7 @@ const LedgerAdd: React.FC<
                     >
                         <DatePicker.DatePicker
                             value={new Date(forms.datetime!)}
-                            onConfirm={value => {
+                            onConfirm={(value) => {
                                 updateForms(
                                     'datetime',
                                     format(value, config.datetimeFormat)
@@ -672,7 +674,7 @@ const LedgerAdd: React.FC<
 export default LedgerAdd
 
 function checkMembers(members: IMember[], ids: string[]) {
-    return !ids.find(id => {
-        return !members.find(member => member.id === id)
+    return !ids.find((id) => {
+        return !members.find((member) => member.id === id)
     })
 }

@@ -3,9 +3,9 @@ import Grid from '@/components/Grid'
 import Icon from '@/components/Icon'
 import styles from './ClassifyPicker.module.scss'
 import Button from '@/components/Button'
-import { IClassify } from './Record'
 import color from '../../../style/color.module.scss'
 import clsx from 'clsx'
+import { IClassify } from '@/types/classify'
 
 export interface IClassifyPickerProps {
     data: IClassify[]

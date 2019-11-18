@@ -6,7 +6,7 @@ const classfies = [
         text: '餐饮',
         id: '2c438dca-3814-48be-b42a-0364a91f769b',
         icon: 'food',
-        color: 'orange'
+        color: 'yellow'
     },
     {
         text: '交通',
