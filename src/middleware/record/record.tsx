@@ -28,7 +28,7 @@ export interface IClassify {
 }
 
 const getClassify = (id: string, classifies: IClassify[]) =>
-    classifies.find((v) => v.id === id) || {
+    classifies.find(v => v.id === id) || {
         id: '',
         text: '未分类',
         icon: 'image',
@@ -54,14 +54,14 @@ const formatAmount = (
     return result
 }
 
-const middleware = (data: IRecord, classifies: IClassify[]) => {
+export default (data: IRecord, classifies: IClassify[]) => {
     const classifyData = getClassify(data.classify || '', classifies)
 
-    const classify: React.FC = (props) => {
+    const classify: React.FC<React.HTMLAttributes<HTMLSpanElement>> = props => {
         return <span {...props}>{classifyData.text}</span>
     }
 
-    const icon: React.FC<IGirdProps> = (props) => {
+    const icon: React.FC<IGirdProps> = props => {
         const { className, ...other } = props
         return (
             <Grid
@@ -79,9 +79,9 @@ const middleware = (data: IRecord, classifies: IClassify[]) => {
         )
     }
 
-    const datetime: React.FC<{
+    const datetime: React.FC<React.HTMLAttributes<HTMLSpanElement> & {
         format?: string
-    }> = (props) => {
+    }> = props => {
         const { format: formatProps, ...other } = props
         const date = new Date(data.datetime || 0)
         return (
@@ -91,9 +91,7 @@ const middleware = (data: IRecord, classifies: IClassify[]) => {
         )
     }
 
-    const timezone: React.FC<React.HTMLAttributes<HTMLSpanElement>> = (
-        props
-    ) => {
+    const timezone: React.FC<React.HTMLAttributes<HTMLSpanElement>> = props => {
         if (data.timezone !== undefined && data.timezone !== localTimeOffset) {
             return <span {...props}>{offsetToUTC(data.timezone)}</span>
         } else {
@@ -101,27 +99,27 @@ const middleware = (data: IRecord, classifies: IClassify[]) => {
         }
     }
 
-    const amount: React.FC<React.HTMLAttributes<HTMLElement>> = (props) => {
+    const amount: React.FC<React.HTMLAttributes<HTMLSpanElement>> = props => {
         const { className, ...other } = props
         const [amountInt, amountFloat] = formatAmount(data.type, data.amount)
         return (
-            <div
+            <span
                 className={clsx(styles.amount, className)}
                 data-type={data.type || 0}
                 {...other}
             >
                 {amountInt}
                 <span data-float>{amountFloat}</span>
-            </div>
+            </span>
         )
     }
 
-    const currency: React.FC<React.HTMLAttributes<HTMLElement>> = (props) => {
+    const currency: React.FC<React.HTMLAttributes<HTMLSpanElement>> = props => {
         return <span {...props}>{data.currency}</span>
     }
 
-    const detail: React.FC<React.HTMLAttributes<HTMLElement>> = (props) => {
-        return <div {...props}>{data.detail}</div>
+    const detail: React.FC<React.HTMLAttributes<HTMLSpanElement>> = props => {
+        return <span {...props}>{data.detail}</span>
     }
 
     return {
@@ -134,5 +132,3 @@ const middleware = (data: IRecord, classifies: IClassify[]) => {
         detail
     }
 }
-
-export default middleware

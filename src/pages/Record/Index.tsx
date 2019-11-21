@@ -8,10 +8,22 @@ import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
 import Button from '@/components/Button'
 import Icon from '@/components/Icon'
-import middleware from '@/middleware/record'
-import styles from './Index.module.scss'
+import * as Input from '@/components/Input'
+import Members from './components/Members'
+
+import middleware from '@/middleware/record/record'
+import memberMiddleware from '@/middleware/record/member'
+
 import { IRecord } from '@/types/record'
 import { IClassify } from '@/types/classify'
+
+import styles from './Index.module.scss'
+import membersStyles from './components/Members.module.scss'
+
+export interface IMember {
+    id: string
+    name: string
+}
 
 export interface IRecordIndexRouteProps {
     id: string
@@ -19,30 +31,71 @@ export interface IRecordIndexRouteProps {
 
 const Record: React.FC<IRecord & {
     classifies: IClassify[]
-}> = (props) => {
-    const { classifies, ...other } = props
+    members: IMember[]
+}> = props => {
+    const { classifies, members, ...other } = props
     const Middleware = middleware(other, classifies)
 
     return (
         <>
-            <Grid sm={12}>
-                <Grid sm="auto">
-                    <Middleware.icon />
-                </Grid>
-                <Grid sm={true}>
-                    <Middleware.classify />
-                </Grid>
-                <Grid sm="auto">
-                    <Middleware.datetime />
-                    <Middleware.timezone />
-                </Grid>
+            <Grid sm={12} justify="center" alignItems="center">
+                <Middleware.icon className={styles.icon} />
+                <Middleware.classify className={styles.classify} />
             </Grid>
-            <Grid sm={12}>
+            <Grid sm={12} justify="center" className={styles.amount}>
                 <Middleware.amount />
+            </Grid>
+            <Grid sm={12} justify="center" className={styles.currency}>
                 <Middleware.currency />
             </Grid>
-            <Grid sm={12}>成员 ________</Grid>
-            <Grid sm={12}>备注 ________</Grid>
+
+            <Input.Label
+                description={
+                    <>
+                        <Middleware.detail />
+                        <Middleware.detail />
+                        <Middleware.detail />
+                    </>
+                }
+            >
+                描述
+            </Input.Label>
+
+            <Input.Label
+                description={
+                    <>
+                        <Middleware.datetime className={styles.datetime} />
+                        <Middleware.timezone className={styles.timezone} />
+                    </>
+                }
+            >
+                时间
+            </Input.Label>
+
+            <Grid sm={12}>
+                <Input.Label
+                    description={
+                        <Grid justify="flex-end">
+                            <Grid
+                                className={membersStyles.width}
+                                justify="space-around"
+                            >
+                                <Grid>支付</Grid>
+                                <Grid>消费</Grid>
+                                <Grid>还清</Grid>
+                            </Grid>
+                        </Grid>
+                    }
+                >
+                    成员
+                </Input.Label>
+
+                <Members
+                    display="icon"
+                    members={memberMiddleware(other, members)}
+                />
+            </Grid>
+
             <Grid sm={12} justify="space-around">
                 <Grid sm={true}>
                     <Button color="default">
@@ -59,9 +112,9 @@ const Record: React.FC<IRecord & {
     )
 }
 
-const RecordIndex: React.FC<RouteComponentProps<IRecordIndexRouteProps>> = (
-    props
-) => {
+const RecordIndex: React.FC<RouteComponentProps<
+    IRecordIndexRouteProps
+>> = props => {
     const {
         match: {
             params: { id }
@@ -95,6 +148,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexRouteProps>> = (
         }
     )
 
+    /* Classify */
     const { data: dataClassifies } = useQuery<{
         classifies: IClassify[]
     }>(
@@ -115,6 +169,25 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexRouteProps>> = (
         }
     )
 
+    /* Member */
+    const { data: dataMember } = useQuery<{
+        members: IMember[]
+    }>(
+        gql`
+            query($id: ID!) {
+                members(pid: $id) {
+                    id
+                    name
+                }
+            }
+        `,
+        {
+            variables: {
+                id: id
+            }
+        }
+    )
+
     const refMask = useRef(null)
 
     const onMaskClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -130,7 +203,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexRouteProps>> = (
                 left={<BackButton href="/ledger/1" text="账簿" />}
             />
             <ContentBody>
-                <Grid className={styles.record} container wrap="wrap">
+                <Grid className={styles.record} wrap="wrap">
                     {data && data.record && (
                         <Record
                             {...data.record}
@@ -138,6 +211,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexRouteProps>> = (
                                 (dataClassifies && dataClassifies.classifies) ||
                                 []
                             }
+                            members={(dataMember && dataMember.members) || []}
                         />
                     )}
                 </Grid>

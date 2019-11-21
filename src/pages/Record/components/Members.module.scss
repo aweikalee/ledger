@@ -1,5 +1,9 @@
 @import '@/style/index.scss';
 
+.width {
+    width: rem(150);
+}
+
 .list {
     padding: $gap / 2 0;
 }
@@ -16,6 +20,6 @@
     white-space: nowrap;
 }
 
-.checkbox {
-    width: rem(150);
+.icon {
+    color: color(grey, 5);
 }

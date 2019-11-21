@@ -17,11 +17,14 @@ import Icon from '@/components/Icon'
 import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
 import ClassifyPicker from './components/ClassifyPicker'
-import MemberList, { IMember } from './components/MemberList'
+import Members from '@/pages/Record/components/Members'
+import memberMiddleware from '@/middleware/record/member'
 import { IReport } from '@/types/graphql'
 import config from '@/config'
 import styles from './Index.module.scss'
+import MembersStyles from '@/pages/Record/components/Members.module.scss'
 import { IClassify } from '@/types/classify'
+import { IMember } from '@/types/member'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -46,9 +49,9 @@ export interface ILedgerAddRouteProps {
     id: string
 }
 
-const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
-    props
-) => {
+const LedgerAdd: React.FC<RouteComponentProps<
+    ILedgerAddRouteProps
+>> = props => {
     const {
         history,
         match: {
@@ -90,7 +93,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
 
     const updateForms = (field: keyof IForm, value: IForm[typeof field]) => {
         setValue(field, value)
-        setForms((forms) => ({
+        setForms(forms => ({
             ...forms,
             [field]: value
         }))
@@ -103,7 +106,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'type'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<number>(
                         [
                             (value, options = {}) => {
@@ -128,7 +131,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'amount'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<string>(
                         [
                             (value, options = {}) => {
@@ -154,7 +157,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'currency'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<string>([valid.isRequire()], {
                         name: '货币种类'
                     })(value)
@@ -167,7 +170,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'classify'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<string>([valid.isRequire()], {
                         name: '分类'
                     })(value)
@@ -180,7 +183,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'datetime'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<string>(
                         [valid.isRequire(), valid.isDate()],
                         {
@@ -196,7 +199,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'payer'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<string>([], {
                         name: '支付方'
                     })(value)
@@ -209,7 +212,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'particaptor'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<string>([], {
                         name: '消费方'
                     })(value)
@@ -222,7 +225,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 name: 'settled'
             },
             {
-                validate: (value) => {
+                validate: value => {
                     return valid.queue<string>([], {
                         name: '已还清'
                     })(value)
@@ -345,8 +348,8 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
         const members = (dataMember && dataMember.members) || []
 
         const filter = (arr: string[] = []) => {
-            return arr.filter((v) => {
-                return !!members.find((member) => member.id === v)
+            return arr.filter(v => {
+                return !!members.find(member => member.id === v)
             })
         }
         updateForms('payer', filter(forms.payer))
@@ -405,7 +408,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                                     value: 1,
                                     text: '收入'
                                 }
-                            ].map((item) => (
+                            ].map(item => (
                                 <Button
                                     type={
                                         forms.type === item.value
@@ -452,7 +455,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                             >
                                 {dataCurrency &&
                                     dataCurrency.currencys &&
-                                    dataCurrency.currencys.map((item) => (
+                                    dataCurrency.currencys.map(item => (
                                         <Button
                                             type={
                                                 item.name === forms.currency
@@ -490,9 +493,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                             />
                             <Calculator
                                 value={forms.amount}
-                                onUpdate={(value) =>
-                                    updateForms('amount', value)
-                                }
+                                onUpdate={value => updateForms('amount', value)}
                                 show={calculatorShow}
                                 onBlur={() => setCalculatorShow(false)}
                             />
@@ -514,7 +515,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                 <ClassifyPicker
                     data={dataClassifies ? dataClassifies.classifies : []}
                     active={forms.classify || ''}
-                    onChange={(value) => updateForms('classify', value)}
+                    onChange={value => updateForms('classify', value)}
                 />
                 <Grid container gap={2}>
                     <Grid sm={12}>
@@ -565,7 +566,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                     >
                         <DatePicker.DatePicker
                             value={new Date(forms.datetime!)}
-                            onConfirm={(value) => {
+                            onConfirm={value => {
                                 updateForms(
                                     'datetime',
                                     format(value, config.datetimeFormat)
@@ -584,7 +585,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                     >
                         <DatePicker.DatePicker
                             value={new Date(forms.datetime!)}
-                            onConfirm={(value) => {
+                            onConfirm={value => {
                                 updateForms(
                                     'datetime',
                                     format(value, config.datetimeFormat)
@@ -603,7 +604,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                             description={
                                 <Grid justify="flex-end">
                                     <Grid
-                                        className={styles['member-title']}
+                                        className={MembersStyles.width}
                                         justify="space-around"
                                     >
                                         <Grid>支付</Grid>
@@ -624,12 +625,16 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
                                 <Icon text="gear" /> 管理
                             </Button>
                         </Input.Label>
-
-                        <MemberList
-                            members={dataMember && dataMember.members}
-                            payer={forms.payer}
-                            participator={forms.participator}
-                            settled={forms.settled}
+                        <Members
+                            display="checkbox"
+                            members={memberMiddleware(
+                                {
+                                    payer: forms.payer,
+                                    participator: forms.participator,
+                                    settled: forms.settled
+                                },
+                                (dataMember && dataMember.members) || []
+                            )}
                             onUpdate={(type, value) => {
                                 const newValue = [...(forms[type] || [])]
                                 const index = newValue.indexOf(value)
@@ -674,7 +679,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps>> = (
 export default LedgerAdd
 
 function checkMembers(members: IMember[], ids: string[]) {
-    return !ids.find((id) => {
-        return !members.find((member) => member.id === id)
+    return !ids.find(id => {
+        return !members.find(member => member.id === id)
     })
 }
