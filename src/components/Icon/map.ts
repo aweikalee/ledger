@@ -1,6 +1,7 @@
 export default {
     'angle-left': '\uf053',
     trash: '\uf1f8',
+    pen: '\uf303',
     close: '\uf00d',
     confirm: '\uf00c',
     gear: '\uf013',

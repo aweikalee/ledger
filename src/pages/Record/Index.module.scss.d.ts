@@ -5,8 +5,9 @@ export type IRecordClass = {
     classify: string
     amount: string
     currency: string
-    datetime: string
     timezone: string
+    content: string
+    toolbar: string
 }
 
 const styles: IRecordClass

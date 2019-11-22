@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
@@ -8,6 +8,7 @@ import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
 import Button from '@/components/Button'
 import Icon from '@/components/Icon'
+import Dialog from '@/components/Dialog'
 import * as Input from '@/components/Input'
 import Members from './components/Members'
 
@@ -36,41 +37,33 @@ const Record: React.FC<IRecord & {
     const { classifies, members, ...other } = props
     const Middleware = middleware(other, classifies)
 
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
     return (
         <>
             <Grid sm={12} justify="center" alignItems="center">
                 <Middleware.icon className={styles.icon} />
                 <Middleware.classify className={styles.classify} />
             </Grid>
+
             <Grid sm={12} justify="center" className={styles.amount}>
                 <Middleware.amount />
             </Grid>
+
             <Grid sm={12} justify="center" className={styles.currency}>
                 <Middleware.currency />
             </Grid>
 
-            <Input.Label
-                description={
-                    <>
-                        <Middleware.detail />
-                        <Middleware.detail />
-                        <Middleware.detail />
-                    </>
-                }
-            >
-                描述
-            </Input.Label>
+            <Input.Label>描述</Input.Label>
+            <div className={styles.content}>
+                <Middleware.detail />
+            </div>
 
-            <Input.Label
-                description={
-                    <>
-                        <Middleware.datetime className={styles.datetime} />
-                        <Middleware.timezone className={styles.timezone} />
-                    </>
-                }
-            >
-                时间
-            </Input.Label>
+            <Input.Label>时间</Input.Label>
+            <div className={styles.content}>
+                <Middleware.datetime />
+                <Middleware.timezone className={styles.timezone} />
+            </div>
 
             <Grid sm={12}>
                 <Input.Label
@@ -96,18 +89,30 @@ const Record: React.FC<IRecord & {
                 />
             </Grid>
 
-            <Grid sm={12} justify="space-around">
+            <Grid sm={12} justify="space-around" className={styles.toolbar}>
                 <Grid sm={true}>
-                    <Button color="default">
-                        <Icon text="close" />
+                    <Button
+                        color="default"
+                        onClick={() => setShowDeleteDialog(true)}
+                    >
+                        <Icon text="trash" />
                     </Button>
                 </Grid>
                 <Grid sm="auto">
-                    <Button color="primary">
-                        <Icon text="close" /> 编辑
+                    <Button color="primary" href={`/record/${props.id}/edit`}>
+                        <Icon text="pen" /> 编辑
                     </Button>
                 </Grid>
             </Grid>
+
+            {/* 删除确认 */}
+            <Dialog
+                show={showDeleteDialog}
+                onConfirm={() => setShowDeleteDialog(false)}
+                onClose={() => setShowDeleteDialog(false)}
+            >
+                确定要删除这条记录吗？
+            </Dialog>
         </>
     )
 }
