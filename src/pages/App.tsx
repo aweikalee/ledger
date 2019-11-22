@@ -12,6 +12,8 @@ import MemberIndex from './Member/Index'
 
 import LedgerAdd from './Ledger/Add'
 
+import UserLogin from './User/Login'
+
 import './App.module.scss'
 
 const Test = AsyncComponent(() =>
@@ -51,6 +53,8 @@ const App: React.FC = () => {
                             path="/member/:id"
                             component={MemberIndex}
                         />
+
+                        <Route exact path="/login" component={UserLogin} />
 
                         {process.env.NODE_ENV === 'development' && (
                             <Route exact path="/test" component={Test} />
