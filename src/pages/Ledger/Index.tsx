@@ -11,6 +11,9 @@ import Grid from '@/components/Grid'
 import { DelayCSSTransition } from '@/components/Animation'
 import * as Loading from '@/components/Loading'
 import { ILoadMoreProps } from '@/components/Loading/More'
+import { Button } from '@/components/Button'
+import { Icon } from '@/components/Icon'
+import * as DatePicker from '@/components/DatePicker'
 import Record from './components/Record'
 import styles from './Index.module.scss'
 import { format } from 'date-fns'
@@ -22,9 +25,9 @@ export interface ILedgerIndexRouteProps {
     id: string
 }
 
-const LedgerIndex: React.FC<RouteComponentProps<ILedgerIndexRouteProps>> = (
-    props
-) => {
+const LedgerIndex: React.FC<RouteComponentProps<
+    ILedgerIndexRouteProps
+>> = props => {
     const {
         match: {
             params: { id }
@@ -74,7 +77,7 @@ const LedgerIndex: React.FC<RouteComponentProps<ILedgerIndexRouteProps>> = (
         }
     }, [data])
 
-    const fetchMoreFn: ILoadMoreProps['handler'] = (cb) => {
+    const fetchMoreFn: ILoadMoreProps['handler'] = cb => {
         fetchMore({
             variables: {
                 pid: id,
@@ -98,7 +101,7 @@ const LedgerIndex: React.FC<RouteComponentProps<ILedgerIndexRouteProps>> = (
                     return prev
                 }
             }
-        }).then((res) => {
+        }).then(res => {
             if (res.errors) {
                 cb(res.errors[0])
             } else {
@@ -136,12 +139,33 @@ const LedgerIndex: React.FC<RouteComponentProps<ILedgerIndexRouteProps>> = (
     }
     const types = (dataClassifies && dataClassifies.classifies) || []
 
+    /* date picker */
+    const [showDate, setShowDate] = useState(false)
+
     return (
         <>
             <NavigationBar
                 title="旅行账簿"
                 subTitle="2019-08-13"
                 left={<BackButton text="账簿盒" href="/" />}
+                right={
+                    <>
+                        <Button
+                            color="default"
+                            size="medium"
+                            href={`/ledger/${id}/edit`}
+                        >
+                            <Icon text="pen"></Icon>
+                        </Button>
+                        <Button
+                            color="default"
+                            size="medium"
+                            onClick={() => setShowDate(true)}
+                        >
+                            <Icon text="calendar"></Icon>
+                        </Button>
+                    </>
+                }
             />
             <ContentBody maxWidth="sm">
                 <TransitionGroup component={Grid} container direction="column">
@@ -176,6 +200,22 @@ const LedgerIndex: React.FC<RouteComponentProps<ILedgerIndexRouteProps>> = (
                     main: `/ledger/${id}/add`
                 }}
             />
+
+            {/* 日期选择器 */}
+            <DatePicker.Modal
+                show={showDate}
+                onClickOverlay={() => setShowDate(false)}
+            >
+                <DatePicker.DatePicker
+                    onConfirm={value => {
+                        /* to do something */
+                        setShowDate(false)
+                    }}
+                    disabledHours
+                    disabledMinutes
+                    disabledSeconds
+                ></DatePicker.DatePicker>
+            </DatePicker.Modal>
         </>
     )
 }

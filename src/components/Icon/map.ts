@@ -14,5 +14,6 @@ export default {
     success: '\uf058',
     info: '\uf06a',
     error: '\uf057',
-    warn: '\uf071'
+    warn: '\uf071',
+    calendar: '\uf073'
 }
