@@ -5,11 +5,12 @@ import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
-import ToolBar from '@/components/ToolBar'
 import * as Input from '@/components/Input'
 import { Button } from '@/components/Button'
 import { Grid } from '@/components/Grid'
+
 import * as valid from '@/utils/valid'
+import {useStore} from '@/store'
 
 import { ILoginReport } from '@/types/graphql'
 
@@ -27,11 +28,13 @@ const UserLogin: React.FC<RouteComponentProps<
 >> = props => {
     const { history } = props
 
+    const store = useStore()
+
     const pwdRef = useRef<HTMLInputElement>(null)
     const loginRef = useRef<HTMLElement>(null)
 
     const [forms, setForms] = useState<IForm>(() => ({
-        username: '',
+        username: store.username,
         password: ''
     }))
     const {
@@ -100,6 +103,7 @@ const UserLogin: React.FC<RouteComponentProps<
                     message
                     username
                     nickname
+                    token
                 }
             }
         `
@@ -112,7 +116,12 @@ const UserLogin: React.FC<RouteComponentProps<
             }
         }).then(({ data }) => {
             if (data && data.login.code === 200) {
-                console.log('登录成功')
+                const info = data.login
+                store.setUsername(info.username)
+                store.setNickname(info.nickname)
+                store.setToken(info.token)
+
+                history.push('/')
             } else {
                 console.log('登录失败')
             }
@@ -216,7 +225,6 @@ const UserLogin: React.FC<RouteComponentProps<
                     </Grid>
                 </Grid>
             </ContentBody>
-            <ToolBar />
         </>
     )
 }

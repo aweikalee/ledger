@@ -104,5 +104,6 @@ module.exports = gql`
         message: String
         username: String
         nickname: String
+        token: ID
     }
 `
