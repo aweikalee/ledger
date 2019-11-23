@@ -17,6 +17,7 @@ module.exports = gql`
 
     type Mutation {
         createRecord(data: RecordInput): Report
+        login(data: LoginInput): LoginReport
     }
 
     interface BasePagination {
@@ -88,8 +89,20 @@ module.exports = gql`
         nickname: String!
     }
 
-    type Report {
+    interface Report {
         code: Int
         message: String
+    }
+
+    input LoginInput {
+        username: String
+        password: String
+    }
+
+    type LoginReport implements Report {
+        code: Int
+        message: String
+        username: String
+        nickname: String
     }
 `

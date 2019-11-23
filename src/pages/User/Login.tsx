@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import useForm from 'react-hook-form'
+import { useMutation } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
@@ -8,6 +10,8 @@ import * as Input from '@/components/Input'
 import { Button } from '@/components/Button'
 import { Grid } from '@/components/Grid'
 import * as valid from '@/utils/valid'
+
+import { ILoginReport } from '@/types/graphql'
 
 export interface IForm {
     username: string
@@ -81,8 +85,38 @@ const UserLogin: React.FC<RouteComponentProps<
         )
     })
 
+    const [sendLogin] = useMutation<
+        {
+            login: ILoginReport
+        },
+        {
+            data: IForm
+        }
+    >(
+        gql`
+            mutation($data: LoginInput) {
+                login(data: $data) {
+                    code
+                    message
+                    username
+                    nickname
+                }
+            }
+        `
+    )
+
     const login = () => {
-        /* to do something */
+        sendLogin({
+            variables: {
+                data: forms
+            }
+        }).then(({ data }) => {
+            if (data && data.login.code === 200) {
+                console.log('登录成功')
+            } else {
+                console.log('登录失败')
+            }
+        })
     }
 
     return (
@@ -91,7 +125,7 @@ const UserLogin: React.FC<RouteComponentProps<
                 title="登录"
                 left={<BackButton onClick={() => history.goBack()} />}
             />
-            <ContentBody>
+            <ContentBody maxWidth="sm">
                 <Grid gap={4}>
                     <Grid sm={12}>
                         <Input.Control error={!!errors.username}>

@@ -103,6 +103,12 @@ const mocks = {
         createRecord: () => ({
             code: 201,
             message: '创建记录成功'
+        }),
+        login: (obj, { data }) => ({
+            code: 200,
+            message: '登录成功',
+            username: data.username,
+            nickname: data.username
         })
     }),
     Ledger: () => ({
