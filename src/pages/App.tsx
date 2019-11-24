@@ -9,6 +9,7 @@ import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 import RecordIndex from './Record/Index'
 import MemberIndex from './Member/Index'
+import UserIndex from './User/Index'
 
 import LedgerAdd from './Ledger/Add'
 
@@ -53,6 +54,8 @@ const App: React.FC = () => {
                             path="/member/:id"
                             component={MemberIndex}
                         />
+
+                        <Route exact path="/user" component={UserIndex} />
 
                         <Route exact path="/login" component={UserLogin} />
 

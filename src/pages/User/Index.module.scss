@@ -1,0 +1,17 @@
+@import '@/style/index.scss';
+
+.card.card.card {
+    @include font(title-2);
+    padding: $gap * 2 $gap;
+}
+
+.buttons {
+    box-shadow: shadow(6);
+    & > [data-role="button"] {
+        background-color: color(white);
+        border: none;
+    }
+    & > [data-role="button"] + [data-role="button"] {
+        border-top: 1px dashed color(grey, 2);
+    }
+}
