@@ -14,6 +14,7 @@ import UserIndex from './User/Index'
 import LedgerAdd from './Ledger/Add'
 
 import UserLogin from './User/Login'
+import UserLogout from './User/Logout'
 
 import './App.module.scss'
 
@@ -58,6 +59,8 @@ const App: React.FC = () => {
                         <Route exact path="/user" component={UserIndex} />
 
                         <Route exact path="/login" component={UserLogin} />
+
+                        <Route exact path="/logout" component={UserLogout} />
 
                         {process.env.NODE_ENV === 'development' && (
                             <Route exact path="/test" component={Test} />

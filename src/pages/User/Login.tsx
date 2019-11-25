@@ -9,8 +9,9 @@ import * as Input from '@/components/Input'
 import { Button } from '@/components/Button'
 import { Grid } from '@/components/Grid'
 
+import { notification } from '@/components/Notification'
 import * as valid from '@/utils/valid'
-import {useStore} from '@/store'
+import { useStore } from '@/store'
 
 import { ILoginReport } from '@/types/graphql'
 
@@ -121,9 +122,15 @@ const UserLogin: React.FC<RouteComponentProps<
                 store.setNickname(info.nickname)
                 store.setToken(info.token)
 
+                notification.success({
+                    content: '登录成功'
+                })
+
                 history.push('/')
             } else {
-                console.log('登录失败')
+                notification.error({
+                    content: '登录失败'
+                })
             }
         })
     }
