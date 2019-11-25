@@ -109,6 +109,10 @@ const mocks = {
             message: '登录成功',
             username: data.username,
             nickname: data.username
+        }),
+        logout: () => ({
+            code: 200,
+            message: '登出成功'
         })
     }),
     Ledger: () => ({
