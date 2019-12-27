@@ -18,8 +18,9 @@ const CollectionIndex: React.FC = () => {
     }>(gql`
         query {
             ledgers {
-                id
+                _id
                 title
+                sort
             }
         }
     `)
@@ -48,7 +49,7 @@ const CollectionIndex: React.FC = () => {
                                 enterDelay={index * 100}
                                 exitDelay={0}
                                 classNames={classnamesItem}
-                                key={item.id}
+                                key={item._id}
                             >
                                 <Grid sm={12} md={6}>
                                     <Ledger {...item} />

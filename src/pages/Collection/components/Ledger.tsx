@@ -3,19 +3,20 @@ import { Button } from '@/components/Button'
 import styles from './Ledger.module.scss'
 
 export interface ILedger {
-    id: string
+    _id: string
     title: string
+    sort: number
 }
 
 const Ledger: React.FC<ILedger> = props => {
-    const { id, title } = props
+    const { _id, title } = props
 
     return (
         <Button
             color="primary"
             type="contained"
             className={styles.ledger}
-            href={`/ledger/${id}`}
+            href={`/ledger/${_id}`}
             block
         >
             {title}
