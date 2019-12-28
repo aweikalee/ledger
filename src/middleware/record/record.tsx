@@ -11,6 +11,7 @@ import { format as amountFormatUtil } from '@/utils/amount'
 import styles from './record.module.scss'
 import color from '@/style/color.module.scss'
 import { IRecord } from '@/types/record'
+import { IClassify } from '@/types/classify'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -20,16 +21,9 @@ export type IMiddleware = <T>(
     [key in keyof T]: React.ReactNode
 }
 
-export interface IClassify {
-    id: string
-    text: string
-    icon: IIconProps['text']
-    color: keyof typeof color
-}
-
 const getClassify = (id: string, classifies: IClassify[]) =>
-    classifies.find(v => v.id === id) || {
-        id: '',
+    classifies.find(v => v._id === id) || {
+        _id: '',
         text: '未分类',
         icon: 'image',
         color: 'grey'
@@ -83,7 +77,9 @@ export default (data: IRecord, classifies: IClassify[]) => {
         format?: string
     }> = props => {
         const { format: formatProps, ...other } = props
-        const date = new Date(data.datetime || 0)
+        const date = new Date(
+            (data.datetime || 0) + localTimeOffset * 60 * 1000
+        )
         return (
             <span title={format(date, 'yyyy-MM-dd HH:mm:ss')} {...other}>
                 {format(date, formatProps || 'yyyy-MM-dd HH:mm:ss')}

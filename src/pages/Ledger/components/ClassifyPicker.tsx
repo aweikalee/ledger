@@ -21,13 +21,13 @@ const ClassifyPicker: React.FC<IClassifyPickerProps> = props => {
             {data.map(item => (
                 <Button
                     className={styles.item}
-                    data-active={item.id === active}
-                    key={item.id}
+                    data-active={item._id === active}
+                    key={item._id}
                     type="text"
                     color="default"
                     block
                     onClick={() => {
-                        onChange(item.id)
+                        onChange(item._id)
                     }}
                 >
                     <Grid

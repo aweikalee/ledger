@@ -24,3 +24,13 @@ export const offsetToUTC = (offset: number) => {
     timeZone[offset] = `UTC${text}`
     return timeZone[offset]
 }
+
+export const timeTransform = {
+    toUTC(time: number) {
+        return time + localTimeOffset * 60 * 1000
+    },
+    toLocal(time: number) {
+        return time - localTimeOffset * 60 * 1000
+    }
+}
+export const UTC = () => {}

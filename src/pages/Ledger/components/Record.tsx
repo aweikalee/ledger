@@ -9,7 +9,7 @@ import { IClassify } from '@/types/classify'
 const Ledger: React.FC<IRecord & {
     classifies: IClassify[]
 }> = (props) => {
-    const { id, classifies, ...other }: typeof props = props
+    const { _id, classifies, ...other }: typeof props = props
 
     const Middle = middleware(other, classifies)
 
@@ -43,7 +43,7 @@ const Ledger: React.FC<IRecord & {
     )
 
     return (
-        <Link to={`/record/${id}`} className={styles.record}>
+        <Link to={`/record/${_id}`} className={styles.record}>
             <Grid container justify="center" alignItems="center">
                 {childIcon}
                 <Grid className={styles.main} sm direction="column">

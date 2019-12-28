@@ -1,9 +1,9 @@
 export interface IRecord {
-    id?: string
+    _id?: string
     type?: -1 | 0 | 1
     classify?: string
     timezone?: number
-    datetime?: string
+    datetime?: number
     detail?: string
     amount?: string
     currency?: string

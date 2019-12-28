@@ -99,7 +99,7 @@ const Record: React.FC<IRecord & {
                     </Button>
                 </Grid>
                 <Grid sm="auto">
-                    <Button color="primary" href={`/record/${props.id}/edit`}>
+                    <Button color="primary" href={`/record/${props._id}/edit`}>
                         <Icon text="pen" /> 编辑
                     </Button>
                 </Grid>
@@ -132,7 +132,7 @@ const RecordIndex: React.FC<RouteComponentProps<
         gql`
             query($id: ID!) {
                 record(id: $id) {
-                    id
+                    _id
                     type
                     classify
                     timezone
@@ -160,7 +160,7 @@ const RecordIndex: React.FC<RouteComponentProps<
         gql`
             query($pid: ID!) {
                 classifies(pid: $pid) {
-                    id
+                    _id
                     text
                     icon
                     color
@@ -181,7 +181,7 @@ const RecordIndex: React.FC<RouteComponentProps<
         gql`
             query($id: ID!) {
                 members(pid: $id) {
-                    id
+                    _id
                     name
                 }
             }

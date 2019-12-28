@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { TransitionGroup } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
+import { format } from 'date-fns'
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
@@ -16,10 +17,10 @@ import { Icon } from '@/components/Icon'
 import * as DatePicker from '@/components/DatePicker'
 import Record from './components/Record'
 import styles from './Index.module.scss'
-import { format } from 'date-fns'
-import config from '@/config'
 import { IRecord } from '@/types/record'
 import { IClassify } from '@/types/classify'
+import { timeTransform } from '@/utils/timeZone'
+import config from '@/config'
 
 export interface ILedgerIndexRouteProps {
     id: string
@@ -33,69 +34,62 @@ const LedgerIndex: React.FC<RouteComponentProps<
             params: { id }
         }
     } = props
-    const [cursor, setCursor] = useState('')
 
-    const [date] = useState(format(new Date(), config.datetimeFormat))
-    useEffect(() => {})
+    const skip = useRef(0)
+    const [datetime, setDatetime] = useState(() => getDateTime(Date.now()))
 
     /* Records */
     const { loading, fetchMore, data } = useQuery<{
-        records: {
-            next: string
-            content: IRecord[]
-            __typename: string
-        }
+        records?: IRecord[]
     }>(
         gql`
-            query($pid: ID!, $date: String, $cursor: ID) {
-                records(pid: $pid, date: $date, cursor: $cursor, limit: 10) {
-                    next
-                    content {
-                        id
-                        type
-                        classify
-                        timezone
-                        datetime
-                        detail
-                        amount
-                        currency
-                    }
+            query($pid: ID!, $datetime: Float, $skip: Float) {
+                records(
+                    pid: $pid
+                    datetime: $datetime
+                    skip: $skip
+                    limit: 10
+                ) {
+                    _id
+                    type
+                    classify
+                    timezone
+                    datetime
+                    detail
+                    amount
+                    currency
+                    rate
+                    payer
+                    participator
+                    settled
                 }
             }
         `,
         {
             variables: {
                 pid: id,
-                date
+                datetime: datetime.utc,
+                skip: 0
             }
         }
     )
-
     useEffect(() => {
-        if (data && data.records && data.records.next) {
-            setCursor(data.records.next)
+        if (data && data.records) {
+            skip.current = data.records.length
         }
     }, [data])
 
     const fetchMoreFn: ILoadMoreProps['handler'] = cb => {
         fetchMore({
             variables: {
-                pid: id,
-                date,
-                cursor
+                skip: skip.current
             },
             updateQuery: (prev, { fetchMoreResult }) => {
                 if (fetchMoreResult) {
                     const records = fetchMoreResult.records
                     return {
-                        records: {
-                            next: fetchMoreResult.records.next,
-                            content: [
-                                ...prev.records.content,
-                                ...records.content
-                            ],
-                            __typename: records.__typename
-                        }
+                        ...prev,
+                        records: [...(prev.records || []), ...(records || [])]
                     }
                 } else {
                     return prev
@@ -105,7 +99,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
             if (res.errors) {
                 cb(res.errors[0])
             } else {
-                cb(null, !res.data.records.next)
+                cb(null, res.data.records && res.data.records!.length === 0)
             }
         })
     }
@@ -117,7 +111,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
         gql`
             query($pid: ID!) {
                 classifies(pid: $pid) {
-                    id
+                    _id
                     text
                     icon
                     color
@@ -146,7 +140,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
         <>
             <NavigationBar
                 title="旅行账簿"
-                subTitle="2019-08-13"
+                subTitle={format(new Date(datetime.local), config.dateFormat)}
                 left={<BackButton text="账簿盒" href="/" />}
                 right={
                     <>
@@ -171,7 +165,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
                 <TransitionGroup component={Grid} container direction="column">
                     {data &&
                         data.records &&
-                        (data.records.content || []).map((item, index) => {
+                        (data.records || []).map((item, index) => {
                             const delay = (index % 10) * 100 // 10为一页的数量，records请求中的limit
                             return (
                                 <DelayCSSTransition
@@ -179,13 +173,14 @@ const LedgerIndex: React.FC<RouteComponentProps<
                                     enterDelay={delay}
                                     exitDelay={0}
                                     classNames={classnamesItem}
-                                    key={item.id}
+                                    key={item._id}
                                 >
                                     <Record {...item} classifies={types} />
                                 </DelayCSSTransition>
                             )
                         })}
                 </TransitionGroup>
+                {/* FIXME: 更换日期后 没能重置Loading.More内部状态  */}
                 <Loading.More
                     handler={fetchMoreFn}
                     loading={loading}
@@ -207,8 +202,10 @@ const LedgerIndex: React.FC<RouteComponentProps<
                 onClickOverlay={() => setShowDate(false)}
             >
                 <DatePicker.DatePicker
+                    value={new Date(datetime.local)}
                     onConfirm={value => {
-                        /* to do something */
+                        console.log('fffff')
+                        setDatetime(getDateTime(value.getTime()))
                         setShowDate(false)
                     }}
                     disabledHours
@@ -221,3 +218,10 @@ const LedgerIndex: React.FC<RouteComponentProps<
 }
 
 export default LedgerIndex
+
+function getDateTime(now: number) {
+    return {
+        local: now,
+        utc: timeTransform.toUTC(now)
+    }
+}
