@@ -16,26 +16,21 @@ import middleware from '@/middleware/record/record'
 import memberMiddleware from '@/middleware/record/member'
 
 import { IRecord } from '@/types/record'
-import { IClassify } from '@/types/classify'
+import { ILedger } from '@/types/ledger'
 
 import styles from './Index.module.scss'
 import membersStyles from './components/Members.module.scss'
-
-export interface IMember {
-    id: string
-    name: string
-}
 
 export interface IRecordIndexRouteProps {
     id: string
 }
 
 const Record: React.FC<IRecord & {
-    classifies: IClassify[]
-    members: IMember[]
+    classifies: ILedger['classifies']
+    members: ILedger['members']
 }> = props => {
     const { classifies, members, ...other } = props
-    const Middleware = middleware(other, classifies)
+    const Middleware = middleware(other, classifies || [])
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
@@ -65,29 +60,31 @@ const Record: React.FC<IRecord & {
                 <Middleware.timezone className={styles.timezone} />
             </div>
 
-            <Grid sm={12}>
-                <Input.Label
-                    description={
-                        <Grid justify="flex-end">
-                            <Grid
-                                className={membersStyles.width}
-                                justify="space-around"
-                            >
-                                <Grid>支付</Grid>
-                                <Grid>消费</Grid>
-                                <Grid>还清</Grid>
+            {members!.length > 0 && (
+                <Grid sm={12}>
+                    <Input.Label
+                        description={
+                            <Grid justify="flex-end">
+                                <Grid
+                                    className={membersStyles.width}
+                                    justify="space-around"
+                                >
+                                    <Grid>支付</Grid>
+                                    <Grid>消费</Grid>
+                                    <Grid>还清</Grid>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    }
-                >
-                    成员
-                </Input.Label>
+                        }
+                    >
+                        成员
+                    </Input.Label>
 
-                <Members
-                    display="icon"
-                    members={memberMiddleware(other, members)}
-                />
-            </Grid>
+                    <Members
+                        display="icon"
+                        members={memberMiddleware(other, members || [])}
+                    />
+                </Grid>
+            )}
 
             <Grid sm={12} justify="space-around" className={styles.toolbar}>
                 <Grid sm={true}>
@@ -133,6 +130,7 @@ const RecordIndex: React.FC<RouteComponentProps<
             query($id: ID!) {
                 record(id: $id) {
                     _id
+                    pid
                     type
                     classify
                     timezone
@@ -154,42 +152,30 @@ const RecordIndex: React.FC<RouteComponentProps<
     )
 
     /* Classify */
-    const { data: dataClassifies } = useQuery<{
-        classifies: IClassify[]
-    }>(
-        gql`
-            query($pid: ID!) {
-                classifies(pid: $pid) {
-                    _id
-                    text
-                    icon
-                    color
-                }
-            }
-        `,
-        {
-            variables: {
-                pid: id
-            }
-        }
-    )
-
-    /* Member */
-    const { data: dataMember } = useQuery<{
-        members: IMember[]
+    const { data: ledger } = useQuery<{
+        ledger: ILedger
     }>(
         gql`
             query($id: ID!) {
-                members(pid: $id) {
-                    _id
-                    name
+                ledger(id: $id) {
+                    classifies {
+                        _id
+                        text
+                        icon
+                        color
+                    }
+                    members {
+                        _id
+                        name
+                    }
                 }
             }
         `,
         {
             variables: {
-                id: id
-            }
+                id: data && data.record && data.record.pid
+            },
+            skip: !(data && data.record)
         }
     )
 
@@ -213,10 +199,13 @@ const RecordIndex: React.FC<RouteComponentProps<
                         <Record
                             {...data.record}
                             classifies={
-                                (dataClassifies && dataClassifies.classifies) ||
-                                []
+                                ledger &&
+                                ledger.ledger &&
+                                ledger.ledger.classifies
                             }
-                            members={(dataMember && dataMember.members) || []}
+                            members={
+                                ledger && ledger.ledger && ledger.ledger.members
+                            }
                         />
                     )}
                 </Grid>

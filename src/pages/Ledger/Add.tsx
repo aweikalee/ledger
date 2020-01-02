@@ -23,8 +23,7 @@ import { IReport } from '@/types/graphql'
 import config from '@/config'
 import styles from './Index.module.scss'
 import MembersStyles from '@/pages/Record/components/Members.module.scss'
-import { IClassify } from '@/types/classify'
-import { IMember } from '@/types/member'
+import { ILedger } from '@/types/ledger'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -252,23 +251,29 @@ const LedgerAdd: React.FC<RouteComponentProps<
         `
     )
 
-    /* Types */
-    const { data: dataClassifies } = useQuery<{
-        classifies: IClassify[]
+    /* Ledger */
+    const { data: ledger } = useQuery<{
+        ledger: ILedger
     }>(
         gql`
-            query($pid: ID!) {
-                classifies(pid: $pid) {
-                    id
-                    text
-                    icon
-                    color
+            query($id: ID!) {
+                ledger(id: $id) {
+                    classifies {
+                        _id
+                        text
+                        icon
+                        color
+                    }
+                    members {
+                        _id
+                        name
+                    }
                 }
             }
         `,
         {
             variables: {
-                pid: id
+                id
             }
         }
     )
@@ -299,24 +304,6 @@ const LedgerAdd: React.FC<RouteComponentProps<
         </Button>
     )
 
-    /* Member */
-    const { data: dataMember } = useQuery<{
-        members: IMember[]
-    }>(
-        gql`
-            query($id: ID!) {
-                members(pid: $id) {
-                    id
-                    name
-                }
-            }
-        `,
-        {
-            variables: {
-                id: id
-            }
-        }
-    )
     const [createRecord] = useMutation<
         {
             createRecord: IReport
@@ -336,7 +323,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
     )
 
     const checkGhost = () => {
-        const members = (dataMember && dataMember.members) || []
+        const members = (ledger && ledger.ledger && ledger.ledger.members) || []
         return (
             checkMembers(members, forms.payer || []) &&
             checkMembers(members, forms.participator || []) &&
@@ -345,7 +332,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
     }
 
     const clearGhost = () => {
-        const members = (dataMember && dataMember.members) || []
+        const members = (ledger && ledger.ledger && ledger.ledger.members) || []
 
         const filter = (arr: string[] = []) => {
             return arr.filter(v => {
@@ -513,7 +500,10 @@ const LedgerAdd: React.FC<RouteComponentProps<
 
                 {/* classify */}
                 <ClassifyPicker
-                    data={dataClassifies ? dataClassifies.classifies : []}
+                    data={
+                        (ledger && ledger.ledger && ledger.ledger.classifies) ||
+                        []
+                    }
                     active={forms.classify || ''}
                     onChange={value => updateForms('classify', value)}
                 />
@@ -633,7 +623,10 @@ const LedgerAdd: React.FC<RouteComponentProps<
                                     participator: forms.participator,
                                     settled: forms.settled
                                 },
-                                (dataMember && dataMember.members) || []
+                                (ledger &&
+                                    ledger.ledger &&
+                                    ledger.ledger.members) ||
+                                    []
                             )}
                             onUpdate={(type, value) => {
                                 const newValue = [...(forms[type] || [])]
@@ -678,7 +671,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
 
 export default LedgerAdd
 
-function checkMembers(members: IMember[], ids: string[]) {
+function checkMembers(members: ILedger['members'] = [], ids: string[]) {
     return !ids.find(id => {
         return !members.find(member => member.id === id)
     })

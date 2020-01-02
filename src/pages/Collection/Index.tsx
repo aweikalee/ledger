@@ -9,7 +9,8 @@ import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
 import { DelayCSSTransition } from '@/components/Animation'
 import Loading from '@/components/Loading'
-import Ledger, { ILedger } from './components/Ledger'
+import Ledger from './components/Ledger'
+import { ILedger } from '@/types/ledger'
 import styles from './Index.module.scss'
 
 const CollectionIndex: React.FC = () => {
