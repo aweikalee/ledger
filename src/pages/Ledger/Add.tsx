@@ -336,7 +336,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
 
         const filter = (arr: string[] = []) => {
             return arr.filter(v => {
-                return !!members.find(member => member.id === v)
+                return !!members.find(member => member._id === v)
             })
         }
         updateForms('payer', filter(forms.payer))
@@ -673,6 +673,6 @@ export default LedgerAdd
 
 function checkMembers(members: ILedger['members'] = [], ids: string[]) {
     return !ids.find(id => {
-        return !members.find(member => member.id === id)
+        return !members.find(member => member._id === id)
     })
 }

@@ -42,7 +42,7 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
         gql`
             query($pid: ID!) {
                 members(pid: $pid) {
-                    id
+                    _id
                     name
                 }
             }

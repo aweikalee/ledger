@@ -13,14 +13,14 @@ export default (data: IRecord, members: IMember[]) => {
     const result: IMemberEx[] = []
 
     const ids = new Set<string>([
-        ...members.map(m => m.id || ''),
+        ...members.map(m => m._id || ''),
         ...payer,
         ...participator,
         ...settled
     ])
 
     ids.forEach(id => {
-        const member = members.find(m => m.id === id) || {
+        const member = members.find(m => m._id === id) || {
             id,
             name: '未定义'
         }

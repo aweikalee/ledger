@@ -1,0 +1,1 @@
+export type IStatus =  -1 | 1

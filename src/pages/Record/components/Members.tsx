@@ -42,7 +42,7 @@ const Members: React.FC<IMembersProps> = props => {
     return (
         <Grid container className={styles.list}>
             {members.map(member => (
-                <Grid className={styles.item} key={member.id}>
+                <Grid className={styles.item} key={member._id}>
                     <Grid sm>
                         <div className={styles.name}>
                             <Icon text="user"></Icon> {member.name}
@@ -54,7 +54,7 @@ const Members: React.FC<IMembersProps> = props => {
                             display={display}
                             checked={member.payer}
                             onClick={() => {
-                                onUpdate('payer', member.id || '')
+                                onUpdate('payer', member._id || '')
                             }}
                         />
 
@@ -63,7 +63,7 @@ const Members: React.FC<IMembersProps> = props => {
                             display={display}
                             checked={member.participator}
                             onClick={() => {
-                                onUpdate('participator', member.id || '')
+                                onUpdate('participator', member._id || '')
                             }}
                         />
 
@@ -72,7 +72,7 @@ const Members: React.FC<IMembersProps> = props => {
                             display={display}
                             checked={member.settled}
                             onClick={() => {
-                                onUpdate('settled', member.id || '')
+                                onUpdate('settled', member._id || '')
                             }}
                         />
                     </Grid>
