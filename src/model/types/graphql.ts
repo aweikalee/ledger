@@ -1,5 +1,5 @@
 export interface IReport {
-    code: number
+    code: string
     message: string
 }
 

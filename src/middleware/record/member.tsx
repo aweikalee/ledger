@@ -1,5 +1,5 @@
-import { IRecord } from '@/types/record'
-import { IMember } from '@/types/member'
+import { IRecord } from '@/model/types/record'
+import { IMember } from '@/model/types/member'
 
 export interface IMemberEx extends IMember {
     payer: boolean

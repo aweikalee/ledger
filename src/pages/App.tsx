@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import ApolloClient from 'apollo-boost'
+import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { useStore } from '@/store'
 import { AsyncComponent } from '@/components/AsyncComponent'
@@ -23,7 +23,8 @@ const Test = AsyncComponent(() =>
 )
 
 const client = new ApolloClient({
-    uri: '/graphql'
+    link: new HttpLink({ uri: '/graphql' }),
+    cache: new InMemoryCache()
 })
 
 const App: React.FC = () => {

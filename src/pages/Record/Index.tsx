@@ -15,8 +15,8 @@ import Members from './components/Members'
 import middleware from '@/middleware/record/record'
 import memberMiddleware from '@/middleware/record/member'
 
-import { IRecord } from '@/types/record'
-import { ILedger } from '@/types/ledger'
+import { IRecord } from '@/model/types/record'
+import { ILedger } from '@/model/types/ledger'
 
 import styles from './Index.module.scss'
 import membersStyles from './components/Members.module.scss'
@@ -60,7 +60,7 @@ const Record: React.FC<IRecord & {
                 <Middleware.timezone className={styles.timezone} />
             </div>
 
-            {members!.length > 0 && (
+            {members && members.length > 0 && (
                 <Grid sm={12}>
                     <Input.Label
                         description={
@@ -124,7 +124,7 @@ const RecordIndex: React.FC<RouteComponentProps<
     } = props
 
     const { data } = useQuery<{
-        record: IRecord
+        record: IRecord | null
     }>(
         gql`
             query($id: ID!) {
@@ -151,9 +151,9 @@ const RecordIndex: React.FC<RouteComponentProps<
         }
     )
 
-    /* Classify */
+    /* Ledger */
     const { data: ledger } = useQuery<{
-        ledger: ILedger
+        ledger: ILedger | null
     }>(
         gql`
             query($id: ID!) {
@@ -191,7 +191,19 @@ const RecordIndex: React.FC<RouteComponentProps<
         <>
             <NavigationBar
                 title="详情"
-                left={<BackButton href="/ledger/1" text="账簿" />}
+                left={
+                    (data && data.record && (
+                        <BackButton
+                            href={`/ledger/${data.record.pid}`}
+                            text="账簿"
+                        />
+                    )) || (
+                        <BackButton
+                            onClick={() => props.history.goBack()}
+                            text="账簿"
+                        />
+                    )
+                }
             />
             <ContentBody>
                 <Grid className={styles.record} wrap="wrap">
@@ -199,12 +211,16 @@ const RecordIndex: React.FC<RouteComponentProps<
                         <Record
                             {...data.record}
                             classifies={
-                                ledger &&
-                                ledger.ledger &&
-                                ledger.ledger.classifies
+                                (ledger &&
+                                    ledger.ledger &&
+                                    ledger.ledger.classifies) ||
+                                []
                             }
                             members={
-                                ledger && ledger.ledger && ledger.ledger.members
+                                (ledger &&
+                                    ledger.ledger &&
+                                    ledger.ledger.members) ||
+                                []
                             }
                         />
                     )}

@@ -7,7 +7,7 @@ import { notification } from '@/components/Notification'
 
 import { useStore } from '@/store'
 
-import { IReport } from '@/types/graphql'
+import { IReport } from '@/model/types/graphql'
 
 export interface IForm {
     username: string

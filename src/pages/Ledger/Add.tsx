@@ -4,45 +4,33 @@ import useForm from 'react-hook-form'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { format } from 'date-fns'
+
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import Calculator from '@/components/Calculator/Calculator'
 import { ScreenMini } from '@/components/Calculator'
 import { Popup } from '@/components/Popup'
 import * as DatePicker from '@/components/DatePicker'
-import * as valid from '@/utils/valid'
-import BigNumberOrigin from 'bignumber.js'
 import { Button, Group as ButtonGroup } from '@/components/Button'
 import Icon from '@/components/Icon'
 import * as Input from '@/components/Input'
 import Grid from '@/components/Grid'
-import ClassifyPicker from './components/ClassifyPicker'
-import Members from '@/pages/Record/components/Members'
-import memberMiddleware from '@/middleware/record/member'
-import { IReport } from '@/types/graphql'
+import notification from '@/components/Notification'
+
 import config from '@/config'
+import memberMiddleware from '@/middleware/record/member'
+import valid from '@/model/validate/record'
+import { IReport } from '@/model/types/graphql'
+import { ILedger } from '@/model/types/ledger'
+import { ICreateRecord } from '@/model/types/record'
+import { ICurrency } from '@/model/types/currency'
+import { onApolloError } from '@/model/error'
+import { localTimeOffset, timeTransform } from '@/utils/timeZone'
+
+import MembersStyles from '../Record/components/Members.module.scss'
+import Members from '../Record/components/Members'
+import ClassifyPicker from './components/ClassifyPicker'
 import styles from './Index.module.scss'
-import MembersStyles from '@/pages/Record/components/Members.module.scss'
-import { ILedger } from '@/types/ledger'
-
-const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
-
-export interface ICurrency {
-    name: string
-    cn: string
-}
-
-export interface IForm {
-    amount?: string
-    currency?: string
-    type?: number
-    classify?: string
-    detail?: string
-    datetime?: string
-    payer?: string[]
-    participator?: string[]
-    settled?: string[]
-}
 
 export interface ILedgerAddRouteProps {
     id: string
@@ -59,178 +47,37 @@ const LedgerAdd: React.FC<RouteComponentProps<
     } = props
 
     /* initialization */
-    const [forms, setForms] = useState<IForm>(() => ({
-        type: -1,
-        amount: '0',
-        currency: 'CNY',
-        classify: '',
-        datetime: format(new Date(), config.datetimeFormat),
-        payer: [],
-        participator: [],
-        settled: []
-    }))
-    const {
-        register,
-        setValue,
-        triggerValidation,
-        handleSubmit,
-        errors
-    } = useForm<IForm>({
+    const { register, getValues, setValue, handleSubmit, errors } = useForm<
+        ICreateRecord
+    >({
         mode: 'onChange',
         defaultValues: {
-            type: forms.type,
-            amount: forms.amount,
-            currency: forms.currency,
-            classify: forms.classify,
-            datetime: forms.datetime,
+            pid: id,
+            type: -1,
+            classify: '',
+            timezone: localTimeOffset,
+            datetime: timeTransform.toUTC(Date.now()),
             detail: '',
-            payer: forms.payer,
-            participator: forms.participator,
-            settled: forms.settled
+            amount: '0',
+            currency: 'CNY',
+            payer: [],
+            participator: [],
+            settled: []
         }
     })
 
-    const updateForms = (field: keyof IForm, value: IForm[typeof field]) => {
-        setValue(field, value)
-        setForms(forms => ({
-            ...forms,
-            [field]: value
-        }))
-        triggerValidation([{ name: field }])
-    }
-
     React.useEffect(() => {
-        register(
-            {
-                name: 'type'
-            },
-            {
-                validate: value => {
-                    return valid.queue<number>(
-                        [
-                            (value, options = {}) => {
-                                return (
-                                    value === -1 ||
-                                    value === 1 ||
-                                    value === 0 ||
-                                    valid.errorFactory('{name}不合法', options)
-                                )
-                            }
-                        ],
-                        {
-                            name: '类型'
-                        }
-                    )(value)
-                }
-            }
-        )
-
-        register(
-            {
-                name: 'amount'
-            },
-            {
-                validate: value => {
-                    return valid.queue<string>(
-                        [
-                            (value, options = {}) => {
-                                const number = new BigNumber(
-                                    value || ''
-                                ).toString()
-                                return (
-                                    number === value ||
-                                    valid.errorFactory('{name}不合法', options)
-                                )
-                            }
-                        ],
-                        {
-                            name: '金额'
-                        }
-                    )(value)
-                }
-            }
-        )
-
-        register(
-            {
-                name: 'currency'
-            },
-            {
-                validate: value => {
-                    return valid.queue<string>([valid.isRequire()], {
-                        name: '货币种类'
-                    })(value)
-                }
-            }
-        )
-
-        register(
-            {
-                name: 'classify'
-            },
-            {
-                validate: value => {
-                    return valid.queue<string>([valid.isRequire()], {
-                        name: '分类'
-                    })(value)
-                }
-            }
-        )
-
-        register(
-            {
-                name: 'datetime'
-            },
-            {
-                validate: value => {
-                    return valid.queue<string>(
-                        [valid.isRequire(), valid.isDate()],
-                        {
-                            name: '时间'
-                        }
-                    )(value)
-                }
-            }
-        )
-
-        register(
-            {
-                name: 'payer'
-            },
-            {
-                validate: value => {
-                    return valid.queue<string>([], {
-                        name: '支付方'
-                    })(value)
-                }
-            }
-        )
-
-        register(
-            {
-                name: 'particaptor'
-            },
-            {
-                validate: value => {
-                    return valid.queue<string>([], {
-                        name: '消费方'
-                    })(value)
-                }
-            }
-        )
-
-        register(
-            {
-                name: 'settled'
-            },
-            {
-                validate: value => {
-                    return valid.queue<string>([], {
-                        name: '已还清'
-                    })(value)
-                }
-            }
-        )
+        register({ name: 'pid' }, { validate: valid.pid })
+        register({ name: 'type' }, { validate: valid.type })
+        register({ name: 'classify' }, { validate: valid.classify })
+        register({ name: 'timezone' }, { validate: valid.timezone })
+        register({ name: 'datetime' }, { validate: valid.datetime })
+        register({ name: 'detail' }, { validate: valid.detail })
+        register({ name: 'amount' }, { validate: valid.amount })
+        register({ name: 'currency' }, { validate: valid.currency })
+        register({ name: 'payer' }, { validate: valid.payer })
+        register({ name: 'particaptor' }, { validate: valid.participator })
+        register({ name: 'settled' }, { validate: valid.settled })
     }, [register])
 
     /* Amount */
@@ -238,26 +85,20 @@ const LedgerAdd: React.FC<RouteComponentProps<
 
     /* Currency */
     const [showCurrency, setShowCurrency] = useState(false)
-    const { data: dataCurrency } = useQuery<{
-        currencys: any[]
+
+    /* Ledger */
+    const { data } = useQuery<{
+        currencys: ICurrency[] | null
+        ledger: ILedger | null
     }>(
         gql`
-            query {
+            query($id: ID!) {
                 currencys {
                     name
                     cn
                 }
-            }
-        `
-    )
-
-    /* Ledger */
-    const { data: ledger } = useQuery<{
-        ledger: ILedger
-    }>(
-        gql`
-            query($id: ID!) {
                 ledger(id: $id) {
+                    title
                     classifies {
                         _id
                         text
@@ -271,11 +112,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
                 }
             }
         `,
-        {
-            variables: {
-                id
-            }
-        }
+        { variables: { id }, fetchPolicy: 'cache-and-network' }
     )
 
     /* DateTime */
@@ -289,7 +126,10 @@ const LedgerAdd: React.FC<RouteComponentProps<
             block
             onClick={() => setShowDate(true)}
         >
-            {format(new Date(forms.datetime!), config.dateFormat)}
+            {format(
+                new Date(timeTransform.toLocal(getValues().datetime!)),
+                config.dateFormat
+            )}
         </Button>
     )
     const timeChild = (
@@ -300,7 +140,10 @@ const LedgerAdd: React.FC<RouteComponentProps<
             block
             onClick={() => setShowTime(true)}
         >
-            {format(new Date(forms.datetime!), config.timeFormat)}
+            {format(
+                new Date(timeTransform.toLocal(getValues().datetime!)),
+                config.timeFormat
+            )}
         </Button>
     )
 
@@ -309,62 +152,59 @@ const LedgerAdd: React.FC<RouteComponentProps<
             createRecord: IReport
         },
         {
-            data: IForm
+            data: ICreateRecord
         }
     >(
         gql`
-            mutation($data: RecordInput) {
+            mutation($data: CreateRecord) {
                 createRecord(data: $data) {
                     code
                     message
                 }
             }
-        `
+        `,
+        {
+            onError: onApolloError,
+            onCompleted() {
+                notification.success({
+                    content: '创建成功'
+                })
+                history.push(`/ledger/${id}`)
+            }
+        }
     )
 
+    const onSubmit = () => {
+        createRecord({ variables: { data: getValues() } })
+    }
+
     const checkGhost = () => {
-        const members = (ledger && ledger.ledger && ledger.ledger.members) || []
+        const members = (data && data.ledger && data.ledger.members) || []
         return (
-            checkMembers(members, forms.payer || []) &&
-            checkMembers(members, forms.participator || []) &&
-            checkMembers(members, forms.settled || [])
+            checkMembers(members, getValues().payer || []) &&
+            checkMembers(members, getValues().participator || []) &&
+            checkMembers(members, getValues().settled || [])
         )
     }
 
     const clearGhost = () => {
-        const members = (ledger && ledger.ledger && ledger.ledger.members) || []
+        const members = (data && data.ledger && data.ledger.members) || []
 
         const filter = (arr: string[] = []) => {
             return arr.filter(v => {
                 return !!members.find(member => member._id === v)
             })
         }
-        updateForms('payer', filter(forms.payer))
-        updateForms('participator', filter(forms.participator))
-        updateForms('settled', filter(forms.settled))
-    }
-
-    /* Submit */
-    const onSubmit = () => {
-        createRecord({
-            variables: {
-                data: forms
-            }
-        }).then(({ data }) => {
-            if (data && data.createRecord.code === 201) {
-                console.log('创建记录成功')
-                history.push(`/ledger/${id}`)
-            } else {
-                console.log('创建记录失败')
-            }
-        })
+        setValue('payer', filter(getValues().payer), true)
+        setValue('participator', filter(getValues().participator), true)
+        setValue('settled', filter(getValues().settled), true)
     }
 
     return (
         <>
             <NavigationBar
                 title="新增账单"
-                subTitle="旅行账簿"
+                subTitle={data && data.ledger && data.ledger.title || ''}
                 left={<BackButton icon="close" href={`/ledger/${id}`} />}
                 right={
                     <Button
@@ -398,7 +238,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
                             ].map(item => (
                                 <Button
                                     type={
-                                        forms.type === item.value
+                                        getValues().type === item.value
                                             ? 'contained'
                                             : 'outlined'
                                     }
@@ -407,7 +247,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
                                     border="round"
                                     key={item.value}
                                     onClick={() => {
-                                        updateForms('type', item.value)
+                                        setValue('type', item.value, true)
                                     }}
                                 >
                                     {item.text}
@@ -430,7 +270,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
                         <Grid>
                             {/* Currency */}
                             <Button onClick={() => setShowCurrency(true)}>
-                                {forms.currency}
+                                {getValues().currency}
                             </Button>
 
                             <Popup
@@ -440,17 +280,19 @@ const LedgerAdd: React.FC<RouteComponentProps<
                                 title="选择货币种类"
                                 contentPadding
                             >
-                                {dataCurrency &&
-                                    dataCurrency.currencys &&
-                                    dataCurrency.currencys.map(item => (
+                                {data &&
+                                    data.currencys &&
+                                    data.currencys.map(item => (
                                         <Button
                                             type={
-                                                item.name === forms.currency
+                                                item.name ===
+                                                getValues().currency
                                                     ? 'contained'
                                                     : 'outlined'
                                             }
                                             color={
-                                                item.name === forms.currency
+                                                item.name ===
+                                                getValues().currency
                                                     ? 'primary'
                                                     : 'default'
                                             }
@@ -458,9 +300,10 @@ const LedgerAdd: React.FC<RouteComponentProps<
                                             size="large"
                                             key={item.name}
                                             onClick={() => {
-                                                updateForms(
+                                                setValue(
                                                     'currency',
-                                                    item.name
+                                                    item.name,
+                                                    true
                                                 )
                                                 setShowCurrency(false)
                                             }}
@@ -475,12 +318,14 @@ const LedgerAdd: React.FC<RouteComponentProps<
                             {/* Amount */}
                             <ScreenMini
                                 className={styles['amount-screen']}
-                                value={forms.amount}
+                                value={getValues().amount}
                                 onClick={() => setCalculatorShow(true)}
                             />
                             <Calculator
-                                value={forms.amount}
-                                onUpdate={value => updateForms('amount', value)}
+                                value={getValues().amount}
+                                onUpdate={value =>
+                                    setValue('amount', value, true)
+                                }
                                 show={calculatorShow}
                                 onBlur={() => setCalculatorShow(false)}
                             />
@@ -500,12 +345,9 @@ const LedgerAdd: React.FC<RouteComponentProps<
 
                 {/* classify */}
                 <ClassifyPicker
-                    data={
-                        (ledger && ledger.ledger && ledger.ledger.classifies) ||
-                        []
-                    }
-                    active={forms.classify || ''}
-                    onChange={value => updateForms('classify', value)}
+                    data={(data && data.ledger && data.ledger.classifies) || []}
+                    active={getValues().classify || ''}
+                    onChange={value => setValue('classify', value, true)}
                 />
                 <Grid container gap={2}>
                     <Grid sm={12}>
@@ -523,7 +365,10 @@ const LedgerAdd: React.FC<RouteComponentProps<
                             <Input.TextArea
                                 name="detail"
                                 id="detail"
-                                ref={register}
+                                value={getValues().detail}
+                                onChange={e =>
+                                    setValue('detail', e.target.value, true)
+                                }
                                 autosize
                             />
                             <Input.Helper>
@@ -555,11 +400,16 @@ const LedgerAdd: React.FC<RouteComponentProps<
                         onClickOverlay={() => setShowDate(false)}
                     >
                         <DatePicker.DatePicker
-                            value={new Date(forms.datetime!)}
+                            value={
+                                new Date(
+                                    timeTransform.toLocal(getValues().datetime!)
+                                )
+                            }
                             onConfirm={value => {
-                                updateForms(
+                                setValue(
                                     'datetime',
-                                    format(value, config.datetimeFormat)
+                                    timeTransform.toUTC(value.getTime()),
+                                    true
                                 )
                                 setShowDate(false)
                             }}
@@ -574,11 +424,16 @@ const LedgerAdd: React.FC<RouteComponentProps<
                         onClickOverlay={() => setShowTime(false)}
                     >
                         <DatePicker.DatePicker
-                            value={new Date(forms.datetime!)}
+                            value={
+                                new Date(
+                                    timeTransform.toLocal(getValues().datetime!)
+                                )
+                            }
                             onConfirm={value => {
-                                updateForms(
+                                setValue(
                                     'datetime',
-                                    format(value, config.datetimeFormat)
+                                    timeTransform.toUTC(value.getTime()),
+                                    true
                                 )
                                 setShowTime(false)
                             }}
@@ -619,24 +474,22 @@ const LedgerAdd: React.FC<RouteComponentProps<
                             display="checkbox"
                             members={memberMiddleware(
                                 {
-                                    payer: forms.payer,
-                                    participator: forms.participator,
-                                    settled: forms.settled
+                                    payer: getValues().payer,
+                                    participator: getValues().participator,
+                                    settled: getValues().settled
                                 },
-                                (ledger &&
-                                    ledger.ledger &&
-                                    ledger.ledger.members) ||
+                                (data && data.ledger && data.ledger.members) ||
                                     []
                             )}
                             onUpdate={(type, value) => {
-                                const newValue = [...(forms[type] || [])]
+                                const newValue = [...(getValues()[type] || [])]
                                 const index = newValue.indexOf(value)
                                 if (index === -1) {
                                     newValue.push(value)
                                 } else {
                                     newValue.splice(index, 1)
                                 }
-                                updateForms(type, newValue)
+                                setValue(type, newValue, true)
                             }}
                         />
 

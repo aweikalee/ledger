@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
 import gql from 'graphql-tag'
+import { RouteComponentProps } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import { TransitionGroup } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 import { format } from 'date-fns'
+
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
@@ -15,12 +16,15 @@ import { ILoadMoreProps } from '@/components/Loading/More'
 import { Button } from '@/components/Button'
 import { Icon } from '@/components/Icon'
 import * as DatePicker from '@/components/DatePicker'
+
+import config from '@/config'
+import { IRecord } from '@/model/types/record'
+import { ILedger } from '@/model/types/ledger'
+import { onApolloError } from '@/model/error'
+import { timeTransform } from '@/utils/timeZone'
+
 import Record from './components/Record'
 import styles from './Index.module.scss'
-import { IRecord } from '@/types/record'
-import { IClassify } from '@/types/classify'
-import { timeTransform } from '@/utils/timeZone'
-import config from '@/config'
 
 export interface ILedgerIndexRouteProps {
     id: string
@@ -35,20 +39,47 @@ const LedgerIndex: React.FC<RouteComponentProps<
         }
     } = props
 
-    const skip = useRef(0)
-    const [datetime, setDatetime] = useState(() => getDateTime(Date.now()))
+    /* Ledger */
+    const { data: ledger } = useQuery<{
+        ledger: ILedger | null
+    }>(
+        gql`
+            query($id: ID!) {
+                ledger(id: $id) {
+                    title
+                    classifies {
+                        _id
+                        text
+                        icon
+                        color
+                    }
+                }
+            }
+        `,
+        { variables: { id }, fetchPolicy: 'cache-and-network' }
+    )
 
     /* Records */
+    const skip = useRef(0)
+    const [datetime, setDatetime] = useState(() => {
+        const now = new Date()
+        now.setHours(0)
+        now.setMinutes(0)
+        now.setSeconds(0)
+        now.setMilliseconds(0)
+        return getDateTime(now.getTime())
+    })
+
     const { loading, fetchMore, data } = useQuery<{
         records?: IRecord[]
     }>(
         gql`
-            query($pid: ID!, $datetime: Float, $skip: Float) {
+            query($pid: ID!, $datetime: Float, $skip: Float, $limit: Float) {
                 records(
                     pid: $pid
                     datetime: $datetime
                     skip: $skip
-                    limit: 10
+                    limit: $limit
                 ) {
                     _id
                     type
@@ -69,8 +100,11 @@ const LedgerIndex: React.FC<RouteComponentProps<
             variables: {
                 pid: id,
                 datetime: datetime.utc,
-                skip: 0
-            }
+                skip: 0,
+                limit: 20
+            },
+            onError: onApolloError,
+            fetchPolicy: 'cache-and-network'
         }
     )
     useEffect(() => {
@@ -78,6 +112,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
             skip.current = data.records.length
         }
     }, [data])
+    // FIXME: 再次访问该页面，会使用缓存信息，而非重新获取
 
     const fetchMoreFn: ILoadMoreProps['handler'] = cb => {
         fetchMore({
@@ -104,34 +139,13 @@ const LedgerIndex: React.FC<RouteComponentProps<
         })
     }
 
-    /* Types */
-    const { data: dataClassifies } = useQuery<{
-        classifies: IClassify[]
-    }>(
-        gql`
-            query($pid: ID!) {
-                classifies(pid: $pid) {
-                    _id
-                    text
-                    icon
-                    color
-                }
-            }
-        `,
-        {
-            variables: {
-                pid: id
-            }
-        }
-    )
-
     const classnamesItem: CSSTransitionClassNames = {
         enter: styles['item-enter'],
         enterActive: styles['item-enter-active'],
         exit: styles['item-exit'],
         exitActive: styles['item-exit-active']
     }
-    const types = (dataClassifies && dataClassifies.classifies) || []
+    const types = (ledger && ledger.ledger && ledger.ledger.classifies) || []
 
     /* date picker */
     const [showDate, setShowDate] = useState(false)
@@ -139,7 +153,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
     return (
         <>
             <NavigationBar
-                title="旅行账簿"
+                title={ledger && ledger.ledger && ledger.ledger.title || ''}
                 subTitle={format(new Date(datetime.local), config.dateFormat)}
                 left={<BackButton text="账簿盒" href="/" />}
                 right={

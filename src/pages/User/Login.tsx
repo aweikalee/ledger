@@ -10,10 +10,10 @@ import { Button } from '@/components/Button'
 import { Grid } from '@/components/Grid'
 
 import { notification } from '@/components/Notification'
-import * as valid from '@/utils/valid'
+import * as valid from '@/model/validate/valid'
 import { useStore } from '@/store'
 
-import { ILoginReport } from '@/types/graphql'
+import { ILoginReport } from '@/model/types/graphql'
 
 export interface IForm {
     username: string
@@ -116,7 +116,7 @@ const UserLogin: React.FC<RouteComponentProps<
                 data: forms
             }
         }).then(({ data }) => {
-            if (data && data.login.code === 200) {
+            if (data && data.login.code === '') {
                 const info = data.login
                 store.setUsername(info.username)
                 store.setNickname(info.nickname)

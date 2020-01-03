@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@/components/Button'
 import styles from './Ledger.module.scss'
-import { ILedger } from '@/types/ledger'
+import { ILedger } from '@/model/types/ledger'
 
 const Ledger: React.FC<ILedger> = props => {
     const { _id, title } = props

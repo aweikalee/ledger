@@ -3,28 +3,34 @@ import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { TransitionGroup } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
+
 import NavigationBar from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import Grid from '@/components/Grid'
-import { DelayCSSTransition } from '@/components/Animation'
 import Loading from '@/components/Loading'
+import { DelayCSSTransition } from '@/components/Animation'
+
+import { ILedger } from '@/model/types/ledger'
+
 import Ledger from './components/Ledger'
-import { ILedger } from '@/types/ledger'
 import styles from './Index.module.scss'
 
 const CollectionIndex: React.FC = () => {
     const { loading, data } = useQuery<{
-        ledgers: ILedger[]
-    }>(gql`
-        query {
-            ledgers {
-                _id
-                title
-                sort
+        ledgers: ILedger[] | null
+    }>(
+        gql`
+            query {
+                ledgers {
+                    _id
+                    title
+                    sort
+                }
             }
-        }
-    `)
+        `,
+        { fetchPolicy: 'cache-and-network' }
+    )
 
     const classnamesItem: CSSTransitionClassNames = {
         enter: styles['item-enter'],

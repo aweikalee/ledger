@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import Grid from '@/components/Grid'
 import styles from './Record.module.scss'
 import middleware from '@/middleware/record/record'
-import { IRecord } from '@/types/record'
-import { IClassify } from '@/types/classify'
+import { IRecord } from '@/model/types/record'
+import { IClassify } from '@/model/types/classify'
 
 const Ledger: React.FC<IRecord & {
     classifies: IClassify[]

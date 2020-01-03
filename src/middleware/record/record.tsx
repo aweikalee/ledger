@@ -5,13 +5,13 @@ import BigNumberOrigin from 'bignumber.js'
 import Grid from '@/components/Grid'
 import { IGirdProps } from '@/components/Grid/Grid'
 import Icon, { IIconProps } from '@/components/Icon/Icon'
-import { localTimeOffset, offsetToUTC } from '@/utils/timeZone'
+import { localTimeOffset, offsetToUTC, timeTransform } from '@/utils/timeZone'
 import { FORMAT_OPTIONS } from '@/components/Calculator/config'
 import { format as amountFormatUtil } from '@/utils/amount'
 import styles from './record.module.scss'
 import color from '@/style/color.module.scss'
-import { IRecord } from '@/types/record'
-import { IClassify } from '@/types/classify'
+import { IRecord } from '@/model/types/record'
+import { IClassify } from '@/model/types/classify'
 
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
@@ -77,9 +77,7 @@ export default (data: IRecord, classifies: IClassify[]) => {
         format?: string
     }> = props => {
         const { format: formatProps, ...other } = props
-        const date = new Date(
-            (data.datetime || 0) + localTimeOffset * 60 * 1000
-        )
+        const date = new Date(timeTransform.toLocal(data.datetime || 0))
         return (
             <span title={format(date, 'yyyy-MM-dd HH:mm:ss')} {...other}>
                 {format(date, formatProps || 'yyyy-MM-dd HH:mm:ss')}

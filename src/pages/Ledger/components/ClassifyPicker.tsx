@@ -5,7 +5,7 @@ import styles from './ClassifyPicker.module.scss'
 import Button from '@/components/Button'
 import color from '../../../style/color.module.scss'
 import clsx from 'clsx'
-import { IClassify } from '@/types/classify'
+import { IClassify } from '@/model/types/classify'
 
 export interface IClassifyPickerProps {
     data: IClassify[]
@@ -27,7 +27,7 @@ const ClassifyPicker: React.FC<IClassifyPickerProps> = props => {
                     color="default"
                     block
                     onClick={() => {
-                        onChange(item._id)
+                        item._id && onChange(item._id)
                     }}
                 >
                     <Grid

@@ -11,7 +11,7 @@ import Icon from '@/components/Icon'
 import Grid from '@/components/Grid'
 import Dialog from '@/components/Dialog'
 import * as Input from '@/components/Input'
-import * as valid from '@/utils/valid'
+import * as valid from '@/model/validate/valid'
 import styles from './Index.module.scss'
 
 export interface IMember {
@@ -37,7 +37,7 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
     } = props
 
     const { data } = useQuery<{
-        members: IMember[]
+        members: IMember[] | null
     }>(
         gql`
             query($pid: ID!) {
