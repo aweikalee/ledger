@@ -153,7 +153,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
     return (
         <>
             <NavigationBar
-                title={ledger && ledger.ledger && ledger.ledger.title || ''}
+                title={(ledger && ledger.ledger && ledger.ledger.title) || ''}
                 subTitle={format(new Date(datetime.local), config.dateFormat)}
                 left={<BackButton text="账簿盒" href="/" />}
                 right={
@@ -218,7 +218,6 @@ const LedgerIndex: React.FC<RouteComponentProps<
                 <DatePicker.DatePicker
                     value={new Date(datetime.local)}
                     onConfirm={value => {
-                        console.log('fffff')
                         setDatetime(getDateTime(value.getTime()))
                         setShowDate(false)
                     }}

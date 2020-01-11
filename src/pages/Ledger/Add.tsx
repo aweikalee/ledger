@@ -93,7 +93,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
     }>(
         gql`
             query($id: ID!) {
-                currencys {
+                currencies {
                     name
                     cn
                 }
@@ -204,7 +204,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
         <>
             <NavigationBar
                 title="新增账单"
-                subTitle={data && data.ledger && data.ledger.title || ''}
+                subTitle={(data && data.ledger && data.ledger.title) || ''}
                 left={<BackButton icon="close" href={`/ledger/${id}`} />}
                 right={
                     <Button
@@ -247,7 +247,11 @@ const LedgerAdd: React.FC<RouteComponentProps<
                                     border="round"
                                     key={item.value}
                                     onClick={() => {
-                                        setValue('type', item.value, true)
+                                        setValue(
+                                            'type',
+                                            item.value as ICreateRecord['type'],
+                                            true
+                                        )
                                     }}
                                 >
                                     {item.text}

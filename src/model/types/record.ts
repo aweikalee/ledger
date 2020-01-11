@@ -32,6 +32,7 @@ export interface ICreateRecord {
 }
 
 export interface IUpdateRecord {
+    _id: string
     pid?: string
     type?: -1 | 0 | 1
     classify?: string

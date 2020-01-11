@@ -8,6 +8,7 @@ export const onApolloError = (error: ApolloError) => {
             notification.error({
                 content: err.message
             })
+            console.error(code)
         })
     } else {
         notification.error({

@@ -8,6 +8,9 @@ const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 const validate: {
     [key in keyof (IRecord & ICreateRecord & IUpdateRecord)]: IValidate
 } = {
+    _id: () => {
+        return true
+    },
     type: value => {
         return valid.queue<number>(
             [
