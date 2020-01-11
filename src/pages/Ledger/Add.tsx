@@ -14,7 +14,8 @@ import { useCreateRecord } from '@/model/api/record'
 import { ICreateRecord } from '@/model/types/record'
 import { onApolloError } from '@/model/error'
 import { localTimeOffset, timeTransform } from '@/utils/timeZone'
-import Editor from '@/middleware/record/editor'
+
+import Editor from '../Record/components/Editor'
 
 export interface ILedgerAddRouteProps {
     id: string

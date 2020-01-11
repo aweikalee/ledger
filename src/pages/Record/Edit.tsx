@@ -13,7 +13,7 @@ import { IUpdateRecord } from '@/model/types/record'
 import { onApolloError } from '@/model/error'
 import { useRecord, useUpdateRecord } from '@/model/api/record'
 
-import Editor from '@/middleware/record/editor'
+import Editor from './components/Editor'
 
 export interface IRecordEditRouteProps {
     id: string

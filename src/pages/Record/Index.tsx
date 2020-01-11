@@ -132,7 +132,7 @@ const RecordIndex: React.FC<RouteComponentProps<
 
     const { data: ledger } = useLedger({
         variables: {
-            id: data && data.record && data.record.pid || ''
+            id: (data && data.record && data.record.pid) || ''
         },
         skip: !(data && data.record)
     })

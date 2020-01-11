@@ -19,12 +19,12 @@ import { ILedger } from '@/model/types/ledger'
 import { useLedger } from '@/model/api/ledger'
 import { useCurrencies } from '@/model/api/currency'
 
-import Members from '@/pages/Record/components/Members'
-import MembersStyles from '@/pages/Record/components/Members.module.scss'
-import ClassifyPicker from '@/pages/Ledger/components/ClassifyPicker'
-import styles from '@/pages/Ledger/Index.module.scss'
+import Members from './Members'
+import MembersStyles from './Members.module.scss'
+import ClassifyPicker from './ClassifyPicker'
+import styles from './Editor.module.scss'
 
-const Editor: React.FC<{
+const RecordEditor: React.FC<{
     pid: string
 }> = props => {
     const { pid } = props
@@ -435,4 +435,4 @@ const Editor: React.FC<{
     )
 }
 
-export default Editor
+export default RecordEditor

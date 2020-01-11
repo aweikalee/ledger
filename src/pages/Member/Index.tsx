@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import useForm from 'react-hook-form'
 import { RouteComponentProps } from 'react-router'
-import { useQuery } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
 
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
