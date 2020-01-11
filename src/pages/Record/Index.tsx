@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { RouteComponentProps } from 'react-router'
-import { useQuery } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
+
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
@@ -17,6 +16,8 @@ import memberMiddleware from '@/middleware/record/member'
 
 import { IRecord } from '@/model/types/record'
 import { ILedger } from '@/model/types/ledger'
+import { useRecord } from '@/model/api/record'
+import { useLedger } from '@/model/api/ledger'
 
 import styles from './Index.module.scss'
 import membersStyles from './components/Members.module.scss'
@@ -123,61 +124,18 @@ const RecordIndex: React.FC<RouteComponentProps<
         }
     } = props
 
-    const { data } = useQuery<{
-        record: IRecord | null
-    }>(
-        gql`
-            query($id: ID!) {
-                record(id: $id) {
-                    _id
-                    pid
-                    type
-                    classify
-                    timezone
-                    datetime
-                    detail
-                    amount
-                    currency
-                    payer
-                    participator
-                    settled
-                }
-            }
-        `,
-        {
-            variables: {
-                id: id
-            }
+    const { data } = useRecord({
+        variables: {
+            id: id
         }
-    )
+    })
 
-    /* Ledger */
-    const { data: ledger } = useQuery<{
-        ledger: ILedger | null
-    }>(
-        gql`
-            query($id: ID!) {
-                ledger(id: $id) {
-                    classifies {
-                        _id
-                        text
-                        icon
-                        color
-                    }
-                    members {
-                        _id
-                        name
-                    }
-                }
-            }
-        `,
-        {
-            variables: {
-                id: data && data.record && data.record.pid
-            },
-            skip: !(data && data.record)
-        }
-    )
+    const { data: ledger } = useLedger({
+        variables: {
+            id: data && data.record && data.record.pid || ''
+        },
+        skip: !(data && data.record)
+    })
 
     const refMask = useRef(null)
 

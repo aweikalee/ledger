@@ -3,6 +3,7 @@ import useForm from 'react-hook-form'
 import { RouteComponentProps } from 'react-router'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
@@ -11,13 +12,12 @@ import Icon from '@/components/Icon'
 import Grid from '@/components/Grid'
 import Dialog from '@/components/Dialog'
 import * as Input from '@/components/Input'
-import * as valid from '@/model/validate/valid'
-import styles from './Index.module.scss'
 
-export interface IMember {
-    id: string
-    name: string
-}
+import * as valid from '@/model/validate/valid'
+import { IMember } from '@/model/types/member'
+import { useMembers } from '@/model/api/member'
+
+import styles from './Index.module.scss'
 
 export interface IForm {
     id?: string
@@ -36,23 +36,11 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
         }
     } = props
 
-    const { data } = useQuery<{
-        members: IMember[] | null
-    }>(
-        gql`
-            query($pid: ID!) {
-                members(pid: $pid) {
-                    _id
-                    name
-                }
-            }
-        `,
-        {
-            variables: {
-                pid: id
-            }
+    const { data } = useMembers({
+        variables: {
+            pid: id
         }
-    )
+    })
 
     const [showAddDialog, setShowAddDialog] = useState(false)
     const isAdd = useRef(true)
@@ -105,7 +93,7 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const deleteData = useRef<IMember>({
-        id: '',
+        _id: '',
         name: ''
     })
 
@@ -135,7 +123,7 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
                     {data &&
                         data.members &&
                         data.members.map(item => (
-                            <Grid sm={12} key={item.id}>
+                            <Grid sm={12} key={item._id}>
                                 <Grid
                                     sm={12}
                                     className={styles.item}
@@ -165,7 +153,7 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
                                             color="primary"
                                             size="large"
                                             onClick={() => {
-                                                updateForms('id', item.id)
+                                                updateForms('id', item._id)
                                                 updateForms('name', item.name)
                                                 isAdd.current = false
                                                 setShowAddDialog(true)

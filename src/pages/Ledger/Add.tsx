@@ -1,8 +1,6 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import useForm, { FormContext } from 'react-hook-form'
-import { useQuery, useMutation } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
 
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
@@ -11,10 +9,9 @@ import Icon from '@/components/Icon'
 import notification from '@/components/Notification'
 
 import valid from '@/model/validate/record'
-import { IReport } from '@/model/types/graphql'
-import { ILedger } from '@/model/types/ledger'
+import { useLedger } from '@/model/api/ledger'
+import { useCreateRecord } from '@/model/api/record'
 import { ICreateRecord } from '@/model/types/record'
-import { ICurrency } from '@/model/types/currency'
 import { onApolloError } from '@/model/error'
 import { localTimeOffset, timeTransform } from '@/utils/timeZone'
 import Editor from '@/middleware/record/editor'
@@ -68,60 +65,20 @@ const LedgerAdd: React.FC<RouteComponentProps<
     }, [register, watch])
 
     /* Ledger */
-    const { data } = useQuery<{
-        currencys: ICurrency[] | null
-        ledger: ILedger | null
-    }>(
-        gql`
-            query($id: ID!) {
-                currencies {
-                    name
-                    cn
-                }
-                ledger(id: $id) {
-                    title
-                    classifies {
-                        _id
-                        text
-                        icon
-                        color
-                    }
-                    members {
-                        _id
-                        name
-                    }
-                }
-            }
-        `,
-        { variables: { id }, fetchPolicy: 'cache-and-network' }
-    )
+    const { data } = useLedger({
+        variables: { id },
+        fetchPolicy: 'cache-and-network'
+    })
 
-    const [createRecord] = useMutation<
-        {
-            createRecord: IReport
-        },
-        {
-            data: ICreateRecord
+    const [createRecord] = useCreateRecord({
+        onError: onApolloError,
+        onCompleted() {
+            notification.success({
+                content: '创建成功'
+            })
+            history.push(`/ledger/${id}`)
         }
-    >(
-        gql`
-            mutation($data: CreateRecord) {
-                createRecord(data: $data) {
-                    code
-                    message
-                }
-            }
-        `,
-        {
-            onError: onApolloError,
-            onCompleted() {
-                notification.success({
-                    content: '创建成功'
-                })
-                history.push(`/ledger/${id}`)
-            }
-        }
-    )
+    })
 
     const onSubmit = () => {
         createRecord({ variables: { data: getValues() } })

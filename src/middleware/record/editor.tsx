@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useQuery } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
 import { format } from 'date-fns'
 
 import Calculator from '@/components/Calculator/Calculator'
@@ -18,7 +16,8 @@ import memberMiddleware from '@/middleware/record/member'
 import { timeTransform } from '@/utils/timeZone'
 import { ICreateRecord, IUpdateRecord } from '@/model/types/record'
 import { ILedger } from '@/model/types/ledger'
-import { ICurrency } from '@/model/types/currency'
+import { useLedger } from '@/model/api/ledger'
+import { useCurrencies } from '@/model/api/currency'
 
 import Members from '@/pages/Record/components/Members'
 import MembersStyles from '@/pages/Record/components/Members.module.scss'
@@ -34,33 +33,14 @@ const Editor: React.FC<{
 
     const values = getValues()
 
-    const { data } = useQuery<{
-        currencys: ICurrency[] | null
-        ledger: ILedger | null
-    }>(
-        gql`
-            query($id: ID!) {
-                currencies {
-                    name
-                    cn
-                }
-                ledger(id: $id) {
-                    title
-                    classifies {
-                        _id
-                        text
-                        icon
-                        color
-                    }
-                    members {
-                        _id
-                        name
-                    }
-                }
-            }
-        `,
-        { variables: { id: pid }, fetchPolicy: 'cache-and-network' }
-    )
+    const { data } = useLedger({
+        variables: { id: pid },
+        fetchPolicy: 'cache-and-network'
+    })
+
+    const { data: currencies } = useCurrencies({
+        fetchPolicy: 'cache-and-network'
+    })
 
     /* type */
     const typeChild =
@@ -127,9 +107,9 @@ const Editor: React.FC<{
                     title="选择货币种类"
                     contentPadding
                 >
-                    {data &&
-                        data.currencys &&
-                        data.currencys.map(item => (
+                    {currencies &&
+                        currencies.currencies &&
+                        currencies.currencies.map(item => (
                             <Button
                                 type={
                                     item.name === values.currency

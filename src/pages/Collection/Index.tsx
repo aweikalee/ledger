@@ -1,6 +1,4 @@
 import React from 'react'
-import gql from 'graphql-tag'
-import { useQuery } from '@apollo/react-hooks'
 import { TransitionGroup } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 
@@ -11,26 +9,13 @@ import Grid from '@/components/Grid'
 import Loading from '@/components/Loading'
 import { DelayCSSTransition } from '@/components/Animation'
 
-import { ILedger } from '@/model/types/ledger'
+import { useLedgers } from '@/model/api/ledger'
 
 import Ledger from './components/Ledger'
 import styles from './Index.module.scss'
 
 const CollectionIndex: React.FC = () => {
-    const { loading, data } = useQuery<{
-        ledgers: ILedger[] | null
-    }>(
-        gql`
-            query {
-                ledgers {
-                    _id
-                    title
-                    sort
-                }
-            }
-        `,
-        { fetchPolicy: 'cache-and-network' }
-    )
+    const { loading, data } = useLedgers({ fetchPolicy: 'cache-and-network' })
 
     const classnamesItem: CSSTransitionClassNames = {
         enter: styles['item-enter'],

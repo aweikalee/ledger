@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import gql from 'graphql-tag'
 import { RouteComponentProps } from 'react-router-dom'
-import { useQuery } from '@apollo/react-hooks'
 import { TransitionGroup } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 import { format } from 'date-fns'
@@ -18,10 +16,10 @@ import { Icon } from '@/components/Icon'
 import * as DatePicker from '@/components/DatePicker'
 
 import config from '@/config'
-import { IRecord } from '@/model/types/record'
-import { ILedger } from '@/model/types/ledger'
 import { onApolloError } from '@/model/error'
 import { timeTransform } from '@/utils/timeZone'
+import { useLedger } from '@/model/api/ledger'
+import { useRecords } from '@/model/api/record'
 
 import Record from './components/Record'
 import styles from './Index.module.scss'
@@ -40,24 +38,10 @@ const LedgerIndex: React.FC<RouteComponentProps<
     } = props
 
     /* Ledger */
-    const { data: ledger } = useQuery<{
-        ledger: ILedger | null
-    }>(
-        gql`
-            query($id: ID!) {
-                ledger(id: $id) {
-                    title
-                    classifies {
-                        _id
-                        text
-                        icon
-                        color
-                    }
-                }
-            }
-        `,
-        { variables: { id }, fetchPolicy: 'cache-and-network' }
-    )
+    const { data: ledger } = useLedger({
+        variables: { id },
+        fetchPolicy: 'cache-and-network'
+    })
 
     /* Records */
     const skip = useRef(0)
@@ -70,43 +54,16 @@ const LedgerIndex: React.FC<RouteComponentProps<
         return getDateTime(now.getTime())
     })
 
-    const { loading, fetchMore, data } = useQuery<{
-        records?: IRecord[]
-    }>(
-        gql`
-            query($pid: ID!, $datetime: Float, $skip: Float, $limit: Float) {
-                records(
-                    pid: $pid
-                    datetime: $datetime
-                    skip: $skip
-                    limit: $limit
-                ) {
-                    _id
-                    type
-                    classify
-                    timezone
-                    datetime
-                    detail
-                    amount
-                    currency
-                    rate
-                    payer
-                    participator
-                    settled
-                }
-            }
-        `,
-        {
-            variables: {
-                pid: id,
-                datetime: datetime.utc,
-                skip: 0,
-                limit: 20
-            },
-            onError: onApolloError,
-            fetchPolicy: 'cache-and-network'
-        }
-    )
+    const { loading, fetchMore, data } = useRecords({
+        variables: {
+            pid: id,
+            datetime: datetime.utc,
+            skip: 0,
+            limit: 20
+        },
+        onError: onApolloError,
+        fetchPolicy: 'cache-and-network'
+    })
     useEffect(() => {
         if (data && data.records) {
             skip.current = data.records.length
@@ -134,7 +91,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
             if (res.errors) {
                 cb(res.errors[0])
             } else {
-                cb(null, res.data.records && res.data.records!.length === 0)
+                cb(null, !!res.data.records && res.data.records.length === 0)
             }
         })
     }
@@ -177,9 +134,8 @@ const LedgerIndex: React.FC<RouteComponentProps<
             />
             <ContentBody maxWidth="sm">
                 <TransitionGroup component={Grid} container direction="column">
-                    {data &&
-                        data.records &&
-                        (data.records || []).map((item, index) => {
+                    {data && data.records ? (
+                        data.records.map((item, index) => {
                             const delay = (index % 10) * 100 // 10为一页的数量，records请求中的limit
                             return (
                                 <DelayCSSTransition
@@ -192,7 +148,10 @@ const LedgerIndex: React.FC<RouteComponentProps<
                                     <Record {...item} classifies={types} />
                                 </DelayCSSTransition>
                             )
-                        })}
+                        })
+                    ) : (
+                        <></>
+                    )}
                 </TransitionGroup>
                 {/* FIXME: 更换日期后 没能重置Loading.More内部状态  */}
                 <Loading.More

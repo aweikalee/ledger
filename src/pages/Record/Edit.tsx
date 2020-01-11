@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router'
 import useForm, { FormContext } from 'react-hook-form'
-import { useQuery, useMutation } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
 
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
@@ -11,9 +9,9 @@ import Icon from '@/components/Icon'
 import notification from '@/components/Notification'
 
 import valid from '@/model/validate/record'
-import { IReport } from '@/model/types/graphql'
-import { IUpdateRecord, IRecord } from '@/model/types/record'
+import { IUpdateRecord } from '@/model/types/record'
 import { onApolloError } from '@/model/error'
+import { useRecord, useUpdateRecord } from '@/model/api/record'
 
 import Editor from '@/middleware/record/editor'
 
@@ -32,29 +30,10 @@ const RecordEdit: React.FC<RouteComponentProps<
     } = props
 
     /* initialization */
-    const { data } = useQuery<{
-        record: IRecord | null
-    }>(
-        gql`
-            query($id: ID!) {
-                record(id: $id) {
-                    pid
-                    type
-                    classify
-                    timezone
-                    datetime
-                    detail
-                    amount
-                    currency
-                    rate
-                    payer
-                    participator
-                    settled
-                }
-            }
-        `,
-        { variables: { id }, fetchPolicy: 'cache-and-network' }
-    )
+    const { data } = useRecord({
+        variables: { id },
+        fetchPolicy: 'cache-and-network'
+    })
 
     const form = useForm<IUpdateRecord>({ mode: 'onChange' })
     const { register, getValues, setValue, handleSubmit, watch } = form
@@ -91,34 +70,17 @@ const RecordEdit: React.FC<RouteComponentProps<
         }
     }, [data, setValue, watch])
 
-    const [updateRecord] = useMutation<
-        {
-            updateRecord: IReport
-        },
-        {
-            data: IUpdateRecord
-        }
-    >(
-        gql`
-            mutation($data: UpdateRecord) {
-                updateRecord(data: $data) {
-                    code
-                    message
-                }
-            }
-        `,
-        {
-            onError: onApolloError,
-            onCompleted() {
-                notification.success({
-                    content: '更新成功'
-                })
-                history.push(
-                    `/ledger/${data && data.record && data.record.pid}`
-                )
+    const [updateRecord] = useUpdateRecord({
+        onError: onApolloError,
+        onCompleted() {
+            notification.success({
+                content: '更新成功'
+            })
+            if (data && data.record && data.record.pid) {
+                history.push(`/ledger/${data.record.pid}`)
             }
         }
-    )
+    })
 
     const onSubmit = () => {
         const _data = {
