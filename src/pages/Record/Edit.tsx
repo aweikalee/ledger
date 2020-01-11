@@ -89,7 +89,7 @@ const RecordEdit: React.FC<RouteComponentProps<
             setValue('settled', record.settled)
             watch()
         }
-    }, [data])
+    }, [data, setValue, watch])
 
     const [updateRecord] = useMutation<
         {
