@@ -5,5 +5,4 @@ export type ICollectionClass = {
     'item-exit-active': string
 }
 
-const styles: ICollectionClass
-export default styles
+export default {} as ICollectionClass

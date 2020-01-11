@@ -19,5 +19,4 @@ export type IButtonGroupClass = {
     group: string
 }
 
-const styles: IButtonClass & IButtonGroupClass
-export default styles
+export default {} as IButtonClass & IButtonGroupClass

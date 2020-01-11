@@ -8,5 +8,4 @@ export type ILoadingClass = {
     'exit-active': string
 }
 
-const styles: ILoadingClass
-export default styles
+export default {} as ILoadingClass

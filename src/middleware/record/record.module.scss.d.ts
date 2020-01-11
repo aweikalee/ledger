@@ -3,5 +3,4 @@ export type IRecordClass = {
     amount: string
 }
 
-const styles: IRecordClass
-export default styles
+export default {} as IRecordClass

@@ -3,5 +3,4 @@ export type ISreenClass = {
     'screen-mini': string
 }
 
-const styles: ISreenClass
-export default styles
+export default {} as ISreenClass

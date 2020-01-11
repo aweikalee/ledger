@@ -8,5 +8,4 @@ export type IDrawerClass = {
     'exit-active': string
 }
 
-const styles: IDrawerClass
-export default styles
+export default {} as IDrawerClass

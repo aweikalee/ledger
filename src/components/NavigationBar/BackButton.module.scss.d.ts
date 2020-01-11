@@ -4,5 +4,4 @@ export type IBackButtonClass = {
     'back-text': string
 }
 
-const styles: IBackButtonClass
-export default styles
+export default {} as IBackButtonClass

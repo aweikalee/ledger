@@ -6,5 +6,4 @@ export type IMembersClass = {
     icon: string
 }
 
-const styles: IMembersClass
-export default styles
+export default {} as IMembersClass

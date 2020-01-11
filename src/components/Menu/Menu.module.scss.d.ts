@@ -5,6 +5,4 @@ export type IMenuClass = {
     item: string
 }
 
-const styles: IMenuClass
-export default styles
-
+export default {} as IMenuClass

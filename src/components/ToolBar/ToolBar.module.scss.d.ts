@@ -3,5 +3,4 @@ export type IToolBalClass = {
     'toolbar-grid': string
 }
 
-const styles: IToolBalClass
-export default styles
+export default {} as IToolBalClass

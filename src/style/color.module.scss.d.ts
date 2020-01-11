@@ -19,5 +19,4 @@ export type IColorClass = {
     [key: string]: string
 }
 
-const styles: IColorClass
-export default styles
+export default {} as IColorClass

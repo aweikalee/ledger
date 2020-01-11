@@ -8,6 +8,4 @@ export type IKeyboardClass = {
     'exit-active': string
 }
 
-const styles: IKeyboardClass
-export default styles
-
+export default {} as IKeyboardClass

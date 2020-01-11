@@ -8,5 +8,4 @@ export type IMaskClass = {
     'exit-active': string
 }
 
-const styles: IMaskClass
-export default styles
+export default {} as IMaskClass

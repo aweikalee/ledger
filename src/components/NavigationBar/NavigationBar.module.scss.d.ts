@@ -12,5 +12,4 @@ export type INavigationBarClass = {
     confirm: string
 }
 
-const styles: INavigationBarClass
-export default styles
+export default {} as INavigationBarClass

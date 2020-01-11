@@ -3,6 +3,4 @@ export type IRadioClass = {
     group: string
 }
 
-const styles: IRadioClass
-export default styles
-
+export default {} as IRadioClass

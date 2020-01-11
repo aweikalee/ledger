@@ -6,5 +6,4 @@ export type IPopupClass = {
     helper: string
 }
 
-const styles: IPopupClass
-export default styles
+export default {} as IPopupClass

@@ -5,5 +5,4 @@ export type IIconPickerClass = {
     text: string
 }
 
-const styles: IIconPickerClass
-export default styles
+export default {} as IIconPickerClass

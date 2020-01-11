@@ -3,5 +3,4 @@ export type IMemberClass = {
     name: string
 }
 
-const styles: IMemberClass
-export default styles
+export default {} as IMemberClass

@@ -11,6 +11,4 @@ export type IDatePickerClass = {
     'exit-active': string
 }
 
-const styles: IDatePickerClass
-export default styles
-
+export default {} as IDatePickerClass

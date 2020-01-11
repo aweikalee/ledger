@@ -8,5 +8,4 @@ export type IPopupClass = {
     'exit-active': string
 }
 
-const styles: IPopupClass
-export default styles
+export default {} as IPopupClass

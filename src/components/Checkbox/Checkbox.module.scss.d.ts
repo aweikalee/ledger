@@ -3,6 +3,4 @@ export type ICheckboxClass = {
     group: string
 }
 
-const styles: ICheckboxClass
-export default styles
-
+export default {} as ICheckboxClass

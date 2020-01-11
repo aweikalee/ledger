@@ -6,5 +6,4 @@ export type IToolBarButtonClass = {
     default: string
 }
 
-const styles: IToolBarButtonClass
-export default styles
+export default {} as IToolBarButtonClass

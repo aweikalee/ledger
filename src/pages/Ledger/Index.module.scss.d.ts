@@ -5,5 +5,4 @@ export type ILedgerClass = {
     'item-exit-active': string
 }
 
-const styles: ILedgerClass
-export default styles
+export default {} as ILedgerClass

@@ -5,6 +5,4 @@ export type IFixedClass = {
     bottom: string
 }
 
-const styles: IFixedClass
-export default styles
-
+export default {} as IFixedClass

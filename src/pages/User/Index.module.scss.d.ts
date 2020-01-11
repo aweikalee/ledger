@@ -3,5 +3,4 @@ export type IUserIndexClass = {
     buttons: string
 }
 
-const styles: IUserIndexClass
-export default styles
+export default {} as IUserIndexClass

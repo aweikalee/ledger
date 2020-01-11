@@ -5,6 +5,4 @@ export type ISelectClass = {
     modal: string
 }
 
-const styles: ISelectClass
-export default styles
-
+export default {} as ISelectClass

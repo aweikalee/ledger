@@ -3,6 +3,4 @@ export type IKeyboardClass = {
     button: string
 }
 
-const styles: IKeyboardClass
-export default styles
-
+export default {} as IKeyboardClass
