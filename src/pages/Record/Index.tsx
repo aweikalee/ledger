@@ -18,6 +18,7 @@ import { IRecord } from '@/model/types/record'
 import { ILedger } from '@/model/types/ledger'
 import { useRecord } from '@/model/api/record'
 import { useLedger } from '@/model/api/ledger'
+import { onApolloError } from '@/model/error'
 
 import styles from './Index.module.scss'
 import membersStyles from './components/Members.module.scss'
@@ -128,6 +129,7 @@ const RecordIndex: React.FC<RouteComponentProps<
         variables: {
             id: id
         },
+        onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 
@@ -136,6 +138,7 @@ const RecordIndex: React.FC<RouteComponentProps<
             id: (data && data.record && data.record.pid) || ''
         },
         skip: !(data && data.record),
+        onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 

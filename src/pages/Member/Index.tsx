@@ -14,6 +14,7 @@ import * as Input from '@/components/Input'
 import * as valid from '@/model/validate/valid'
 import { IMember } from '@/model/types/member'
 import { useMembers } from '@/model/api/member'
+import { onApolloError } from '@/model/error'
 
 import styles from './Index.module.scss'
 
@@ -38,6 +39,7 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
         variables: {
             pid: id
         },
+        onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 

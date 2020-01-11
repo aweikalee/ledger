@@ -18,6 +18,7 @@ import { ICreateRecord, IUpdateRecord } from '@/model/types/record'
 import { ILedger } from '@/model/types/ledger'
 import { useLedger } from '@/model/api/ledger'
 import { useCurrencies } from '@/model/api/currency'
+import { onApolloError } from '@/model/error'
 
 import Members from './Members'
 import MembersStyles from './Members.module.scss'
@@ -37,10 +38,12 @@ const RecordEditor: React.FC<{
 
     const { data } = useLedger({
         variables: { id: pid },
+        onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 
     const { data: currencies } = useCurrencies({
+        onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 

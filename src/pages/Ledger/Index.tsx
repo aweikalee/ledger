@@ -40,6 +40,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
     /* Ledger */
     const { data: ledger } = useLedger({
         variables: { id },
+        onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 

@@ -32,11 +32,12 @@ const RecordEdit: React.FC<RouteComponentProps<
     /* initialization */
     const { data } = useRecord({
         variables: { id },
+        onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 
     const form = useForm<IUpdateRecord>({ mode: 'onChange' })
-    const { register, getValues, setValue, handleSubmit, watch } = form
+    const { register, getValues, setValue, handleSubmit } = form
 
     React.useEffect(() => {
         register({ name: 'pid' }, { validate: valid.pid })

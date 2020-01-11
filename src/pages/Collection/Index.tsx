@@ -10,12 +10,16 @@ import Loading from '@/components/Loading'
 import { DelayCSSTransition } from '@/components/Animation'
 
 import { useLedgers } from '@/model/api/ledger'
+import { onApolloError } from '@/model/error'
 
 import Ledger from './components/Ledger'
 import styles from './Index.module.scss'
 
 const CollectionIndex: React.FC = () => {
-    const { loading, data } = useLedgers({ fetchPolicy: 'cache-and-network' })
+    const { loading, data } = useLedgers({
+        onError: onApolloError,
+        fetchPolicy: 'cache-and-network'
+    })
 
     const classnamesItem: CSSTransitionClassNames = {
         enter: styles['item-enter'],
