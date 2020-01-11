@@ -11,7 +11,7 @@ import RecordIndex from './Record/Index'
 import MemberIndex from './Member/Index'
 import UserIndex from './User/Index'
 
-import LedgerAdd from './Ledger/Add'
+import RecordAdd from './Record/Add'
 import RecordEdit from './Record/Edit'
 
 import UserLogin from './User/Login'
@@ -44,7 +44,7 @@ const App: React.FC = () => {
                         <Route
                             exact
                             path="/ledger/:id/add"
-                            component={LedgerAdd}
+                            component={RecordAdd}
                         />
 
                         <Route
