@@ -150,12 +150,12 @@ const RecordIndex: React.FC<RouteComponentProps<
             <NavigationBar
                 title="详情"
                 left={
-                    (data && data.record && (
+                    data && data.record ? (
                         <BackButton
                             href={`/ledger/${data.record.pid}`}
                             text="账簿"
                         />
-                    )) || (
+                    ) : (
                         <BackButton
                             onClick={() => props.history.goBack()}
                             text="账簿"
@@ -168,6 +168,7 @@ const RecordIndex: React.FC<RouteComponentProps<
                     {data && data.record && (
                         <Record
                             {...data.record}
+                            _id={id}
                             classifies={
                                 (ledger &&
                                     ledger.ledger &&

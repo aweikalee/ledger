@@ -66,9 +66,8 @@ const RecordEdit: React.FC<RouteComponentProps<
             setValue('payer', record.payer)
             setValue('participator', record.participator)
             setValue('settled', record.settled)
-            watch()
         }
-    }, [data, setValue, watch])
+    }, [data, setValue])
 
     const [updateRecord] = useUpdateRecord({
         onError: onApolloError,
@@ -94,7 +93,19 @@ const RecordEdit: React.FC<RouteComponentProps<
         <>
             <NavigationBar
                 title="编辑账单"
-                left={<BackButton icon="close" href={`/ledger/${id}`} />}
+                left={
+                    data && data.record ? (
+                        <BackButton
+                            icon="close"
+                            href={`/ledger/${data.record.pid}`}
+                        />
+                    ) : (
+                        <BackButton
+                            icon="close"
+                            onClick={() => props.history.goBack()}
+                        />
+                    )
+                }
                 right={
                     <Button
                         color="default"

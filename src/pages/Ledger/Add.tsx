@@ -48,7 +48,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
             settled: []
         }
     })
-    const { register, getValues, handleSubmit, watch } = form
+    const { register, getValues, handleSubmit } = form
 
     React.useEffect(() => {
         register({ name: 'pid' }, { validate: valid.pid })
@@ -62,8 +62,7 @@ const LedgerAdd: React.FC<RouteComponentProps<
         register({ name: 'payer' }, { validate: valid.payer })
         register({ name: 'particaptor' }, { validate: valid.participator })
         register({ name: 'settled' }, { validate: valid.settled })
-        watch()
-    }, [register, watch])
+    }, [register])
 
     /* Ledger */
     const { data } = useLedger({

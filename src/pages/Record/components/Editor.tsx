@@ -29,9 +29,11 @@ const RecordEditor: React.FC<{
 }> = props => {
     const { pid } = props
 
-    const { getValues, setValue, errors } = useFormContext<IUpdateRecord>()
+    const { getValues, setValue, watch, errors } = useFormContext<
+        IUpdateRecord
+    >()
 
-    const values = getValues()
+    const values = watch()
 
     const { data } = useLedger({
         variables: { id: pid },

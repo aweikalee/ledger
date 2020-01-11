@@ -40,7 +40,7 @@ const validate: {
     },
     detail: value => {
         return valid.queue<string>([valid.maxLength(140)], {
-            name: '时间'
+            name: '描述'
         })(value)
     },
     amount: value => {
@@ -53,7 +53,7 @@ const validate: {
                         valid.errorFactory('{name}不合法', options)
                     )
                 },
-                valid.maxLength(10)
+                valid.maxLength(20)
             ],
             {
                 name: '金额'
