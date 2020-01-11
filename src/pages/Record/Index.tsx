@@ -127,14 +127,16 @@ const RecordIndex: React.FC<RouteComponentProps<
     const { data } = useRecord({
         variables: {
             id: id
-        }
+        },
+        fetchPolicy: 'cache-and-network'
     })
 
     const { data: ledger } = useLedger({
         variables: {
             id: (data && data.record && data.record.pid) || ''
         },
-        skip: !(data && data.record)
+        skip: !(data && data.record),
+        fetchPolicy: 'cache-and-network'
     })
 
     const refMask = useRef(null)

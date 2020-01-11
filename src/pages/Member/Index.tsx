@@ -37,7 +37,8 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps>> = props => {
     const { data } = useMembers({
         variables: {
             pid: id
-        }
+        },
+        fetchPolicy: 'cache-and-network'
     })
 
     const [showAddDialog, setShowAddDialog] = useState(false)
