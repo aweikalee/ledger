@@ -7,7 +7,6 @@ import { Button } from '@/components/Button'
 
 import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
-import { timeTransform } from '@/utils/timeZone'
 import { useLedger } from '@/model/api/ledger'
 
 import styles from './Index.module.scss'
@@ -58,10 +57,3 @@ const LedgerIndex: React.FC<ILedgerIndexProps> = props => {
 }
 
 export default LedgerIndex
-
-function getDateTime(now: number) {
-    return {
-        local: now,
-        utc: timeTransform.toUTC(now)
-    }
-}

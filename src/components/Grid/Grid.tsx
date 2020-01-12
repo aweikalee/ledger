@@ -82,7 +82,7 @@ const Component = React.forwardRef<HTMLDivElement, IGirdProps>((props, ref) => {
         'data-wrap': wrap,
         'data-justify': justify,
         'data-align-items': alignItems,
-        'data-content': alignContent
+        'data-align-content': alignContent
     }
     return (
         <div data-role="grid" ref={el} {...flexProp} {...bindProps}>

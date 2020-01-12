@@ -53,17 +53,14 @@ const Component = React.forwardRef<HTMLElement, IButtonProps>((props, ref) => {
         className,
         disabled,
         tabIndex: 0,
+        children: <div data-role="button-inner">{children}</div>,
         ...other
     }
 
     return href ? (
-        <Link data-role="button" ref={el as any} to={href} {...bindProps}>
-            {children}
-        </Link>
+        <Link data-role="button" ref={el as any} to={href} {...bindProps} />
     ) : (
-        <button data-role="button" ref={el as any} {...bindProps}>
-            {children}
-        </button>
+        <button data-role="button" ref={el as any} {...bindProps} />
     )
 })
 

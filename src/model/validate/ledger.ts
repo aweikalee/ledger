@@ -9,7 +9,7 @@ const validate: {
         return true
     },
     title: value => {
-        return valid.queue<string>([valid.maxLength(140)], {
+        return valid.queue<string>([valid.maxLength(8)], {
             name: '标题'
         })(value)
     }

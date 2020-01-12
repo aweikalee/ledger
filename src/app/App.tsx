@@ -24,11 +24,7 @@ const App: React.FC = () => {
                 <BrowserRouter>
                     <MainIndex />
                     <Switch>
-                        <Route
-                            exact
-                            path="/collection"
-                            component={CollectionIndex}
-                        />
+                        <Route path="/collection" component={CollectionIndex} />
 
                         <Route
                             exact

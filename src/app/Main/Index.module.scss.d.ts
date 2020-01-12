@@ -1,3 +1,3 @@
-export type IClassName = {}
+type IClassName = {}
 
 export default {} as IClassName
