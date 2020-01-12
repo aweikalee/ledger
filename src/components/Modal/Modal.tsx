@@ -16,6 +16,8 @@ export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
     show?: boolean
     overlayColor?: 'black' | 'white' | 'transparent'
     onClickOverlay?: Function
+    onEnter?: EnterHandler
+    onExited?: ExitHandler
 }
 
 const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
@@ -25,7 +27,9 @@ const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
         style: styleProp,
         show,
         overlayColor = 'black',
-        onClickOverlay = () => {},
+        onClickOverlay,
+        onEnter: onEnterProp,
+        onExited: onExitedProp,
         onMouseDown: onMouseDownProp,
         onMouseUp: onMouseUpProp,
         ...other
@@ -89,7 +93,7 @@ const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
     }
     const onMouseUp: React.DOMAttributes<HTMLDivElement>['onMouseUp'] = e => {
         if (e.target === el.current && isClickOverlay.current) {
-            onClickOverlay()
+            onClickOverlay && onClickOverlay()
         }
         isClickOverlay.current = false
         onMouseUpProp && onMouseUpProp(e)
@@ -122,6 +126,12 @@ const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
 let saveOverflow: string | null = null
 let savePaddingRight: string | null = null
 const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
+    const {
+        onEnter: onEnterProp,
+        onExited: onExitedProp,
+        ...other
+    }: typeof props = props
+
     const el = useRef<HTMLDivElement>(null)
     React.useImperativeHandle(ref, () => el.current!)
 
@@ -153,7 +163,7 @@ const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
         exitActive: styles['exit-active']
     }
 
-    const onEnter: EnterHandler = () => {
+    const onEnter: EnterHandler = (node, isAppearing) => {
         if (show && modalQueue.length === 0) {
             saveOverflow = document.body.style.overflow
             savePaddingRight = document.body.style.paddingRight
@@ -162,14 +172,16 @@ const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
                 document.body.style.paddingRight = `${getScrollBarWidth()}px`
             }
         }
+        onEnterProp && onEnterProp(node, isAppearing)
     }
-    const onExited: ExitHandler = () => {
+    const onExited: ExitHandler = (node) => {
         if (!show && modalQueue.length === 0) {
             document.body.style.overflow = saveOverflow as string
             document.body.style.paddingRight = savePaddingRight
             saveOverflow = null
             savePaddingRight = null
         }
+        onExitedProp && onExitedProp(node)
     }
 
     return (
@@ -183,7 +195,7 @@ const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
                 onEnter={onEnter}
                 onExited={onExited}
             >
-                <ModalBase ref={el} {...props} />
+                <ModalBase ref={el} {...other} />
             </CSSTransition>
         </Portal>
     )

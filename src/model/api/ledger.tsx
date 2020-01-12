@@ -16,13 +16,13 @@ export interface ILedgerData {
 }
 
 export interface ILedgerVar {
-    id: string
+    id?: string
 }
 
 export const useLedger = (options: QueryHookOptions<ILedgerData, ILedgerVar>) => {
     return useQuery<ILedgerData, ILedgerVar>(
         gql`
-            query($id: ID!) {
+            query($id: ID) {
                 ledger(id: $id) {
                     title
                     classifies {
