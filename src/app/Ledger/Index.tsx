@@ -20,7 +20,7 @@ const LedgerIndex: React.FC<RouteComponentProps<
 
     React.useEffect(() => {
         store.setLastLedger(id)
-    }, [id])
+    }, [id, store])
 
     return <></>
 }

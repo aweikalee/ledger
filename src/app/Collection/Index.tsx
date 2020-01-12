@@ -37,7 +37,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
         } else {
             history.replace(path)
         }
-    }, [remove])
+    }, [remove, history, path])
 
     const { data: ledgers, refetch } = useLedgers({
         onError: onApolloError,

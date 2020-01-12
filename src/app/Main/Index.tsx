@@ -9,15 +9,7 @@ import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
 import { useLedger } from '@/model/api/ledger'
 
-import styles from './Index.module.scss'
-
-export interface ILedgerIndexProps {
-    id?: string
-}
-
-const LedgerIndex: React.FC<ILedgerIndexProps> = props => {
-    const {} = props
-
+const LedgerIndex: React.FC = props => {
     const store = useStore()
 
     const _id = store.lastLedger
@@ -32,7 +24,7 @@ const LedgerIndex: React.FC<ILedgerIndexProps> = props => {
         if (ledger && ledger.ledger && ledger.ledger._id) {
             store.setLastLedger(ledger.ledger._id)
         }
-    }, [ledger])
+    }, [ledger, store])
 
     return (
         <>
