@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
 
+import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
 import { useUpdateLedger } from '@/model/api/ledger'
 import { ILedger, IUpdateLedger } from '@/model/types/ledger'
@@ -19,6 +20,7 @@ const LedgerRemove: React.FC<RouteComponentProps<ILedgerRemoveRouteProps> &
     ILedgerRemoveProps> = props => {
     const { target, onClose, onSuccessed } = props
 
+    const store = useStore()
     const [show, setShow] = React.useState(true)
 
     const [updateLedger] = useUpdateLedger({
@@ -27,6 +29,11 @@ const LedgerRemove: React.FC<RouteComponentProps<ILedgerRemoveRouteProps> &
             notification.success({
                 content: '删除成功'
             })
+
+            if (target._id === store.lastLedger) {
+                store.setLastLedger(undefined)
+            }
+
             onSuccessed && onSuccessed()
             setShow(false)
         }
