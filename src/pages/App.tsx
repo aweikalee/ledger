@@ -11,6 +11,8 @@ import RecordIndex from './Record/Index'
 import MemberIndex from './Member/Index'
 import UserIndex from './User/Index'
 
+import LedgerAdd from './Ledger/Add'
+import LedgerEdit from './Ledger/Edit'
 import RecordAdd from './Record/Add'
 import RecordEdit from './Record/Edit'
 
@@ -35,10 +37,27 @@ const App: React.FC = () => {
                 <BrowserRouter>
                     <Switch>
                         <Route exact path="/" component={CollectionIndex} />
+
+                        {/* ledger */}
                         <Route
                             exact
                             path="/ledger/:id"
                             component={LedgerIndex}
+                        />
+
+                        <Route exact path="/add" component={LedgerAdd} />
+
+                        <Route
+                            exact
+                            path="/ledger/:id/edit"
+                            component={LedgerEdit}
+                        />
+
+                        {/* record */}
+                        <Route
+                            exact
+                            path="/record/:id"
+                            component={RecordIndex}
                         />
 
                         <Route
@@ -49,28 +68,25 @@ const App: React.FC = () => {
 
                         <Route
                             exact
-                            path="/record/:id"
-                            component={RecordIndex}
-                        />
-
-                        <Route
-                            exact
                             path="/record/:id/edit"
                             component={RecordEdit}
                         />
 
+                        {/* member */}
                         <Route
                             exact
                             path="/member/:id"
                             component={MemberIndex}
                         />
 
+                        {/* user */}
                         <Route exact path="/user" component={UserIndex} />
 
                         <Route exact path="/login" component={UserLogin} />
 
                         <Route exact path="/logout" component={UserLogout} />
 
+                        {/* other */}
                         {process.env.NODE_ENV === 'development' && (
                             <Route exact path="/test" component={Test} />
                         )}

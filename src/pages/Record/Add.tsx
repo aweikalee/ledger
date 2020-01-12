@@ -15,14 +15,14 @@ import { ICreateRecord } from '@/model/types/record'
 import { onApolloError } from '@/model/error'
 import { localTimeOffset, timeTransform } from '@/utils/timeZone'
 
-import Editor from '../Record/components/Editor'
+import Editor from './components/Editor'
 
-export interface ILedgerAddRouteProps {
+export interface IRecordAddRouteProps {
     id: string
 }
 
-const LedgerAdd: React.FC<RouteComponentProps<
-    ILedgerAddRouteProps
+const RecordAdd: React.FC<RouteComponentProps<
+    IRecordAddRouteProps
 >> = props => {
     const {
         history,
@@ -111,4 +111,4 @@ const LedgerAdd: React.FC<RouteComponentProps<
     )
 }
 
-export default LedgerAdd
+export default RecordAdd
