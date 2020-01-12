@@ -5,7 +5,7 @@ const ERROR_MESSAGE: {
 } = {
     normal: '数据验证错误',
     require: '{name}不能为空',
-    maxLength: '{name}不能超过{limit}个字符',
+    maxLength: '{name}不能大于{limit}个字符',
     minLength: '{name}不能少于{limit}个字符',
     isDate: '{name}不是有效的日期格式'
 }
@@ -52,26 +52,28 @@ export const isRequire = (): IRule => {
     }
 }
 
-export const maxLength = (max: number): IRule => {
+export const maxLength = (max: number, equals: boolean = false): IRule => {
     return (value, options = {}) => {
-        if (`${value || ''}`.length <= max) {
+        const len = `${value || ''}`.length
+        if (equals ? len <= max : len < max) {
             return true
         }
         return getError('maxLength', {
             ...options,
-            limit: max
+            limit: `${equals ? '等于' : ''}${max}`
         })
     }
 }
 
-export const minLength = (min: number): IRule => {
+export const minLength = (min: number, equals: boolean = false): IRule => {
     return (value, options = {}) => {
-        if (`${value || ''}`.length >= min) {
+        const len = `${value || ''}`.length
+        if (equals ? len >= min : len > min) {
             return true
         }
         return getError('minLength', {
             ...options,
-            limit: min
+            limit: `${equals ? '等于' : ''}${min}`
         })
     }
 }
