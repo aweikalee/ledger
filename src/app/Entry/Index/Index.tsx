@@ -2,7 +2,6 @@ import React from 'react'
 import { RouteComponentProps, Route } from 'react-router-dom'
 
 import NavigationBar from '@/components/NavigationBar'
-import ContentBody from '@/components/ContentBody'
 import ToolBar from '@/components/ToolBar'
 import { Button } from '@/components/Button'
 
@@ -40,9 +39,7 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
                 }
             />
 
-            <ContentBody maxWidth="sm">
-                <Route component={LedgerIndex} />
-            </ContentBody>
+            <Route component={LedgerIndex} />
 
             <ToolBar
                 active={{ main: true }}

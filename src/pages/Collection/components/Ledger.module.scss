@@ -1,8 +1,0 @@
-@import '@/style/index.scss';
-
-.ledger {
-    @include font(title-1);
-    padding: $gap;
-    border-radius: $border-radius;
-    height: auto !important;
-}

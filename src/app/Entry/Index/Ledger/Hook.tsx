@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { useStore } from '@/store'
 
 export interface ILedgerIndexHookRouteProps {
-    id?: string
+    id: string
 }
 
 const LedgerIndexHook: React.FC<RouteComponentProps<
@@ -22,7 +22,7 @@ const LedgerIndexHook: React.FC<RouteComponentProps<
         store.setLastLedger(id)
     }, [id, store])
 
-    return <></>
+    return null
 }
 
 export default LedgerIndexHook

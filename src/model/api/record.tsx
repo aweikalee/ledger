@@ -19,7 +19,9 @@ export interface IRecordVar {
     id: string
 }
 
-export const useRecord = (options: QueryHookOptions<IRecordData, IRecordVar>) => {
+export const useRecord = (
+    options: QueryHookOptions<IRecordData, IRecordVar>
+) => {
     return useQuery<IRecordData, IRecordVar>(
         gql`
             query($id: ID!) {
@@ -51,7 +53,8 @@ export interface IRecordsData {
 
 export interface IRecordsVar {
     pid: string
-    datetime: number
+    start: number
+    end: number
     skip: number
     limit: number
 }
@@ -61,10 +64,17 @@ export const useRecords = (
 ) => {
     return useQuery<IRecordsData, IRecordsVar>(
         gql`
-            query($pid: ID!, $datetime: Float, $skip: Float, $limit: Float) {
+            query(
+                $pid: ID!
+                $start: Float
+                $end: Float
+                $skip: Float
+                $limit: Float
+            ) {
                 records(
                     pid: $pid
-                    datetime: $datetime
+                    start: $start
+                    end: $end
                     skip: $skip
                     limit: $limit
                 ) {
