@@ -24,6 +24,7 @@ export const useLedger = (options: QueryHookOptions<ILedgerData, ILedgerVar>) =>
         gql`
             query($id: ID) {
                 ledger(id: $id) {
+                    _id
                     title
                     classifies {
                         _id

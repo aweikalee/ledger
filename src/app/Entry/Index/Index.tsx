@@ -1,4 +1,5 @@
 import React from 'react'
+import { RouteComponentProps, Route } from 'react-router-dom'
 
 import NavigationBar from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
@@ -9,7 +10,10 @@ import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
 import { useLedger } from '@/model/api/ledger'
 
-const LedgerIndex: React.FC = props => {
+import CollectionIndex from './Collection/Index'
+import LedgerIndex from './Ledger/Index'
+
+const MainIndex: React.FC<RouteComponentProps> = props => {
     const store = useStore()
 
     const _id = store.lastLedger
@@ -35,17 +39,19 @@ const LedgerIndex: React.FC = props => {
                     </Button>
                 }
             />
-            <ContentBody maxWidth="sm"></ContentBody>
+
+            <ContentBody maxWidth="sm">
+                <Route component={LedgerIndex} />
+            </ContentBody>
+
             <ToolBar
-                active={{
-                    main: true
-                }}
-                href={{
-                    main: `/ledger/${_id}/add`
-                }}
+                active={{ main: true }}
+                href={{ main: `/ledger/${_id}/add` }}
             />
+
+            <Route path="/collection" component={CollectionIndex} />
         </>
     )
 }
 
-export default LedgerIndex
+export default MainIndex

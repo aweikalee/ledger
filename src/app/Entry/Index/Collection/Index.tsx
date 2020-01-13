@@ -1,6 +1,5 @@
 import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-import { Route } from 'react-router-dom'
+import { RouteComponentProps, Route } from 'react-router-dom'
 
 import Button from '@/components/Button'
 import Icon from '@/components/Icon'
@@ -12,8 +11,8 @@ import { onApolloError } from '@/model/error'
 import { useLedgers } from '@/model/api/ledger'
 import { ILedger } from '@/model/types/ledger'
 
-import LedgerAdd from '@/app/Ledger/Add'
-import LedgerRemove from '@/app/Ledger/Remove'
+import LedgerAdd from './Add/Index'
+import LedgerRemove from './Remove/Index'
 import styles from './Index.module.scss'
 
 export interface ICollectionIndexProps {}

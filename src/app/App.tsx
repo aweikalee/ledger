@@ -4,11 +4,7 @@ import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { useStore } from '@/store'
 
-import MainIndex from './Main/Index'
-
-import CollectionIndex from './Collection/Index'
-
-import LedgerIndex from './Ledger/Index'
+import Index from './Entry/Index/Index'
 
 import './App.module.scss'
 
@@ -22,15 +18,8 @@ const App: React.FC = () => {
         <ApolloProvider client={client}>
             <useStore.Provider>
                 <BrowserRouter>
-                    <MainIndex />
                     <Switch>
-                        <Route path="/collection" component={CollectionIndex} />
-
-                        <Route
-                            exact
-                            path="/ledger/:id"
-                            component={LedgerIndex}
-                        />
+                        <Route component={Index} />
                     </Switch>
                 </BrowserRouter>
             </useStore.Provider>

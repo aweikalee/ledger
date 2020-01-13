@@ -1,7 +1,9 @@
 import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, Route } from 'react-router-dom'
 
 import { useStore } from '@/store'
+
+import LedgerIndexHook from './Hook'
 
 export interface ILedgerIndexRouteProps {
     id?: string
@@ -10,19 +12,13 @@ export interface ILedgerIndexRouteProps {
 const LedgerIndex: React.FC<RouteComponentProps<
     ILedgerIndexRouteProps
 >> = props => {
-    const {
-        match: {
-            params: { id }
-        }
-    } = props
-
     const store = useStore()
 
-    React.useEffect(() => {
-        store.setLastLedger(id)
-    }, [id, store])
-
-    return <></>
+    return (
+        <>
+            <Route exact path="/ledger/:id" component={LedgerIndexHook} />
+        </>
+    )
 }
 
 export default LedgerIndex
