@@ -3,6 +3,8 @@ import clsx from 'clsx'
 import styles from './DatePicker.module.scss'
 import Column from './Column'
 
+import { getMonthLastDay } from '@/utils/datetime'
+
 export interface IDatePickerPanelProps
     extends React.HTMLAttributes<HTMLElement> {
     // Value
@@ -81,7 +83,7 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
         const [max, setMax] = useState<ILimit>(getDefaultLimit)
 
         useEffect(() => {
-            const lastDay = getMouthLastDay(
+            const lastDay = getMonthLastDay(
                 value.getFullYear(),
                 value.getMonth() + 1
             )
@@ -135,7 +137,7 @@ const Component = React.forwardRef<HTMLElement, IDatePickerPanelProps>(
                         format={supplementaryZero}
                         onUpdate={v => {
                             const date = cloneDate(value)
-                            const lastDay = getMouthLastDay(
+                            const lastDay = getMonthLastDay(
                                 date.getFullYear(),
                                 v
                             )
@@ -225,20 +227,6 @@ export default Component
 
 function cloneDate(date: Date) {
     return new Date(date.valueOf())
-}
-
-const MONTH_LAST_DAY = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-function getMouthLastDay(year: number, month: number) {
-    if (month === 2) {
-        if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)) {
-            return 29
-        } else {
-            return 28
-        }
-    } else {
-        return MONTH_LAST_DAY[month - 1]
-    }
 }
 
 function supplementaryZero(value: number) {

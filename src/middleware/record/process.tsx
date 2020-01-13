@@ -4,6 +4,7 @@ import BigNumberOrigin from 'bignumber.js'
 import { FORMAT_OPTIONS } from '@/components/Calculator/config'
 
 import { timeTransform, offsetToUTC, localTimeOffset } from '@/utils/timeZone'
+import { getMonthLastDay } from '@/utils/datetime'
 import { format as amountFormatUtil } from '@/utils/amount'
 import { IRecord } from '@/model/types/record'
 import { IClassify } from '@/model/types/classify'
@@ -13,7 +14,7 @@ const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 /* ======================================== */
 
 export const getClassify = (
-    id: string | undefined,
+    id: IRecord['classify'],
     classifies: IClassify[]
 ) => {
     return (
@@ -29,7 +30,7 @@ export const getClassify = (
 /* ======================================== */
 
 export const datetime = (
-    datetime: number,
+    datetime: IRecord['datetime'] = 0,
     formatString: string = 'yyyy-MM-dd HH:mm:ss'
 ) => {
     const date = new Date(timeTransform.toLocal(datetime))
@@ -38,10 +39,28 @@ export const datetime = (
 
 /* ======================================== */
 
-export const timezone = (timezone?: number) => {
+export const timezone = (timezone?: IRecord['timezone']) => {
     if (timezone !== undefined && timezone !== localTimeOffset) {
         return offsetToUTC(timezone)
     }
+}
+
+/* ======================================== */
+
+export const getMonthRange = (datetime?: IRecord['datetime']) => {
+    const date = new Date(datetime || Date.now())
+    const maxDay = getMonthLastDay(date)
+
+    date.setDate(1)
+    date.setHours(0)
+    date.setMinutes(0)
+    date.setSeconds(0)
+    date.setMilliseconds(0)
+
+    const start = date.getTime()
+    const end = start + maxDay * 24 * 60 * 60 * 100
+
+    return [start, end]
 }
 
 /* ======================================== */
