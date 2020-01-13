@@ -6,35 +6,21 @@ import ToolBar from '@/components/ToolBar'
 import { Button } from '@/components/Button'
 
 import { useStore } from '@/store'
-import { onApolloError } from '@/model/error'
-import { useLedger } from '@/model/api/ledger'
 
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 
 const MainIndex: React.FC<RouteComponentProps> = props => {
-    const store = useStore()
+    const { ledger } = useStore()
 
-    const _id = store.lastLedger
-
-    const { data: ledger } = useLedger({
-        variables: { id: _id },
-        onError: onApolloError,
-        fetchPolicy: 'cache-and-network'
-    })
-
-    React.useEffect(() => {
-        if (ledger && ledger.ledger && ledger.ledger._id) {
-            store.setLastLedger(ledger.ledger._id)
-        }
-    }, [ledger, store])
+    const data = ledger.data || {}
 
     return (
         <>
             <NavigationBar
                 left={
                     <Button type="text" color="default" href="/collection">
-                        {(ledger && ledger.ledger && ledger.ledger.title) || ''}
+                        {data.title}
                     </Button>
                 }
             />
@@ -43,7 +29,7 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
 
             <ToolBar
                 active={{ main: true }}
-                href={{ main: `/ledger/${_id}/add` }}
+                href={{ main: `/ledger/${ledger.id}/add` }}
             />
 
             <Route path="/collection" component={CollectionIndex} />

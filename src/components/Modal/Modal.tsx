@@ -177,7 +177,7 @@ const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
     const onExited: ExitHandler = (node) => {
         if (!show && modalQueue.length === 0) {
             document.body.style.overflow = saveOverflow as string
-            document.body.style.paddingRight = savePaddingRight
+            document.body.style.paddingRight = savePaddingRight!
             saveOverflow = null
             savePaddingRight = null
         }

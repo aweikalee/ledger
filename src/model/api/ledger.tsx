@@ -2,7 +2,9 @@ import {
     useQuery,
     useMutation,
     QueryHookOptions,
-    MutationHookOptions
+    MutationHookOptions,
+    useLazyQuery,
+    LazyQueryHookOptions
 } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 
@@ -16,13 +18,15 @@ export interface ILedgerData {
 }
 
 export interface ILedgerVar {
-    id?: string
+    id: string
 }
 
-export const useLedger = (options: QueryHookOptions<ILedgerData, ILedgerVar>) => {
+export const useLedger = (
+    options: QueryHookOptions<ILedgerData, ILedgerVar>
+) => {
     return useQuery<ILedgerData, ILedgerVar>(
         gql`
-            query($id: ID) {
+            query($id: ID!) {
                 ledger(id: $id) {
                     _id
                     title
@@ -61,6 +65,29 @@ export const useLedgers = (
                     _id
                     title
                     sort
+                }
+            }
+        `,
+        options
+    )
+}
+
+/* ======================================== */
+
+export interface IFristLedgerData {
+    firstLedger: ILedger | null
+}
+
+export interface IFristLedgerVar {}
+
+export const useLazyFristLedger = (
+    options: LazyQueryHookOptions<IFristLedgerData, IFristLedgerVar>
+) => {
+    return useLazyQuery<IFristLedgerData, IFristLedgerVar>(
+        gql`
+            query {
+                firstLedger {
+                    _id
                 }
             }
         `,

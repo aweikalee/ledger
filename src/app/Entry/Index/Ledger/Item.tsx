@@ -1,16 +1,11 @@
 import React from 'react'
 
-import { useStore } from '@/store'
-import { onApolloError } from '@/model/error'
-import { useRecords } from '@/model/api/record'
+import { IRecord } from '@/model/types/record'
 
-export interface ILedgerIndexItemProps {
-
-}
+export interface ILedgerIndexItemProps extends IRecord {}
 
 const LedgerIndexItem: React.FC<ILedgerIndexItemProps> = props => {
-
-    return <></>
+    return <div>{props._id}</div>
 }
 
 export default LedgerIndexItem

@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { useStore } from '@/store'
 
 export interface ILedgerIndexHookRouteProps {
-    id: string
+    id?: string
 }
 
 const LedgerIndexHook: React.FC<RouteComponentProps<
@@ -16,11 +16,13 @@ const LedgerIndexHook: React.FC<RouteComponentProps<
         }
     } = props
 
-    const store = useStore()
+    const { ledger } = useStore()
 
     React.useEffect(() => {
-        store.setLastLedger(id)
-    }, [id, store])
+        if (id !== ledger.id) {
+            ledger.setId(id)
+        }
+    }, [id, ledger.id, ledger.setId])
 
     return null
 }

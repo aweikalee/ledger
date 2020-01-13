@@ -1,10 +1,11 @@
 import React from 'react'
-import { RouteComponentProps, Route } from 'react-router-dom'
+import { RouteComponentProps, Switch, Route } from 'react-router-dom'
 
 import { useStore } from '@/store'
 
-import LedgerIndexList from './List'
-import LedgerIndexHook from './Hook'
+import List from './List'
+import Hook from './Hook'
+import HookRediect from './HookRediect'
 
 const LedgerIndex: React.FC<RouteComponentProps> = props => {
     const store = useStore()
@@ -13,10 +14,15 @@ const LedgerIndex: React.FC<RouteComponentProps> = props => {
         <>
             <Route
                 render={props =>
-                    !store.lastLedger ? null : <LedgerIndexList {...props} />
+                    !store.ledger.id ? null : <List {...props} />
                 }
             />
-            <Route exact path="/ledger/:id" component={LedgerIndexHook} />
+
+            <Switch>
+                <Route exact path="/" component={HookRediect} />
+                <Route exact path="/ledger" component={HookRediect} />
+                <Route exact path="/ledger/:id" component={Hook} />
+            </Switch>
         </>
     )
 }

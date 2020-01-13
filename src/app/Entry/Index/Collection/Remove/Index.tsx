@@ -30,8 +30,8 @@ const LedgerRemove: React.FC<RouteComponentProps<ILedgerRemoveRouteProps> &
                 content: '删除成功'
             })
 
-            if (target._id === store.lastLedger) {
-                store.setLastLedger(undefined)
+            if (target._id === store.ledger.id) {
+                store.ledger.setId(undefined)
             }
 
             onSuccessed && onSuccessed()

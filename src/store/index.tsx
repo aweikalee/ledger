@@ -1,11 +1,12 @@
 import createUseContext from 'constate'
-import main from './main'
+
+import ledger from './ledger'
 import components from './components'
 import user from './user'
 
 export const useStore = createUseContext(() => {
     return {
-        ...main(),
+        ledger: ledger(),
         ...components(),
         ...user()
     }

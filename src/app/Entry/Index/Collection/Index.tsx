@@ -39,8 +39,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
     }, [remove, history, path])
 
     const { data: ledgers, refetch } = useLedgers({
-        onError: onApolloError,
-        fetchPolicy: 'cache-and-network'
+        onError: onApolloError
     })
 
     const ledgersList = ((ledgers && ledgers.ledgers) || []).map(ledger => (
@@ -88,9 +87,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
                     setShow(false)
                 }}
                 onExited={() => {
-                    history.replace(
-                        store.lastLedger ? `ledger/${store.lastLedger}` : '/'
-                    )
+                    history.replace('/')
                 }}
             >
                 {/* 列表 */}

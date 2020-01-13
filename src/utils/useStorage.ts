@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 export interface IStorage<T> {
     value: T
@@ -44,7 +44,7 @@ export const useStorage = <S>(
     S,
     (state: React.SetStateAction<S>, expires?: number | undefined) => void
 ] => {
-    const [value, setValueState] = useState<S>(() => {
+    const [value, setValueState] = React.useState<S>(() => {
         const storage = getStorage<S>(key)
 
         if (storage === null) {
@@ -56,10 +56,13 @@ export const useStorage = <S>(
         }
     })
 
-    const setValue = (state: React.SetStateAction<S>, expires?: number) => {
-        setStorage(key, state, expires)
-        setValueState(state)
-    }
+    const setValue = React.useCallback(
+        (state: React.SetStateAction<S>, expires?: number) => {
+            setStorage(key, state, expires)
+            setValueState(state)
+        },
+        [key, setValueState]
+    )
 
     return [value, setValue]
 }

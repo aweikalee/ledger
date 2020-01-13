@@ -14,17 +14,26 @@ const LedgerIndexList: React.FC<RouteComponentProps> = props => {
 
     const { loading, fetchMore, data } = useRecords({
         variables: {
-            pid: store.lastLedger || '0',
+            pid: store.ledger.id!,
             start: 0,
-            end: 0,
+            end: 500,
             skip: 0,
             limit: 20
         },
+        skip: !store.ledger.id,
         onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
 
-    return <ContentBody></ContentBody>
+    return (
+        <ContentBody maxWidth="sm">
+            {data &&
+                data.records &&
+                data.records.map(item => {
+                    return <Item key={item._id} {...item} />
+                })}
+        </ContentBody>
+    )
 }
 
 export default LedgerIndexList

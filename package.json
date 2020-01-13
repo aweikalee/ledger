@@ -32,7 +32,7 @@
     "react-scripts": "3.0.1",
     "react-transition-group": "^4.2.2",
     "resize-observer-polyfill": "^1.5.1",
-    "typescript": "^3.4.5"
+    "typescript": "^3.7.4"
   },
   "devDependencies": {
     "apollo-server-express": "^2.8.1",
