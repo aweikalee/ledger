@@ -4,31 +4,30 @@ import { RouteComponentProps } from 'react-router-dom'
 import ContentBody from '@/components/ContentBody'
 
 import { useStore } from '@/store'
-import { timeTransform } from '@/utils/timeZone'
 import { onApolloError } from '@/model/error'
 import { useRecords } from '@/model/api/record'
-import * as process from '@/middleware/record/process'
 
 import Item from './Item'
+import { timeTransform } from '@/utils/timeZone'
 
-const LedgerIndexList: React.FC<RouteComponentProps> = props => {
+export interface ILedgerIndexProps {
+    start: number
+    end: number
+}
+
+const LedgerIndexList: React.FC<RouteComponentProps &
+    ILedgerIndexProps> = props => {
+    const { start, end } = props
+
     const store = useStore()
-
-    const [datetime] = React.useState(() => {
-        const [start, end] = process.getMonthRange(Date.now())
-        return {
-            start: timeTransform.toUTC(start),
-            end: timeTransform.toUTC(end)
-        }
-    })
 
     const skip = React.useRef(0)
 
     const { data } = useRecords({
         variables: {
             pid: store.ledger.id!,
-            start: datetime.start,
-            end: datetime.end,
+            start: timeTransform.toUTC(start),
+            end: timeTransform.toUTC(end),
             skip: 0,
             limit: 20
         },

@@ -6,7 +6,10 @@ import ToolBar from '@/components/ToolBar'
 import { Button } from '@/components/Button'
 
 import { useStore } from '@/store'
+import { timeTransform } from '@/utils/timeZone'
+import * as process from '@/middleware/record/process'
 
+import DatePicker from './DatePicker'
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 import RecordIndex from './Record/Index'
@@ -16,6 +19,11 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
 
     const data = ledger.data || {}
 
+    /* datetime 为 local 时间戳 */
+    const [datetime, setDatetime] = React.useState(() => {
+        return getDatetime(Date.now())
+    })
+
     return (
         <>
             <NavigationBar
@@ -24,9 +32,25 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
                         {data.title}
                     </Button>
                 }
+                right={
+                    <DatePicker
+                        datetime={datetime.start}
+                        setDatetime={value => {
+                            setDatetime(getDatetime(value))
+                        }}
+                    />
+                }
             />
 
-            <Route component={LedgerIndex} />
+            <Route
+                render={props => (
+                    <LedgerIndex
+                        {...props}
+                        start={datetime.start}
+                        end={datetime.end}
+                    />
+                )}
+            />
 
             <ToolBar
                 active={{ main: true }}
@@ -40,3 +64,11 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
 }
 
 export default MainIndex
+
+function getDatetime(value: number) {
+    const [start, end] = process.getMonthRange(value)
+    return {
+        start: timeTransform.toUTC(start),
+        end: timeTransform.toUTC(end)
+    }
+}

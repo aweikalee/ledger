@@ -72,6 +72,7 @@ const LedgerIndexItem: React.FC<ILedgerIndexItemProps> = props => {
                         </Grid>
                         <Grid className={styles.currency}>
                             {/* 货币种类 */}
+                            {props.currency}
                         </Grid>
                     </Grid>
                 </Grid>
