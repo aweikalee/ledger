@@ -47,7 +47,7 @@ const LedgerIndexItem: React.FC<ILedgerIndexItemProps> = props => {
                 {childIcon}
                 <Grid sm direction="column" className={styles.main}>
                     <Grid sm={12} alignItems="baseline">
-                        <Grid sm="auto" alignItems="center">
+                        <Grid sm="auto" alignItems="center" className={styles.time}>
                             {/* 类型 */}
                             {/* {classify.text} */}
 

@@ -38,13 +38,6 @@
         margin-left: rem(4);
     }
 }
-.timezone {
-    font-size: 0.7em;
-    color: color(grey, 7);
-    background-color: color(grey, 2);
-    padding: 0 rem(4);
-    border-radius: $border-radius;
-}
 .amount {
     @include font(body);
     overflow: hidden;

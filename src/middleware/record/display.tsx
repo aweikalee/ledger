@@ -10,8 +10,8 @@ import { IClassify } from '@/model/types/classify'
 
 import * as process from './process'
 
-import color from '@/style/color.module.scss'
 import styles from './styles.module.scss'
+import color from '@/style/color.module.scss'
 
 /* ======================================== */
 

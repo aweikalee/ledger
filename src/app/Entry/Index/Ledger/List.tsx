@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
 import ContentBody from '@/components/ContentBody'
@@ -14,7 +14,7 @@ import Item from './Item'
 const LedgerIndexList: React.FC<RouteComponentProps> = props => {
     const store = useStore()
 
-    const [datetime] = useState(() => {
+    const [datetime] = React.useState(() => {
         const [start, end] = process.getMonthRange(Date.now())
         return {
             start: timeTransform.toUTC(start),
@@ -22,7 +22,9 @@ const LedgerIndexList: React.FC<RouteComponentProps> = props => {
         }
     })
 
-    const { loading, fetchMore, data } = useRecords({
+    const skip = React.useRef(0)
+
+    const { data } = useRecords({
         variables: {
             pid: store.ledger.id!,
             start: datetime.start,
@@ -34,6 +36,12 @@ const LedgerIndexList: React.FC<RouteComponentProps> = props => {
         onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
+
+    React.useEffect(() => {
+        if (data && data.records) {
+            skip.current = data.records.length
+        }
+    }, [data])
 
     return (
         <ContentBody maxWidth="sm">

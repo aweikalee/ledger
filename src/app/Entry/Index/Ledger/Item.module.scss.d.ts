@@ -3,7 +3,6 @@ type IClassName = {
     icon: string
     main: string
     time: string
-    timezone: string
     amount: string
     detail: string
     currency: string
