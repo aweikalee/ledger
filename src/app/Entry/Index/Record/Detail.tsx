@@ -8,10 +8,11 @@ import Button from '@/components/Button'
 import Icon from '@/components/Icon'
 
 import { useStore } from '@/store'
-import { useRecord } from '@/model/api/record'
 import { IRecord } from '@/model/types/record'
 import * as display from '@/middleware/record/display'
 import * as process from '@/middleware/record/process'
+
+import context from './context'
 
 import styles from './Detail.module.scss'
 import membersStyles from '@/middleware/record/styles.module.scss'
@@ -21,7 +22,7 @@ export interface IRecordIndexDeitalRouteProps {
 }
 
 export interface IRecordIndexDeitalProps {
-    record: ReturnType<typeof useRecord>
+    onClose?: Function
 }
 
 const Detail: React.FC<IRecord> = props => {
@@ -110,16 +111,14 @@ const Detail: React.FC<IRecord> = props => {
 const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
     IRecordIndexDeitalProps> = props => {
     const {
-        history,
         match: { url },
-        record
+        onClose
     } = props
-
-    const { ledger } = useStore()
 
     const [show, setShow] = React.useState(true)
 
-    const { data } = record
+    const record = React.useContext(context).record
+    const data = record && record.data
 
     return (
         <>
@@ -129,7 +128,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
                     setShow(false)
                 }}
                 onExited={() => {
-                    history.replace(`/ledger/${ledger.id}`)
+                    onClose && onClose()
                 }}
                 className={styles.record}
                 header={true}

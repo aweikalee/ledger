@@ -4,7 +4,8 @@ import { RouteComponentProps, Route } from 'react-router-dom'
 import { useStore } from '@/store'
 import { useRecord } from '@/model/api/record'
 
-import Detail from './Deital'
+import context from './context'
+import Detail from './Detail'
 import Remove from './Remove/Index'
 import Edit from './Edit/Index'
 
@@ -40,27 +41,40 @@ const RecordIndex: React.FC<RouteComponentProps<
     })
 
     return (
-        <>
-            <Route render={props => <Detail {...props} record={record} />} />
+        <context.Provider
+            value={{
+                record
+            }}
+        >
+            <Route
+                render={props => (
+                    <Detail
+                        {...props}
+                        onClose={() => {
+                            history.push(`/ledger/${ledger.id}`)
+                        }}
+                    />
+                )}
+            />
+
             <Route
                 exact
                 path={`${path}/edit`}
                 render={props => (
                     <Edit
                         {...props}
-                        record={record}
                         onClose={() => {
                             history.replace(url)
                         }}
                     />
                 )}
             />
+
             <Route
                 path={`${path}/remove`}
                 render={props => (
                     <Remove
                         {...props}
-                        target={(record.data && record.data.record) || {}}
                         onClose={() => {
                             history.replace(url)
                         }}
@@ -71,7 +85,7 @@ const RecordIndex: React.FC<RouteComponentProps<
                     />
                 )}
             />
-        </>
+        </context.Provider>
     )
 }
 

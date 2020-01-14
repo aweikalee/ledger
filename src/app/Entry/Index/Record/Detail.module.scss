@@ -1,5 +1,11 @@
 @import '@/style/index.scss';
 
+.record {
+    & [data-role='popup'] {
+        max-width: screen-boundary(sm-md);
+    }
+}
+
 .classify {
     @include font(subhead);
     margin-left: $gap / 2;

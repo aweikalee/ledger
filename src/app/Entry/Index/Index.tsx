@@ -6,9 +6,8 @@ import ToolBar from '@/components/ToolBar'
 import { Button } from '@/components/Button'
 
 import { useStore } from '@/store'
-import { timeTransform } from '@/utils/timeZone'
-import * as process from '@/middleware/record/process'
 
+import context from './context'
 import DatePicker from './DatePicker'
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
@@ -20,37 +19,25 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
     const data = ledger.data || {}
 
     /* datetime 为 local 时间戳 */
-    const [datetime, setDatetime] = React.useState(() => {
-        return getDatetime(Date.now())
-    })
+    const [datetime, setDatetime] = React.useState(Date.now)
 
     return (
-        <>
+        <context.Provider
+            value={{
+                datetime,
+                setDatetime
+            }}
+        >
             <NavigationBar
                 left={
                     <Button type="text" color="default" href="/collection">
                         {data.title}
                     </Button>
                 }
-                right={
-                    <DatePicker
-                        datetime={datetime.start}
-                        setDatetime={value => {
-                            setDatetime(getDatetime(value))
-                        }}
-                    />
-                }
+                right={<DatePicker />}
             />
 
-            <Route
-                render={props => (
-                    <LedgerIndex
-                        {...props}
-                        start={datetime.start}
-                        end={datetime.end}
-                    />
-                )}
-            />
+            <Route render={props => <LedgerIndex {...props} />} />
 
             <ToolBar
                 active={{ main: true }}
@@ -59,16 +46,8 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
 
             <Route path="/collection" component={CollectionIndex} />
             <Route path="/record/:id" component={RecordIndex} />
-        </>
+        </context.Provider>
     )
 }
 
 export default MainIndex
-
-function getDatetime(value: number) {
-    const [start, end] = process.getMonthRange(value)
-    return {
-        start: timeTransform.toUTC(start),
-        end: timeTransform.toUTC(end)
-    }
-}

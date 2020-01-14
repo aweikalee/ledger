@@ -7,25 +7,15 @@ import List from './List'
 import Hook from './Hook'
 import HookRediect from './HookRediect'
 
-export interface ILedgerIndexProps {
-    start: number
-    end: number
-}
+export interface ILedgerIndexProps {}
 
 const LedgerIndex: React.FC<RouteComponentProps &
     ILedgerIndexProps> = props => {
-    const { start, end } = props
     const store = useStore()
 
     return (
         <>
-            <Route
-                render={props =>
-                    !store.ledger.id ? null : (
-                        <List {...props} start={start} end={end} />
-                    )
-                }
-            />
+            <Route component={store.ledger.id ? List : undefined} />
 
             <Switch>
                 <Route exact path="/" component={HookRediect} />

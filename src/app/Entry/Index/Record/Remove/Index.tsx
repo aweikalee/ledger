@@ -6,20 +6,24 @@ import notification from '@/components/Notification'
 
 import { onApolloError } from '@/model/error'
 import { useUpdateRecord } from '@/model/api/record'
-import { IRecord, IUpdateRecord } from '@/model/types/record'
+import { IUpdateRecord } from '@/model/types/record'
+
+import context from '../context'
 
 export interface IRecordRemoveRouteProps {}
 export interface IRecordRemoveProps {
-    target: IRecord
     onClose?: Function
     onSuccessed?: Function
 }
 
 const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
     IRecordRemoveProps> = props => {
-    const { target, onClose, onSuccessed } = props
+    const { onClose, onSuccessed } = props
 
     const [show, setShow] = React.useState(true)
+
+    const record = React.useContext(context).record
+    const data = (record && record.data && record.data.record) || {}
 
     const [updateRecord] = useUpdateRecord({
         onError: onApolloError,
@@ -33,7 +37,7 @@ const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
         }
     })
     const onSubmit = () => {
-        if (!target._id) {
+        if (!data._id) {
             notification.error({
                 content: 'id不存在'
             })
@@ -41,7 +45,7 @@ const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
         }
 
         const _data: IUpdateRecord = {
-            _id: target._id,
+            _id: data._id,
             deleted: true
         }
         updateRecord({ variables: { data: _data } })
@@ -59,7 +63,7 @@ const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
                 onClose && onClose()
             }}
         >
-            确认要删除“{target._id}”吗？
+            确认要删除“{data._id}”吗？
         </Dialog>
     )
 }

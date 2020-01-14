@@ -7,30 +7,28 @@ import ContentBody from '@/components/ContentBody'
 import Popup from '@/components/Popup'
 import { Button } from '@/components/Button'
 import Icon from '@/components/Icon'
-import notification from '@/components/Notification'
 
 import valid from '@/model/validate/record'
-import { onApolloError } from '@/model/error'
-import { useRecord, useUpdateRecord } from '@/model/api/record'
-import { IRecord, IUpdateRecord } from '@/model/types/record'
+import { IUpdateRecord } from '@/model/types/record'
+
+import context from '../context'
 
 export interface IRecordEditRouteProps {}
 export interface IRecordEditProps {
     onClose?: Function
-
-    record: ReturnType<typeof useRecord>
 }
 
 const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
     IRecordEditProps> = props => {
-    const { onClose, record } = props
+    const { onClose } = props
 
-    const { data } = record
+    const record = React.useContext(context).record
+    const data = record && record.data
 
     const form = useForm<IUpdateRecord>({
         mode: 'onChange'
     })
-    const { register, getValues, setValue, watch, handleSubmit, errors } = form
+    const { register, setValue } = form
 
     React.useEffect(() => {
         register({ name: 'pid' }, { validate: valid.pid })
