@@ -18,7 +18,7 @@ export interface ICreateLedger {
 }
 
 export interface IUpdateLedger {
-    _id?: string
+    _id: string
     title?: string
     sort?: number
     status?: IStatus

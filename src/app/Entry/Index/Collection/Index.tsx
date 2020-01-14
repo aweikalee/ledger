@@ -21,7 +21,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
 >> = props => {
     const {
         history,
-        match: { path }
+        match: { url }
     } = props
 
     const [show, setShow] = React.useState(true)
@@ -29,11 +29,11 @@ const CollectionIndex: React.FC<RouteComponentProps<
     const [remove, setRemove] = React.useState<ILedger | null>(null)
     React.useEffect(() => {
         if (remove) {
-            history.push(`${path}/remove`)
+            history.push(`${url}/remove`)
         } else {
-            history.replace(path)
+            history.replace(url)
         }
-    }, [remove, history, path])
+    }, [remove, history, url])
 
     const { data: ledgers, refetch } = useLedgers({
         onError: onApolloError
@@ -100,7 +100,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
                 >
                     <Grid>
                         <Button
-                            href={`${path}/add`}
+                            href={`${url}/add`}
                             type="contained"
                             color="primary"
                             size="medium"
@@ -128,13 +128,13 @@ const CollectionIndex: React.FC<RouteComponentProps<
             {/* 新增 */}
             <Route
                 exact
-                path={`${path}/add`}
+                path={`${url}/add`}
                 render={props => (
                     <LedgerAdd
                         {...props}
                         onSuccessed={refetch}
                         onClose={() => {
-                            history.replace(path)
+                            history.replace(url)
                         }}
                     />
                 )}
@@ -143,7 +143,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
             {/* 删除 */}
             <Route
                 exact
-                path={`${path}/remove`}
+                path={`${url}/remove`}
                 render={props => (
                     <LedgerRemove
                         {...props}

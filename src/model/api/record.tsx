@@ -26,6 +26,7 @@ export const useRecord = (
         gql`
             query($id: ID!) {
                 record(id: $id) {
+                    _id
                     pid
                     type
                     classify

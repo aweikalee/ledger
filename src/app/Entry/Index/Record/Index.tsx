@@ -5,6 +5,7 @@ import { useStore } from '@/store'
 import { useRecord } from '@/model/api/record'
 
 import Detail from './Deital'
+import Remove from './Remove/Index'
 
 export interface IRecordIndexDeitalRouteProps {
     id: string
@@ -14,7 +15,10 @@ const RecordIndex: React.FC<RouteComponentProps<
     IRecordIndexDeitalRouteProps
 >> = props => {
     const {
+        history,
         match: {
+            path,
+            url,
             params: { id }
         }
     } = props
@@ -37,6 +41,22 @@ const RecordIndex: React.FC<RouteComponentProps<
     return (
         <>
             <Route render={props => <Detail {...props} record={record} />} />
+            <Route
+                path={`${path}/remove`}
+                render={props => (
+                    <Remove
+                        {...props}
+                        target={(record.data && record.data.record) || {}}
+                        onClose={() => {
+                            history.replace(url)
+                        }}
+                        onSuccessed={() => {
+                            history.replace('/')
+                            // TODO: 更新列表
+                        }}
+                    />
+                )}
+            />
         </>
     )
 }

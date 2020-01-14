@@ -111,7 +111,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
     IRecordIndexDeitalProps> = props => {
     const {
         history,
-        match: { path },
+        match: { url },
         record
     } = props
 
@@ -125,7 +125,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
         <>
             <Popup
                 show={show}
-                onClickOverlay={() => {
+                onClose={() => {
                     setShow(false)
                 }}
                 onExited={() => {
@@ -141,7 +141,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
                 <Grid sm={12} justify="space-around" className={styles.toolbar}>
                     <Grid sm={true}>
                         <Button
-                            href={`${path}/edit`}
+                            href={`${url}/remove`}
                             title="删除"
                             type="text"
                             color="default"
@@ -152,7 +152,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
                     </Grid>
                     <Grid sm="auto">
                         <Button
-                            href={`${path}/edit`}
+                            href={`${url}/edit`}
                             title="编辑"
                             type="text"
                             color="primary"
