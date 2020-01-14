@@ -13,6 +13,7 @@ export interface IPopupProps extends IModalProps {
     header?: boolean
     title?: string
     contentPadding?: boolean
+    fullScreen?: boolean
 }
 
 const Component = React.forwardRef<HTMLElement, IPopupProps>((props, ref) => {
@@ -27,6 +28,7 @@ const Component = React.forwardRef<HTMLElement, IPopupProps>((props, ref) => {
         header,
         title = '',
         contentPadding = false,
+        fullScreen = false,
         ...other
     }: typeof props = props
 
@@ -61,7 +63,7 @@ const Component = React.forwardRef<HTMLElement, IPopupProps>((props, ref) => {
                 timeout={350}
                 classNames={classNames}
             >
-                <div data-role="popup">
+                <div data-role="popup" data-full-screen={fullScreen}>
                     {header && (
                         <div data-role="popup-header">
                             <div data-role="popup-title">{title}</div>
