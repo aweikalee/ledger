@@ -3,8 +3,9 @@ import clsx from 'clsx'
 
 import Grid, { IGirdProps } from '@/components/Grid/Grid'
 import IconComponet, { IIconProps } from '@/components/Icon/Icon'
+import Checkbox, { ICheckboxProps } from '@/components/Checkbox/Checkbox'
 
-import { localTimeOffset, offsetToUTC } from '@/utils/timeZone'
+import { ILedger } from '@/model/types/ledger'
 import { IRecord } from '@/model/types/record'
 import { IClassify } from '@/model/types/classify'
 
@@ -97,5 +98,103 @@ export const Amount: React.FC<IRecordAmountProps> = props => {
             {amountInt}
             <span data-float>{amountFloat}</span>
         </span>
+    )
+}
+
+/* ======================================== */
+
+export interface IRecordMembersProps extends IGirdProps {
+    display?: 'icon' | 'checkbox'
+    members?: ILedger['members']
+    payer?: IRecord['payer']
+    participator?: IRecord['participator']
+    settled?: IRecord['settled']
+    onUpdate?: (
+        type: 'payer' | 'participator' | 'settled',
+        value: string
+    ) => void
+}
+
+const MemberItem: React.FC<ICheckboxProps & {
+    display?: IRecordMembersProps['display']
+}> = props => {
+    const { display = 'icon', ...other }: typeof props = props
+
+    return (
+        <Grid sm={4} justify="center">
+            {display === 'checkbox' ? (
+                <Checkbox {...other} />
+            ) : props.checked ? (
+                <IconComponet data-members-icon text="confirm" />
+            ) : null}
+        </Grid>
+    )
+}
+
+export const Members: React.FC<IRecordMembersProps> = props => {
+    const {
+        className,
+        display = 'icon',
+        members = [],
+        payer = [],
+        participator = [],
+        settled = [],
+        onUpdate,
+        ...other
+    }: typeof props = props
+
+    const data = process.members({
+        members,
+        payer,
+        participator,
+        settled
+    })
+
+    if (data.length === 0) {
+        return null
+    }
+
+    return (
+        <Grid className={styles.members} {...other}>
+            {data.map(member => (
+                <Grid data-members-item key={member._id}>
+                    <Grid sm>
+                        <div data-members-name>
+                            <IconComponet text="user" /> {member.name}
+                        </div>
+                    </Grid>
+                    <Grid className={styles['members-width']}>
+                        {/* payer */}
+                        <MemberItem
+                            display={display}
+                            checked={member.payer}
+                            onClick={() => {
+                                onUpdate && onUpdate('payer', member._id || '')
+                            }}
+                        />
+
+                        {/* participation */}
+                        <MemberItem
+                            display={display}
+                            checked={member.participator}
+                            onClick={() => {
+                                onUpdate &&
+                                    onUpdate('participator', member._id || '')
+                            }}
+                        />
+
+                        {/* settled */}
+                        <MemberItem
+                            display={display}
+                            checked={member.settled}
+                            onClick={() => {
+                                onUpdate &&
+                                    onUpdate('settled', member._id || '')
+                            }}
+                        />
+                    </Grid>
+                </Grid>
+            ))}
+        </Grid>
     )
 }

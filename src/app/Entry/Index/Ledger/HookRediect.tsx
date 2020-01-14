@@ -28,6 +28,7 @@ const LedgerIndexHookRediect: React.FC<RouteComponentProps> = props => {
         } else {
             getFrist()
         }
+    /* eslint-disable-next-line */
     }, [])
 
     return null

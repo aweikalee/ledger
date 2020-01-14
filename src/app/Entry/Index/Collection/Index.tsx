@@ -6,7 +6,6 @@ import Icon from '@/components/Icon'
 import Drawer from '@/components/Drawer'
 import Grid from '@/components/Grid'
 
-import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
 import { useLedgers } from '@/model/api/ledger'
 import { ILedger } from '@/model/types/ledger'
@@ -24,8 +23,6 @@ const CollectionIndex: React.FC<RouteComponentProps<
         history,
         match: { path }
     } = props
-
-    const store = useStore()
 
     const [show, setShow] = React.useState(true)
     const [edit, setEdit] = React.useState(false)

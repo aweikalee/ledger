@@ -18,11 +18,13 @@ const LedgerIndexHook: React.FC<RouteComponentProps<
 
     const { ledger } = useStore()
 
+    const { id: ledgerId, setId } = ledger
+
     React.useEffect(() => {
-        if (id !== ledger.id) {
-            ledger.setId(id)
+        if (id !== ledgerId) {
+            setId(id)
         }
-    }, [id, ledger.id, ledger.setId])
+    }, [id, ledgerId, setId])
 
     return null
 }

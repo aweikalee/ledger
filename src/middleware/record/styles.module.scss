@@ -14,6 +14,7 @@
     background-color: color(grey, 2);
     padding: 0 rem(4);
     border-radius: $border-radius;
+    vertical-align: middle;
 }
 
 .amount {
@@ -29,4 +30,24 @@
     & > [data-float='true'] {
         font-size: 0.8em;
     }
+}
+
+.members {
+    & [data-members-item] {
+        width: 100%;
+        padding: $gap / 2 0;
+        border-bottom: 1px dashed color(grey, 2);
+    }
+    & [data-members-name] {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    & [data-members-icon] {
+        color: color(grey, 5);
+    }
+}
+
+.members-width {
+    width: rem(150);
 }

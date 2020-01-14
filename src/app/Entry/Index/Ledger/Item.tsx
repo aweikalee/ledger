@@ -18,7 +18,7 @@ const LedgerIndexItem: React.FC<ILedgerIndexItemProps> = props => {
     const { ledger } = useStore()
 
     const classifies = (ledger.data && ledger.data.classifies) || []
-    const classify = process.getClassify(props.classify, classifies)
+    const classify = process.classify(props.classify, classifies)
 
     const childIcon = display.Icon({
         className: styles.icon,

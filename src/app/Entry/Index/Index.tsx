@@ -9,6 +9,7 @@ import { useStore } from '@/store'
 
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
+import RecordIndex from './Record/Index'
 
 const MainIndex: React.FC<RouteComponentProps> = props => {
     const { ledger } = useStore()
@@ -33,6 +34,7 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
             />
 
             <Route path="/collection" component={CollectionIndex} />
+            <Route path="/record/:id" component={RecordIndex} />
         </>
     )
 }
