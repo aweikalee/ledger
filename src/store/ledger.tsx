@@ -23,5 +23,23 @@ export default () => {
     })
     const data = ledger && ledger.ledger
 
-    return { id, lastId, setId, data, error, loading }
+    /* deleted 标记已删除的record */
+    const [deleted, setDeleted] = React.useState<{ [id: string]: true }>({})
+    const pushDeleted = React.useCallback(
+        (id: string) => {
+            setDeleted(value => {
+                return {
+                    ...value,
+                    [id]: true
+                }
+            })
+        },
+        [setDeleted]
+    )
+
+    React.useEffect(() => {
+        setDeleted({})
+    }, [id, setDeleted])
+
+    return { id, lastId, setId, data, error, loading, deleted, pushDeleted }
 }
