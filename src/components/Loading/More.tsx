@@ -1,21 +1,21 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Button } from '../Button'
 import Loading, { ILoadingProps } from './Loading'
 import { useThrottleDelay } from '@/utils/throttle'
 
-type IStatus = 'ready' | 'loading' | 'complete' | 'error'
+export type IStatus = 'ready' | 'complete' | 'error'
 
 export interface ILoadMoreProps extends ILoadingProps {
-    loading?: boolean
-    handler?: (
-        callback: (error: Error | null, complete?: boolean) => void
-    ) => void
+    status: IStatus
+    loading: boolean
+    handler?: Function
 }
 
 const LoadMore: React.FC<ILoadMoreProps> = props => {
     const {
         children: childrenProp,
-        loading = false,
+        status,
+        loading,
         handler,
         ...other
     }: typeof props = props
@@ -44,7 +44,11 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
 
     /* 主程序 */
     const el = useRef<HTMLDivElement>(null)
-    const [status, setStatus] = useState<IStatus>('ready')
+
+    const loadingRef = useRef<typeof loading>(loading)
+    useEffect(() => {
+        loadingRef.current = loading
+    }, [loading])
 
     const statusRef = useRef<typeof status>(status)
     useEffect(() => {
@@ -61,46 +65,34 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
         之后按滚动事件进行判定
     */
 
-    const checkLoad = () => {
-        if (
-            status === 'loading' ||
-            status === 'complete' ||
-            !el.current ||
-            el.current!.getBoundingClientRect().top >= screenRef.current.h
-        ) {
-            return false
-        }
-        return true
+    const checkStatus = () => {
+        return loadingRef.current === false && statusRef.current === 'ready'
     }
 
-    const handlerLoad = () => {
-        setStatus('loading')
-        try {
-            if (handler) {
-                handler((error, complete) => {
-                    if (error) {
-                        throw error
-                    } else {
-                        complete ? setStatus('complete') : setStatus('ready')
-                    }
-                })
-            }
-        } catch (error) {
-            setStatus('error')
-        }
+    const checkSrcoll = () => {
+        return (
+            el.current &&
+            el.current.getBoundingClientRect().top < screenRef.current.h
+        )
     }
 
     const onScroll = useThrottleDelay(() => {
-        if (checkLoad()) {
-            handlerLoad()
+        if (checkStatus() && checkSrcoll() && handlerRef.current) {
+            handlerRef.current()
         }
     }, 200)
 
+    const onClick = () => {
+        if (checkStatus() && handlerRef.current) {
+            handlerRef.current()
+        }
+    }
+
     useEffect(() => {
-        if (!loading) {
+        if (!loading && status === 'ready') {
             onScroll()
         }
-    }, [loading, onScroll])
+    }, [loading, status, onScroll])
 
     useEffect(() => {
         window.addEventListener('scroll', onScroll)
@@ -117,7 +109,19 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
     const children: {
         [key in IStatus]?: JSX.Element
     } = {
-        ready: <div data-role="loading-text">加载更多</div>,
+        ready: (
+            <div data-role="loading-text">
+                <Button
+                    type="text"
+                    color="primary"
+                    size="medium"
+                    border="round"
+                    onClick={onClick}
+                >
+                    点击加载更多
+                </Button>
+            </div>
+        ),
         complete: <div data-role="loading-text">没有更多了</div>,
         error: (
             <>
@@ -126,7 +130,7 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
                     color="primary"
                     size="medium"
                     border="round"
-                    onClick={() => setStatus('ready')}
+                    onClick={onClick}
                 >
                     点击重新加载
                 </Button>
@@ -137,7 +141,7 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
 
     return (
         <Loading data-role="load-more" {...bindProps}>
-            {status in children && children[status]}
+            {!loading && children[status]}
         </Loading>
     )
 }

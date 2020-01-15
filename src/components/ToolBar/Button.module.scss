@@ -1,15 +1,7 @@
 @import '@/style/index.scss';
 
 .button {
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    flex-direction: column;
     @include font(title-2);
-}
-
-.icon {
-    display: block;
 }
 
 .text {
@@ -20,7 +12,6 @@
 .primary {
     width: rem(40);
     height: rem(40);
-    line-height: rem(20);
     border: none;
     border-radius: rem(20);
     background-color: color(grey, 4);

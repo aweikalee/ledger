@@ -32,8 +32,8 @@ const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
                 content: '删除成功'
             })
 
-            onSuccessed && onSuccessed()
             setShow(false)
+            onSuccessed && onSuccessed()
         }
     })
     const onSubmit = () => {

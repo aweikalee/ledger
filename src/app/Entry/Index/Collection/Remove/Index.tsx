@@ -34,8 +34,8 @@ const LedgerRemove: React.FC<RouteComponentProps<ILedgerRemoveRouteProps> &
                 store.ledger.setId(undefined)
             }
 
-            onSuccessed && onSuccessed()
             setShow(false)
+            onSuccessed && onSuccessed()
         }
     })
     const onSubmit = () => {

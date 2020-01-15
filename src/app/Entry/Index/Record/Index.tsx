@@ -80,7 +80,6 @@ const RecordIndex: React.FC<RouteComponentProps<
                         }}
                         onSuccessed={() => {
                             history.replace('/')
-                            // TODO: 更新列表
                         }}
                     />
                 )}
