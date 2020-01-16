@@ -8,6 +8,8 @@ import { IRecord } from '@/model/types/record'
 import * as display from '@/middleware/record/display'
 import * as process from '@/middleware/record/process'
 
+import indexContext from '../context'
+
 import styles from './Item.module.scss'
 
 export interface ILedgerIndexItemProps extends IRecord {}
@@ -16,8 +18,9 @@ const LedgerIndexItem: React.FC<ILedgerIndexItemProps> = props => {
     const { _id } = props
 
     const { ledger } = useStore()
+    const { deleted } = React.useContext(indexContext)
 
-    if (!_id || ledger.deleted[_id]) {
+    if (!_id || deleted[_id]) {
         return null
     }
 

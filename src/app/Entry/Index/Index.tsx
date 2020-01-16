@@ -21,11 +21,30 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
     /* datetime 为 local 时间戳 */
     const [datetime, setDatetime] = React.useState(Date.now)
 
+    /* deleted 标记已删除的record */
+    const [deleted, setDeleted] = React.useState<{ [id: string]: true }>({})
+    const pushDeleted = React.useCallback(
+        (id: string) => {
+            setDeleted(value => {
+                return {
+                    ...value,
+                    [id]: true
+                }
+            })
+        },
+        [setDeleted]
+    )
+    React.useEffect(() => {
+        setDeleted({})
+    }, [])
+
     return (
         <context.Provider
             value={{
                 datetime,
-                setDatetime
+                setDatetime,
+                deleted,
+                pushDeleted
             }}
         >
             <NavigationBar

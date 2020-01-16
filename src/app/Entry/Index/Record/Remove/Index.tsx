@@ -9,7 +9,8 @@ import { onApolloError } from '@/model/error'
 import { useUpdateRecord } from '@/model/api/record'
 import { IUpdateRecord } from '@/model/types/record'
 
-import context from '../context'
+import recordContext from '../context'
+import indexContext from '../../context'
 
 export interface IRecordRemoveRouteProps {}
 export interface IRecordRemoveProps {
@@ -20,13 +21,13 @@ export interface IRecordRemoveProps {
 const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
     IRecordRemoveProps> = props => {
     const { onClose, onSuccessed } = props
-    const {
-        ledger: { pushDeleted }
-    } = useStore()
+    const { ledger } = useStore()
 
     const [show, setShow] = React.useState(true)
 
-    const record = React.useContext(context).record
+    const { pushDeleted } = React.useContext(indexContext)
+
+    const record = React.useContext(recordContext).record
     const data = (record && record.data && record.data.record) || {}
 
     const [updateRecord] = useUpdateRecord({
