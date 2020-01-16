@@ -1,5 +1,4 @@
 import React from 'react'
-import { RouteChildrenProps } from 'react-router'
 import clsx from 'clsx'
 import Button, { IButtonProps } from '../Button/Button'
 import Icon from '../Icon'
@@ -18,9 +17,7 @@ const NavigationBar: React.FC<IBackButtonProps> = props => {
         children: childrenProp,
         icon = 'back',
         text = '',
-        onClick = () => {
-            !props.href && (props as RouteChildrenProps).history.goBack()
-        },
+        onClick,
         ...other
     }: typeof props = props
 

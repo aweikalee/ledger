@@ -5,6 +5,7 @@ import { ApolloProvider } from '@apollo/react-hooks'
 import { useStore } from '@/store'
 
 import Index from './Entry/Index/Index'
+import RecordEdit from './Entry/Record/Edit/Index'
 
 import './App.module.scss'
 
@@ -19,6 +20,11 @@ const App: React.FC = () => {
             <useStore.Provider>
                 <BrowserRouter>
                     <Switch>
+                        <Route
+                            exact
+                            path="/record/:id/edit"
+                            component={RecordEdit}
+                        />
                         <Route component={Index} />
                     </Switch>
                 </BrowserRouter>

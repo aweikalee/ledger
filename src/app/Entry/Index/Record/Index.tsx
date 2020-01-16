@@ -7,7 +7,6 @@ import { useRecord } from '@/model/api/record'
 import context from './context'
 import Detail from './Detail'
 import Remove from './Remove/Index'
-import Edit from './Edit/Index'
 
 export interface IRecordIndexDeitalRouteProps {
     id: string
@@ -56,7 +55,7 @@ const RecordIndex: React.FC<RouteComponentProps<
                     />
                 )}
             />
-
+{/* 
             <Route
                 exact
                 path={`${path}/edit`}
@@ -68,7 +67,7 @@ const RecordIndex: React.FC<RouteComponentProps<
                         }}
                     />
                 )}
-            />
+            /> */}
 
             <Route
                 path={`${path}/remove`}
