@@ -4,7 +4,6 @@ import { RouteComponentProps } from 'react-router-dom'
 import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
 
-import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
 import { useUpdateRecord } from '@/model/api/record'
 import { IUpdateRecord } from '@/model/types/record'
@@ -21,7 +20,6 @@ export interface IRecordRemoveProps {
 const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
     IRecordRemoveProps> = props => {
     const { onClose, onSuccessed } = props
-    const { ledger } = useStore()
 
     const [show, setShow] = React.useState(true)
 

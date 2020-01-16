@@ -4,8 +4,8 @@ import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { useStore } from '@/store'
 
-import Index from './Entry/Index/Index'
-import RecordEdit from './Entry/Record/Edit/Index'
+import Index from './Index/Index'
+import RecordEdit from './Record/Edit/Index'
 
 import './App.module.scss'
 
