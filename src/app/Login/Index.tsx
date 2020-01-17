@@ -6,9 +6,20 @@ import Grid from '@/components/Grid'
 import Button from '@/components/Button'
 import Icon from '@/components/Icon'
 
+import { useStore } from '@/store'
+
 import styles from './Index.module.scss'
 
 const UserLogin: React.FC<RouteComponentProps> = props => {
+    const {
+        user: { setToken }
+    } = useStore()
+
+    /* 登出 */
+    React.useEffect(() => {
+        setToken(null)
+    }, [setToken])
+
     return (
         <ContentBody maxWidth="sm">
             <div className={styles.title}>毛呆手账</div>

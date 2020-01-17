@@ -4,6 +4,7 @@ import { RouteComponentProps, Route } from 'react-router-dom'
 import NavigationBar from '@/components/NavigationBar'
 import ToolBar from '@/components/ToolBar'
 import { Button } from '@/components/Button'
+import Icon from '@/components/Icon'
 
 import { useStore } from '@/store'
 
@@ -50,7 +51,7 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
             <NavigationBar
                 left={
                     <Button type="text" color="default" href="/collection">
-                        {data.title}
+                        <Icon text="ledger" /> {data.title || '账簿'}
                     </Button>
                 }
                 right={<DatePicker />}

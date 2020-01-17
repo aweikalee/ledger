@@ -1,4 +1,5 @@
 export default {
+    ledger: '\uf0c9',
     'angle-left': '\uf053',
     trash: '\uf1f8',
     pen: '\uf303',
