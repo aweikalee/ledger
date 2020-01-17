@@ -14,14 +14,11 @@ import './App.module.scss'
 
 const MainRoute: React.FC = () => {
     return (
-        <>
-            <Route component={Hook} />
-            <Switch>
-                <Route exact path="/record/:id/edit" component={RecordEdit} />
-                <Route path="/user" component={User} />
-                <Route component={Index} />
-            </Switch>
-        </>
+        <Switch>
+            <Route exact path="/record/:id/edit" component={RecordEdit} />
+            <Route path="/user" component={User} />
+            <Route component={Index} />
+        </Switch>
     )
 }
 
@@ -33,7 +30,13 @@ const App: React.FC = () => {
                     <Switch>
                         <Route path="/login" component={Login} />
                         <Route path="/token/:token" component={Token} />
-                        <Route component={MainRoute} />
+                        <Route
+                            render={props => (
+                                <Hook {...props}>
+                                    <MainRoute />
+                                </Hook>
+                            )}
+                        />
                     </Switch>
                 </BrowserRouter>
             </Apollo>

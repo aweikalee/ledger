@@ -34,7 +34,7 @@ const Hook: React.FC<RouteComponentProps> = props => {
         }
     }, [setData, data])
 
-    return null
+    return <>{props.children}</>
 }
 
 export default Hook
