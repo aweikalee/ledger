@@ -15,5 +15,10 @@ export default {
     info: '\uf06a',
     error: '\uf057',
     warn: '\uf071',
-    calendar: '\uf073'
+    calendar: '\uf073',
+
+    /* 商标 */
+    qq: '\uf1d6',
+    weibo: '\uf18a',
+    github: '\uf09b'
 }

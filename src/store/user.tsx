@@ -1,9 +1,7 @@
 import { useStorage } from '@/utils/useStorage'
 
 export default () => {
-    const [username, setUsername] = useStorage<string>('username', '')
-    const [nickanme, setNickname] = useStorage<string>('nickname', '')
-    const [token, setToken] = useStorage<string>('token', '')
+    const [token, setToken] = useStorage<string | null>('token', null)
 
-    return { username, setUsername, nickanme, setNickname, token, setToken }
+    return { token, setToken }
 }

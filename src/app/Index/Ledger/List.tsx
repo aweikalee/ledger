@@ -62,6 +62,7 @@ const LedgerIndexList: React.FC<RouteComponentProps &
     React.useEffect(() => {
         skip.current = 0
         setStatus('ready')
+        setLoading(true)
     }, [ledger.id])
 
     const fetchMorelFn = () => {

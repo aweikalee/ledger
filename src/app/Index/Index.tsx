@@ -56,7 +56,7 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
                 right={<DatePicker />}
             />
 
-            <Route render={props => <LedgerIndex {...props} />} />
+            <Route component={LedgerIndex} />
 
             <ToolBar
                 active={{ main: true }}

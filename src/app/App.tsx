@@ -1,35 +1,43 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-boost'
-import { ApolloProvider } from '@apollo/react-hooks'
 import { useStore } from '@/store'
 
+import Apollo from './Apollo'
+import Hook from './Hook'
 import Index from './Index/Index'
 import RecordEdit from './Record/Edit/Index'
+import User from './User/Index'
+import Login from './Login/Index'
+import Token from './Token/Index'
 
 import './App.module.scss'
 
-const client = new ApolloClient({
-    link: new HttpLink({ uri: '/graphql' }),
-    cache: new InMemoryCache()
-})
+const MainRoute: React.FC = () => {
+    return (
+        <>
+            <Route component={Hook} />
+            <Switch>
+                <Route exact path="/record/:id/edit" component={RecordEdit} />
+                <Route path="/user" component={User} />
+                <Route component={Index} />
+            </Switch>
+        </>
+    )
+}
 
 const App: React.FC = () => {
     return (
-        <ApolloProvider client={client}>
-            <useStore.Provider>
+        <useStore.Provider>
+            <Apollo>
                 <BrowserRouter>
                     <Switch>
-                        <Route
-                            exact
-                            path="/record/:id/edit"
-                            component={RecordEdit}
-                        />
-                        <Route component={Index} />
+                        <Route path="/login" component={Login} />
+                        <Route path="/token/:token" component={Token} />
+                        <Route component={MainRoute} />
                     </Switch>
                 </BrowserRouter>
-            </useStore.Provider>
-        </ApolloProvider>
+            </Apollo>
+        </useStore.Provider>
     )
 }
 

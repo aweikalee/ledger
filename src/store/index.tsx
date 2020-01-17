@@ -7,7 +7,7 @@ import user from './user'
 export const useStore = createUseContext(() => {
     return {
         ledger: ledger(),
-        ...components(),
-        ...user()
+        user: user(),
+        ...components()
     }
 })

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useStorage } from '@/utils/useStorage'
-import { useLedger } from '@/model/api/ledger'
+import { ILedger } from '@/model/types/ledger'
 
 export default () => {
     /* id */
@@ -16,12 +16,13 @@ export default () => {
         setLastId(id)
     }, [id, setLastId])
 
-    /* data */
-    const { data: ledger, error, loading } = useLedger({
-        variables: { id: id! },
-        skip: !id
-    })
-    const data = ledger && ledger.ledger
+    const [data, setData] = React.useState<ILedger>()
 
-    return { id, lastId, setId, data, error, loading }
+    return {
+        id,
+        lastId,
+        setId,
+        data,
+        setData
+    }
 }

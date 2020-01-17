@@ -40,6 +40,7 @@ const RecordRemove: React.FC<RouteComponentProps<IRecordRemoveRouteProps> &
             onSuccessed && onSuccessed()
         }
     })
+
     const onSubmit = () => {
         if (!data._id) {
             notification.error({
