@@ -1,5 +1,5 @@
 export interface IUser {
     _id?: string
-    username?: string
     nickname?: string
+    profile_picture?: string
 }

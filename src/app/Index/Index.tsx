@@ -58,14 +58,13 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
             />
 
             <Route component={LedgerIndex} />
+            <Route path="/collection" component={CollectionIndex} />
+            <Route path="/record/:id" component={RecordIndex} />
 
             <ToolBar
                 active={{ main: true }}
                 href={{ main: `/ledger/${ledger.id}/add` }}
             />
-
-            <Route path="/collection" component={CollectionIndex} />
-            <Route path="/record/:id" component={RecordIndex} />
         </context.Provider>
     )
 }
