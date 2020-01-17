@@ -20,6 +20,9 @@ export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
     onExited?: ExitHandler
 }
 
+let saveOverflow: string | null = null
+let savePaddingRight: string | null = null
+
 const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
     const {
         className: classNameProp,
@@ -53,6 +56,12 @@ const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
                 if (find > -1) {
                     const _queue = [...queue]
                     _queue.splice(find, 1)
+                    if (_queue.length === 0) {
+                        document.body.style.overflow = saveOverflow as string
+                        document.body.style.paddingRight = savePaddingRight!
+                        saveOverflow = null
+                        savePaddingRight = null
+                    }
                     return _queue
                 }
                 return queue
@@ -123,8 +132,6 @@ const ModalBase = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
     )
 })
 
-let saveOverflow: string | null = null
-let savePaddingRight: string | null = null
 const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
     const {
         onEnter: onEnterProp,
@@ -174,13 +181,7 @@ const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
         }
         onEnterProp && onEnterProp(node, isAppearing)
     }
-    const onExited: ExitHandler = (node) => {
-        if (!show && modalQueue.length === 0) {
-            document.body.style.overflow = saveOverflow as string
-            document.body.style.paddingRight = savePaddingRight!
-            saveOverflow = null
-            savePaddingRight = null
-        }
+    const onExited: ExitHandler = node => {
         onExitedProp && onExitedProp(node)
     }
 

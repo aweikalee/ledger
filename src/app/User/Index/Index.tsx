@@ -4,7 +4,6 @@ import { RouteComponentProps } from 'react-router-dom'
 import ContentBody from '@/components/ContentBody'
 import Grid from '@/components/Grid'
 import { Button } from '@/components/Button'
-
 import { useUser } from '@/model/api/user'
 
 import styles from './Index.module.scss'
@@ -12,6 +11,7 @@ import Icon from '@/components/Icon'
 
 const UserIndex: React.FC<RouteComponentProps> = props => {
     const { data } = useUser({})
+
     return (
         <ContentBody maxWidth="sm">
             <Grid container direction="column" gap={4}>
@@ -25,7 +25,7 @@ const UserIndex: React.FC<RouteComponentProps> = props => {
                         alignItems="center"
                     >
                         {data && data.user && data.user.profile_picture ? (
-                            <img src={data.user.profile_picture} />
+                            <img src={data.user.profile_picture} alt="" />
                         ) : (
                             <Icon text="user" />
                         )}
