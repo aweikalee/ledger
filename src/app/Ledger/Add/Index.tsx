@@ -1,5 +1,5 @@
 import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, Route } from 'react-router-dom'
 
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
@@ -7,20 +7,22 @@ import { Button } from '@/components/Button'
 import Icon from '@/components/Icon'
 import notification from '@/components/Notification'
 
-import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
-import { useRecord } from '@/model/api/record'
-import { useUpdateRecordForm } from '@/model/form/record'
-import { useUpdateRecord } from '@/model/api/record'
+import { localTimeOffset, timeTransform } from '@/utils/timeZone'
+import { IRecord } from '@/model/types/record'
+import { useCreateRecordForm } from '@/model/form/record'
+import { useCreateRecord } from '@/model/api/record'
 import Editor from '@/middleware/record/Editor'
 
-export interface IRecordEditRouteProps {
+import Hook from '../../Index/Ledger/Hook'
+
+export interface IRecordAddRouteProps {
     id: string
 }
-export interface IRecordEditProps {}
+export interface IRecordAddProps {}
 
-const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
-    IRecordEditProps> = props => {
+const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
+    IRecordAddProps> = props => {
     const {
         history,
         match: {
@@ -28,36 +30,38 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
         }
     } = props
 
-    const { ledger } = useStore()
-    const { data } = useRecord({
-        variables: {
-            id
-        },
-        skip: !id,
-        onCompleted(data) {
-            if (data && data.record) {
-                if (data.record.pid !== ledger.id) {
-                    ledger.setId(data.record.pid)
-                }
-            }
-        }
-    })
+    const defaultValues = React.useMemo<IRecord>(
+        () => ({
+            pid: id,
+            type: -1,
+            classify: undefined,
+            timezone: localTimeOffset,
+            datetime: timeTransform.toUTC(Date.now()),
+            detail: '',
+            amount: '0',
+            currency: 'CNY',
+            payer: [],
+            participator: [],
+            settled: []
+        }),
+        [id]
+    )
 
-    const form = useUpdateRecordForm((data && data.record) || {})
+    const form = useCreateRecordForm(defaultValues)
     const { getValues, handleSubmit } = form
 
-    const [updateRecord] = useUpdateRecord({
+    const [createRecord] = useCreateRecord({
         onError: onApolloError,
         onCompleted() {
             notification.success({
-                content: '更新成功'
+                content: '创建成功'
             })
-            history.push('/')
+            history.push(`/ledger/${id}`)
         }
     })
 
     const onSubmit = () => {
-        updateRecord({ variables: { data: getValues() } })
+        createRecord({ variables: { data: getValues() } })
     }
 
     return (
@@ -86,8 +90,9 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
             <ContentBody>
                 <Editor form={form} />
             </ContentBody>
+            <Route component={Hook} />
         </>
     )
 }
 
-export default RecordEdit
+export default RecordAdd

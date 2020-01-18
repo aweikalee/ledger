@@ -1,0 +1,16 @@
+@import '@/style/index.scss';
+
+.type-group {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    & > [data-role='button'] {
+        width: rem(80);
+        max-width: 30%;
+    }
+}
+
+.amount-screen {
+    text-align: right;
+
+}

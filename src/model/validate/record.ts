@@ -29,7 +29,7 @@ const validate: {
         )(value)
     },
     classify: value => {
-        return valid.queue<string>([valid.isRequire()], {
+        return valid.queue<string>([], {
             name: '分类'
         })(value)
     },

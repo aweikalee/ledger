@@ -57,7 +57,7 @@ export const getMonthRange = (datetime?: IRecord['datetime']) => {
     date.setMilliseconds(0)
 
     const start = date.getTime()
-    const end = start + maxDay * 24 * 60 * 60 * 100
+    const end = start + maxDay * 24 * 60 * 60 * 1000
 
     return [start, end]
 }
