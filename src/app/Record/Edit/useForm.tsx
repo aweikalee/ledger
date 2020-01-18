@@ -11,6 +11,7 @@ export default (data: IRecord) => {
     const { register, setValue } = form
 
     React.useEffect(() => {
+        register({ name: '_id' }, { validate: valid._id })
         register({ name: 'pid' }, { validate: valid.pid })
         register({ name: 'type' }, { validate: valid.type })
         register({ name: 'classify' }, { validate: valid.classify })

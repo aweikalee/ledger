@@ -1,15 +1,14 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import useForm from 'react-hook-form'
 
 import Dialog from '@/components/Dialog'
 import * as Input from '@/components/Input'
 import notification from '@/components/Notification'
 
 import { onApolloError } from '@/model/error'
-import valid from '@/model/validate/ledger'
 import { useCreateLedger } from '@/model/api/ledger'
-import { ICreateLedger } from '@/model/types/ledger'
+
+import useForm from './useForm'
 
 export interface ILedgerAddRouteProps {}
 export interface ILedgerAddProps {
@@ -21,17 +20,10 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
     ILedgerAddProps> = props => {
     const { onClose, onSuccessed } = props
 
-    const form = useForm<ICreateLedger>({
-        mode: 'onChange',
-        defaultValues: {
-            title: ''
-        }
+    const form = useForm({
+        title: ''
     })
-    const { register, getValues, setValue, watch, handleSubmit, errors } = form
-
-    React.useEffect(() => {
-        register({ name: 'title' }, { validate: valid.title })
-    }, [register])
+    const { watch, getValues, setValue, handleSubmit, errors } = form
 
     const [createLedger] = useCreateLedger({
         onError: onApolloError,
