@@ -26,6 +26,7 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
     const {
         history,
         match: {
+            path,
             params: { id }
         }
     } = props
@@ -67,7 +68,7 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
     return (
         <>
             <NavigationBar
-                title="编辑账单"
+                title="新增账单"
                 left={
                     <BackButton
                         icon="close"
@@ -90,7 +91,7 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
             <ContentBody>
                 <Editor form={form} />
             </ContentBody>
-            <Route component={Hook} />
+            <Route path={path} component={Hook} />
         </>
     )
 }

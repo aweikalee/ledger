@@ -29,7 +29,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
     const [remove, setRemove] = React.useState<ILedger | null>(null)
     React.useEffect(() => {
         if (remove) {
-            history.push(`${url}/remove`)
+            history.replace(`${url}/remove`)
         } else {
             history.replace(url)
         }

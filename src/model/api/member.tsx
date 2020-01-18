@@ -1,7 +1,13 @@
-import { useQuery, QueryHookOptions } from '@apollo/react-hooks'
+import {
+    useQuery,
+    useMutation,
+    QueryHookOptions,
+    MutationHookOptions
+} from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 
-import { IMember } from '../types/member'
+import { IReport } from '../types/graphql'
+import { IMember, ICreateMember, IUpdateMember } from '../types/member'
 
 /* ======================================== */
 
@@ -22,6 +28,58 @@ export const useMembers = (
                 members(pid: $pid) {
                     _id
                     name
+                }
+            }
+        `,
+        options
+    )
+}
+
+/* ======================================== */
+
+export interface ICreateMemberData {
+    createMember: IReport | null
+}
+
+export interface ICreateMemberVar {
+    data: ICreateMember
+}
+
+export const useCreateMember = (
+    options: MutationHookOptions<ICreateMemberData, ICreateMemberVar>
+) => {
+    return useMutation<ICreateMemberData, ICreateMemberVar>(
+        gql`
+            mutation($data: CreateMember) {
+                createMember(data: $data) {
+                    code
+                    message
+                }
+            }
+        `,
+        options
+    )
+}
+
+/* ======================================== */
+
+export interface IUpdateMemberData {
+    updateMember: IReport | null
+}
+
+export interface IUpdateMemberVar {
+    data: IUpdateMember
+}
+
+export const useUpdateMember = (
+    options: MutationHookOptions<IUpdateMemberData, IUpdateMemberVar>
+) => {
+    return useMutation<IUpdateMemberData, IUpdateMemberVar>(
+        gql`
+            mutation($data: UpdateMember) {
+                updateMember(data: $data) {
+                    code
+                    message
                 }
             }
         `,

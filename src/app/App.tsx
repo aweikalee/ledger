@@ -8,6 +8,7 @@ import Index from './Index/Index'
 import LedgerEdit from './Ledger/Edit/Index'
 import RecordAdd from './Ledger/Add/Index'
 import RecordEdit from './Record/Edit/Index'
+import Member from './Member/Index'
 import User from './User/Index'
 import Login from './Login/Index'
 import Token from './Token/Index'
@@ -20,6 +21,7 @@ const MainRoute: React.FC = () => {
             <Route exact path="/ledger/:id/edit" component={LedgerEdit} />
             <Route exact path="/ledger/:id/add" component={RecordAdd} />
             <Route exact path="/record/:id/edit" component={RecordEdit} />
+            <Route path="/member" component={Member} />
             <Route path="/user" component={User} />
             <Route component={Index} />
         </Switch>
