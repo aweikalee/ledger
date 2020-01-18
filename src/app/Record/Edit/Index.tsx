@@ -8,8 +8,7 @@ import Icon from '@/components/Icon'
 
 import { useStore } from '@/store'
 import { useRecord } from '@/model/api/record'
-
-import useForm from './useForm'
+import { useUpdateRecordForm } from '@/model/form/record'
 
 export interface IRecordEditRouteProps {
     id: string
@@ -40,7 +39,7 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
         }
     })
 
-    const form = useForm((data && data.record) || {})
+    const form = useUpdateRecordForm((data && data.record) || {})
 
     return (
         <>

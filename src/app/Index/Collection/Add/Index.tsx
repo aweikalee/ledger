@@ -7,8 +7,7 @@ import notification from '@/components/Notification'
 
 import { onApolloError } from '@/model/error'
 import { useCreateLedger } from '@/model/api/ledger'
-
-import useForm from './useForm'
+import { useCreateLedgerForm } from '@/model/form/ledger'
 
 export interface ILedgerAddRouteProps {}
 export interface ILedgerAddProps {
@@ -20,7 +19,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
     ILedgerAddProps> = props => {
     const { onClose, onSuccessed } = props
 
-    const form = useForm({
+    const form = useCreateLedgerForm({
         title: ''
     })
     const { watch, getValues, setValue, handleSubmit, errors } = form

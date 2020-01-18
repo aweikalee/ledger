@@ -11,8 +11,7 @@ import notification from '@/components/Notification'
 
 import { onApolloError } from '@/model/error'
 import { useLedger, useUpdateLedger } from '@/model/api/ledger'
-
-import useForm from './useForm'
+import { useUpdateLedgerForm } from '@/model/form/ledger'
 
 export interface ILedgerEditRouteProps {
     id: string
@@ -36,7 +35,7 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
         onError: onApolloError
     })
 
-    const form = useForm((data && data.ledger) || {})
+    const form = useUpdateLedgerForm((data && data.ledger) || {})
     const { watch, getValues, setValue, handleSubmit, errors } = form
 
     const [updateLedger] = useUpdateLedger({
