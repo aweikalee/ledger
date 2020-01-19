@@ -114,7 +114,7 @@ export const members = ({
 
     ids.forEach(id => {
         const member = members.find(m => m._id === id) || {
-            id,
+            _id: id,
             name: '未定义'
         }
         const item = Object.assign(

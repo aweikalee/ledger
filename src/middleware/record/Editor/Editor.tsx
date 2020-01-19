@@ -3,6 +3,7 @@ import React from 'react'
 import Grid from '@/components/Grid'
 import * as Input from '@/components/Input'
 import { Button } from '@/components/Button'
+import Icon from '@/components/Icon'
 
 import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
@@ -18,6 +19,8 @@ import Detail from './Detail'
 import Datetime from './Datetime'
 import Members from './Members'
 import { timeTransform } from '@/utils/timeZone'
+
+import displayStyles from '../styles.module.scss'
 
 export interface IRecordEditorProps {
     form: ReturnType<typeof useCreateRecordForm | typeof useUpdateRecordForm>
@@ -157,6 +160,32 @@ const Editor: React.FC<IRecordEditorProps> = props => {
 
             {/* members 成员 */}
             <Grid>
+                <Input.Label
+                    htmlFor="detail"
+                    description={
+                        <Grid justify="flex-end">
+                            <Grid
+                                className={displayStyles['members-width']}
+                                justify="space-around"
+                            >
+                                <Grid>支付</Grid>
+                                <Grid>消费</Grid>
+                                <Grid>还清</Grid>
+                            </Grid>
+                        </Grid>
+                    }
+                >
+                    成员
+                    <Button
+                        type="outlined"
+                        color="primary"
+                        size="small"
+                        border="round"
+                        style={{marginLeft: '0.12rem'}}
+                    >
+                        <Icon text="gear" /> 管理
+                    </Button>
+                </Input.Label>
                 <Members
                     payer={watch('payer')}
                     participator={watch('participator')}
