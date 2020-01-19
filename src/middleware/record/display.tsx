@@ -12,7 +12,7 @@ import { IClassify } from '@/model/types/classify'
 import * as process from './process'
 
 import styles from './styles.module.scss'
-import color from '@/style/color.module.scss'
+import colorBg from '@/style/colorBg.module.scss'
 
 /* ======================================== */
 
@@ -26,7 +26,7 @@ export const Icon: React.FC<IRecordIconProps> = props => {
         <Grid
             className={clsx(
                 styles.icon,
-                color[`${classify.color}-bg`],
+                colorBg[classify.color!],
                 className
             )}
             justify="center"

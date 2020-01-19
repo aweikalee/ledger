@@ -115,6 +115,7 @@ const Editor: React.FC<IRecordEditorProps> = props => {
             <Grid>
                 <Classify
                     value={watch('classify')}
+                    classifies={ledger && ledger.classifies}
                     onUpdate={value => setValue('classify', value, true)}
                 />
                 <Grid sm={12}>
@@ -181,7 +182,7 @@ const Editor: React.FC<IRecordEditorProps> = props => {
                         color="primary"
                         size="small"
                         border="round"
-                        style={{marginLeft: '0.12rem'}}
+                        style={{ marginLeft: '0.12rem' }}
                     >
                         <Icon text="gear" /> 管理
                     </Button>

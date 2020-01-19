@@ -1,0 +1,11 @@
+@import '@/style/index.scss';
+
+.color-button {
+    padding: $gap / 2;
+}
+
+.color-block {
+    width: rem(40);
+    height: rem(40);
+    border-radius: 50%;
+}

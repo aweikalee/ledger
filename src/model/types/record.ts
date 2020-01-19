@@ -4,7 +4,7 @@ export interface IRecord {
     _id?: string
     pid?: string
     type?: -1 | 0 | 1
-    classify?: string
+    classify?: string | null
     timezone?: number
     datetime?: number
     detail?: string
@@ -19,7 +19,7 @@ export interface IRecord {
 export interface ICreateRecord {
     pid?: string
     type?: -1 | 0 | 1
-    classify?: string
+    classify?: string | null
     timezone?: number
     datetime?: number
     detail?: string
@@ -35,7 +35,7 @@ export interface IUpdateRecord {
     _id: string
     pid?: string
     type?: -1 | 0 | 1
-    classify?: string
+    classify?: string | null
     timezone?: number
     datetime?: number
     detail?: string

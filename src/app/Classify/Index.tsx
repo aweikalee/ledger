@@ -5,13 +5,13 @@ import ToolBar from '@/components/ToolBar'
 
 import Index from './Index/Index'
 
-export interface IMemberProps {}
-export interface IMemberRouteProps {
+export interface IClassifyProps {}
+export interface IClassifyRouteProps {
     id: string
 }
 
-const Member: React.FC<RouteComponentProps<IMemberRouteProps> &
-    IMemberProps> = props => {
+const Classify: React.FC<RouteComponentProps<IClassifyRouteProps> &
+    IClassifyProps> = props => {
     const {
         match: { path }
     } = props
@@ -25,4 +25,4 @@ const Member: React.FC<RouteComponentProps<IMemberRouteProps> &
     )
 }
 
-export default Member
+export default Classify

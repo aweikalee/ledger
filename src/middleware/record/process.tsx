@@ -15,15 +15,15 @@ const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
 /* ======================================== */
 
+export const defaultClassify: IClassify = {
+    _id: null!,
+    text: '未分类',
+    icon: 'image',
+    color: 'grey'
+}
+
 export const classify = (id: IRecord['classify'], classifies: IClassify[]) => {
-    return (
-        classifies.find(v => v._id === id) || {
-            _id: '',
-            text: '未分类',
-            icon: 'image',
-            color: 'grey'
-        }
-    )
+    return classifies.find(v => v._id === id) || defaultClassify
 }
 
 /* ======================================== */

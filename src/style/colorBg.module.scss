@@ -2,6 +2,6 @@
 
 @each $v in map-keys($color-palette-map) {
     .#{$v} {
-        color: color($v, 5);
+        background-color: color($v, 4);
     }
 }

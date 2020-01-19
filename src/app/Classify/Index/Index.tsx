@@ -8,7 +8,8 @@ import Button from '@/components/Button'
 import Icon from '@/components/Icon'
 
 import { useStore } from '@/store'
-import { IMember } from '@/model/types/member'
+import { IClassify } from '@/model/types/classify'
+import * as display from '@/middleware/record/display'
 
 import Hook from '../../Index/Ledger/Hook'
 import Add from './Add/Index'
@@ -17,13 +18,13 @@ import Remove from './Remove/Index'
 
 import styles from './Index.module.scss'
 
-export interface IMemberIndexProps {}
-export interface IMemberIndexRouteProps {
+export interface IClassifyIndexProps {}
+export interface IClassifyIndexRouteProps {
     id: string
 }
 
-const MemberIndex: React.FC<RouteComponentProps<IMemberIndexRouteProps> &
-    IMemberIndexProps> = props => {
+const ClassifyIndex: React.FC<RouteComponentProps<IClassifyIndexRouteProps> &
+    IClassifyIndexProps> = props => {
     const {
         history,
         match: { path, url }
@@ -31,8 +32,8 @@ const MemberIndex: React.FC<RouteComponentProps<IMemberIndexRouteProps> &
     const { ledger } = useStore()
 
     /* edit, remove */
-    const [edit, setEdit] = React.useState<IMember | null>(null)
-    const [remove, setRemove] = React.useState<IMember | null>(null)
+    const [edit, setEdit] = React.useState<IClassify | null>(null)
+    const [remove, setRemove] = React.useState<IClassify | null>(null)
 
     React.useEffect(() => {
         if (edit) {
@@ -45,42 +46,47 @@ const MemberIndex: React.FC<RouteComponentProps<IMemberIndexRouteProps> &
     }, [edit, remove, history, url])
 
     /* list */
-    const list = ((ledger.data && ledger.data.members) || []).map(member => (
-        <Grid
-            className={styles.item}
-            key={member._id}
-            alignItems="center"
-            alignContent="space-between"
-            gap={2}
-        >
-            <Grid sm>
-                <div className={styles.name}>{member.name}</div>
+    const list = ((ledger.data && ledger.data.classifies) || []).map(
+        classify => (
+            <Grid
+                className={styles.item}
+                key={classify._id || classify.text}
+                alignItems="center"
+                alignContent="space-between"
+                gap={2}
+            >
+                <Grid>
+                    <display.Icon classify={classify} />
+                </Grid>
+                <Grid sm>
+                    <div className={styles.name}>{classify.text}</div>
+                </Grid>
+                <Grid>
+                    <Button
+                        type="text"
+                        color="default"
+                        size="large"
+                        onClick={() => setRemove(classify)}
+                    >
+                        <Icon text="trash" />
+                    </Button>
+                    <Button
+                        type="text"
+                        color="primary"
+                        size="large"
+                        onClick={() => setEdit(classify)}
+                    >
+                        <Icon text="pen" />
+                    </Button>
+                </Grid>
             </Grid>
-            <Grid>
-                <Button
-                    type="text"
-                    color="default"
-                    size="large"
-                    onClick={() => setRemove(member)}
-                >
-                    <Icon text="trash" />
-                </Button>
-                <Button
-                    type="text"
-                    color="primary"
-                    size="large"
-                    onClick={() => setEdit(member)}
-                >
-                    <Icon text="pen" />
-                </Button>
-            </Grid>
-        </Grid>
-    ))
+        )
+    )
 
     return (
         <>
             <NavigationBar
-                title="成员管理"
+                title="分类管理"
                 subTitle={ledger.data && ledger.data.title}
                 left={
                     <BackButton
@@ -165,4 +171,4 @@ const MemberIndex: React.FC<RouteComponentProps<IMemberIndexRouteProps> &
     )
 }
 
-export default MemberIndex
+export default ClassifyIndex

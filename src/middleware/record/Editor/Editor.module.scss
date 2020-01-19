@@ -12,5 +12,43 @@
 
 .amount-screen {
     text-align: right;
+}
 
+.classify {
+    width: 100%;
+    overflow: auto;
+    max-height: rem(88) * 2.2;
+    -webkit-overflow-scrolling: touch;
+    & [data-role='button'] {
+        display: block;
+        float: left;
+        width: 20%;
+        height: rem(88);
+        box-sizing: border-box;
+        border: 1px solid transparent;
+
+        &[data-active='true'] {
+            background-color: color(grey, 1);
+            border-color: color(grey, 3);
+            border-radius: $border-radius;
+            & .text {
+                color: color(grey, 7);
+            }
+        }
+    }
+}
+
+.classify__icon {
+    margin: 0 auto;
+    font-size: rem(25);
+}
+
+.classify__text {
+    @include font(caption-1);
+    margin-top: rem(4);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    color: color(grey, 5);
 }
