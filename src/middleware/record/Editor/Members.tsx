@@ -18,6 +18,7 @@ const Members: React.FC<{
     const { onUpdate, ...other } = props
     return (
         <display.Members
+            id="member"
             display="checkbox"
             {...other}
             onUpdate={(type, value) => {
@@ -29,7 +30,10 @@ const Members: React.FC<{
                 if (index === -1) {
                     onUpdate(type, [...target, value])
                 } else {
-                    onUpdate(type, [...target].splice(index, 1))
+                    onUpdate(
+                        type,
+                        target.slice(0, index).concat(target.slice(index + 1))
+                    )
                 }
             }}
         />

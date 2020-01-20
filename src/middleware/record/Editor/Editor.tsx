@@ -113,6 +113,19 @@ const Editor: React.FC<IRecordEditorProps> = props => {
 
             {/* classify 分类 */}
             <Grid>
+                <Input.Label htmlFor="classify">
+                    分类
+                    <Button
+                        href={ledger ? `/classify/${ledger._id}` : undefined}
+                        type="outlined"
+                        color="primary"
+                        size="small"
+                        border="round"
+                        style={{ marginLeft: '0.12rem', fontWeight: 'normal' }}
+                    >
+                        <Icon text="gear" /> 管理
+                    </Button>
+                </Input.Label>
                 <Classify
                     value={watch('classify')}
                     classifies={ledger && ledger.classifies}
@@ -162,7 +175,7 @@ const Editor: React.FC<IRecordEditorProps> = props => {
             {/* members 成员 */}
             <Grid>
                 <Input.Label
-                    htmlFor="detail"
+                    htmlFor="member"
                     description={
                         <Grid justify="flex-end">
                             <Grid
@@ -178,11 +191,12 @@ const Editor: React.FC<IRecordEditorProps> = props => {
                 >
                     成员
                     <Button
+                        href={ledger ? `/member/${ledger._id}` : undefined}
                         type="outlined"
                         color="primary"
                         size="small"
                         border="round"
-                        style={{ marginLeft: '0.12rem' }}
+                        style={{ marginLeft: '0.12rem', fontWeight: 'normal' }}
                     >
                         <Icon text="gear" /> 管理
                     </Button>

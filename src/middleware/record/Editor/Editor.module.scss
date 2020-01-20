@@ -18,6 +18,7 @@
     width: 100%;
     overflow: auto;
     max-height: rem(88) * 2.2;
+    margin-top: $gap;
     -webkit-overflow-scrolling: touch;
     & [data-role='button'] {
         display: block;
