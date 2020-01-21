@@ -2,8 +2,8 @@
 
 .rc-notification {
     position: fixed;
-    z-index: 10000;
-    top: $gap;
+    z-index: z-index(5);
+    top: $gap + rem(44);
     right: $gap;
     max-width: calc(100% - #{$gap * 2});
 }

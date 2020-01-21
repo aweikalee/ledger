@@ -4,7 +4,7 @@ $z-index-map: (
     2: 1000, // content
     3: 5000, // bar
     4: 10000, // modal
-    5: 100000, // tip
+    5: 1000000, // notification
 );
 
 @function z-index($level) {
