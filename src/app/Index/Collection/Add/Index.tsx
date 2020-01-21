@@ -27,7 +27,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
         []
     )
     const form = useCreateLedgerForm(defaultValues)
-    const { watch, getValues, setValue, handleSubmit, errors } = form
+    const { getValues, handleSubmit } = form
 
     const [createLedger] = useCreateLedger({
         onError: onApolloError,

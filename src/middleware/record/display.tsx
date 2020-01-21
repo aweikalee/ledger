@@ -26,7 +26,11 @@ export const Icon: React.FC<IRecordIconProps> = props => {
     const { className, classify, ...other } = props
     return (
         <Grid
-            className={clsx(styles.icon, colorBg[classify.color!], className)}
+            className={clsx(
+                styles.icon,
+                colorBg[classifyProcess.getColor(classify.color)],
+                className
+            )}
             justify="center"
             alignItems="center"
             {...other}

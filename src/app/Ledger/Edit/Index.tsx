@@ -3,10 +3,8 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import NavigationBar, { BackButton } from '@/components/NavigationBar'
 import ContentBody from '@/components/ContentBody'
-import Grid from '@/components/Grid'
 import { Button } from '@/components/Button'
 import Icon from '@/components/Icon'
-import * as Input from '@/components/Input'
 import notification from '@/components/Notification'
 
 import { onApolloError } from '@/model/error'

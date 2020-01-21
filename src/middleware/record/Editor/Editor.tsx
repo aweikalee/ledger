@@ -69,165 +69,194 @@ const Editor: React.FC<IRecordEditorProps> = props => {
     return (
         <Grid container direction="column" gap={4}>
             {/* type 收支类型 */}
-            <Grid>
-                <Type
-                    value={watch('type')}
-                    onUpdate={value => setValue('type', value, true)}
-                />
-                <Grid sm={12} justify="center">
-                    <Input.Helper error>
-                        {errors.type && errors.type.message}
-                    </Input.Helper>
-                </Grid>
-            </Grid>
-
-            <Grid container alignItems="center">
-                {/* currency 货币种类 */}
+            {watch('type') === undefined ? null : (
                 <Grid>
-                    <Currency
-                        value={watch('currency')}
-                        currencies={(currencies && currencies.currencies) || []}
-                        onUpdate={value => setValue('currency', value, true)}
+                    <Type
+                        value={watch('type')}
+                        onUpdate={value => setValue('type', value, true)}
                     />
+                    <Grid sm={12} justify="center">
+                        <Input.Helper error>
+                            {errors.type && errors.type.message}
+                        </Input.Helper>
+                    </Grid>
                 </Grid>
+            )}
 
-                {/* amount 金额 */}
-                <Grid sm>
-                    <Amount
-                        value={watch('amount')}
-                        onUpdate={value => setValue('amount', value, true)}
-                    />
-                </Grid>
+            {watch('currency') === undefined ||
+            watch('amount') === undefined ? null : (
+                <Grid container alignItems="center">
+                    {/* currency 货币种类 */}
+                    <Grid>
+                        <Currency
+                            value={watch('currency')}
+                            currencies={
+                                (currencies && currencies.currencies) || []
+                            }
+                            onUpdate={value =>
+                                setValue('currency', value, true)
+                            }
+                        />
+                    </Grid>
 
-                <Grid sm={12}>
-                    <Input.Helper error>
-                        {errors.currency && errors.currency.message}
-                    </Input.Helper>
+                    {/* amount 金额 */}
+                    <Grid sm>
+                        <Amount
+                            value={watch('amount')}
+                            onUpdate={value => setValue('amount', value, true)}
+                        />
+                    </Grid>
+
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {errors.currency && errors.currency.message}
+                        </Input.Helper>
+                    </Grid>
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {errors.amount && errors.amount.message}
+                        </Input.Helper>
+                    </Grid>
                 </Grid>
-                <Grid sm={12}>
-                    <Input.Helper error>
-                        {errors.amount && errors.amount.message}
-                    </Input.Helper>
-                </Grid>
-            </Grid>
+            )}
 
             {/* classify 分类 */}
-            <Grid>
-                <Input.Label htmlFor="classify">
-                    分类
-                    <Button
-                        href={ledger ? `/classify/${ledger._id}` : undefined}
-                        type="outlined"
-                        color="primary"
-                        size="small"
-                        border="round"
-                        style={{ marginLeft: '0.12rem', fontWeight: 'normal' }}
-                    >
-                        <Icon text="gear" /> 管理
-                    </Button>
-                </Input.Label>
-                <Classify
-                    value={watch('classify')}
-                    classifies={ledger && ledger.classifies}
-                    onUpdate={value => setValue('classify', value, true)}
-                />
-                <Grid sm={12}>
-                    <Input.Helper error>
-                        {errors.classify && errors.classify.message}
-                    </Input.Helper>
+            {watch('classify') === undefined ? null : (
+                <Grid>
+                    <Input.Label htmlFor="classify">
+                        分类
+                        <Button
+                            href={
+                                ledger ? `/classify/${ledger._id}` : undefined
+                            }
+                            type="outlined"
+                            color="primary"
+                            size="small"
+                            border="round"
+                            style={{
+                                marginLeft: '0.12rem',
+                                fontWeight: 'normal'
+                            }}
+                        >
+                            <Icon text="gear" /> 管理
+                        </Button>
+                    </Input.Label>
+                    <Classify
+                        value={watch('classify')}
+                        classifies={ledger && ledger.classifies}
+                        onUpdate={value => setValue('classify', value, true)}
+                    />
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {errors.classify && errors.classify.message}
+                        </Input.Helper>
+                    </Grid>
                 </Grid>
-            </Grid>
+            )}
 
             {/* deital 描述 */}
-            <Grid>
-                <Input.Control error={!!errors.detail}>
-                    <Input.Label htmlFor="detail">描述</Input.Label>
-                    <Detail
-                        value={watch('detail')}
-                        onUpdate={value => setValue('detail', value, true)}
-                    />
-                    <Input.Helper>
-                        {errors.detail && errors.detail.message}
-                    </Input.Helper>
-                </Input.Control>
-            </Grid>
+            {watch('detail') === undefined ? null : (
+                <Grid>
+                    <Input.Control error={!!errors.detail}>
+                        <Input.Label htmlFor="detail">描述</Input.Label>
+                        <Detail
+                            value={watch('detail')}
+                            onUpdate={value => setValue('detail', value, true)}
+                        />
+                        <Input.Helper>
+                            {errors.detail && errors.detail.message}
+                        </Input.Helper>
+                    </Input.Control>
+                </Grid>
+            )}
 
             {/* datetime 时间 */}
-            <Grid>
-                <Input.Control error={!!errors.datetime}>
-                    <Input.Label htmlFor="datetime">时间</Input.Label>
-                    <Datetime
-                        value={timeTransform.toLocal(watch('datetime') || 0)}
-                        onUpdate={value =>
-                            setValue(
-                                'datetime',
-                                timeTransform.toUTC(value || 0),
-                                true
-                            )
-                        }
-                    />
-                    <Input.Helper>
-                        {errors.datetime && errors.datetime.message}
-                    </Input.Helper>
-                </Input.Control>
-            </Grid>
+            {watch('datetime') === undefined ? null : (
+                <Grid>
+                    <Input.Control error={!!errors.datetime}>
+                        <Input.Label htmlFor="datetime">时间</Input.Label>
+                        <Datetime
+                            value={timeTransform.toLocal(
+                                watch('datetime') || 0
+                            )}
+                            onUpdate={value =>
+                                setValue(
+                                    'datetime',
+                                    timeTransform.toUTC(value || 0),
+                                    true
+                                )
+                            }
+                        />
+                        <Input.Helper>
+                            {errors.datetime && errors.datetime.message}
+                        </Input.Helper>
+                    </Input.Control>
+                </Grid>
+            )}
 
             {/* members 成员 */}
-            <Grid>
-                <Input.Label
-                    htmlFor="member"
-                    description={
-                        <Grid justify="flex-end">
-                            <Grid
-                                className={displayStyles['members-width']}
-                                justify="space-around"
-                            >
-                                <Grid>支付</Grid>
-                                <Grid>消费</Grid>
-                                <Grid>还清</Grid>
-                            </Grid>
-                        </Grid>
-                    }
-                >
-                    成员
-                    <Button
-                        href={ledger ? `/member/${ledger._id}` : undefined}
-                        type="outlined"
-                        color="primary"
-                        size="small"
-                        border="round"
-                        style={{ marginLeft: '0.12rem', fontWeight: 'normal' }}
-                    >
-                        <Icon text="gear" /> 管理
-                    </Button>
-                </Input.Label>
-                <Members
-                    payer={watch('payer')}
-                    participator={watch('participator')}
-                    settled={watch('settled')}
-                    members={ledger && ledger.members}
-                    onUpdate={(type, value) => setValue(type, value, true)}
-                />
-
-                <Grid sm={12}>
-                    <Input.Helper error>
-                        {checkGhost() || (
-                            <>
-                                存在幽灵成员，请点击{' '}
-                                <Button
-                                    type="contained"
-                                    color="error"
-                                    size="small"
-                                    border="round"
-                                    onClick={clearGhost}
+            {[watch('payer'), watch('participator'), watch('settled')].includes(
+                undefined
+            ) ? null : (
+                <Grid>
+                    <Input.Label
+                        htmlFor="member"
+                        description={
+                            <Grid justify="flex-end">
+                                <Grid
+                                    className={displayStyles['members-width']}
+                                    justify="space-around"
                                 >
-                                    清除
-                                </Button>
-                            </>
-                        )}
-                    </Input.Helper>
+                                    <Grid>支付</Grid>
+                                    <Grid>消费</Grid>
+                                    <Grid>还清</Grid>
+                                </Grid>
+                            </Grid>
+                        }
+                    >
+                        成员
+                        <Button
+                            href={ledger ? `/member/${ledger._id}` : undefined}
+                            type="outlined"
+                            color="primary"
+                            size="small"
+                            border="round"
+                            style={{
+                                marginLeft: '0.12rem',
+                                fontWeight: 'normal'
+                            }}
+                        >
+                            <Icon text="gear" /> 管理
+                        </Button>
+                    </Input.Label>
+                    <Members
+                        payer={watch('payer')}
+                        participator={watch('participator')}
+                        settled={watch('settled')}
+                        members={ledger && ledger.members}
+                        onUpdate={(type, value) => setValue(type, value, true)}
+                    />
+
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {checkGhost() || (
+                                <>
+                                    存在幽灵成员，请点击{' '}
+                                    <Button
+                                        type="contained"
+                                        color="error"
+                                        size="small"
+                                        border="round"
+                                        onClick={clearGhost}
+                                    >
+                                        清除
+                                    </Button>
+                                </>
+                            )}
+                        </Input.Helper>
+                    </Grid>
                 </Grid>
-            </Grid>
+            )}
         </Grid>
     )
 }

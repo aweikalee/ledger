@@ -19,15 +19,19 @@ const Editor: React.FC<IMemberEditorProps> = props => {
 
     return (
         <>
-            <Name
-                value={watch('name')}
-                onUpdate={value => setValue('name', value, true)}
-            />
-            <Grid sm={12}>
-                <Input.Helper error>
-                    {errors.name && errors.name.message}
-                </Input.Helper>
-            </Grid>
+            {watch('name') === undefined ? null : (
+                <>
+                    <Name
+                        value={watch('name')}
+                        onUpdate={value => setValue('name', value, true)}
+                    />
+                    <Grid sm={12}>
+                        <Input.Helper error>
+                            {errors.name && errors.name.message}
+                        </Input.Helper>
+                    </Grid>
+                </>
+            )}
         </>
     )
 }
