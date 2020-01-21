@@ -21,6 +21,7 @@ import Members from './Members'
 import { timeTransform } from '@/utils/timeZone'
 
 import displayStyles from '../styles.module.scss'
+import styles from './Editor.module.scss'
 
 export interface IRecordEditorProps {
     form: ReturnType<typeof useCreateRecordForm | typeof useUpdateRecordForm>
@@ -235,7 +236,27 @@ const Editor: React.FC<IRecordEditorProps> = props => {
                         settled={watch('settled')}
                         members={ledger && ledger.members}
                         onUpdate={(type, value) => setValue(type, value, true)}
-                    />
+                    >
+                        <Grid
+                            justify="center"
+                            alignItems="center"
+                            container
+                            gap={4}
+                            className={styles['member-placeholder']}
+                        >
+                            请
+                            <Button
+                                href={
+                                    ledger ? `/member/${ledger._id}` : undefined
+                                }
+                                type="text"
+                                color="primary"
+                                size="medium"
+                            >
+                                添加成员
+                            </Button>
+                        </Grid>
+                    </Members>
 
                     <Grid sm={12}>
                         <Input.Helper error>

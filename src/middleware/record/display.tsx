@@ -152,51 +152,53 @@ export const Members: React.FC<IRecordMembersProps> = props => {
         settled
     })
 
-    if (data.length === 0) {
-        return null
-    }
-
     return (
         <Grid className={styles.members} {...other}>
-            {data.map(member => (
-                <Grid data-members-item key={member._id}>
-                    <Grid sm>
-                        <div data-members-name>
-                            <IconComponet text="user" /> {member.name}
-                        </div>
-                    </Grid>
-                    <Grid className={styles['members-width']}>
-                        {/* payer */}
-                        <MemberItem
-                            display={display}
-                            checked={member.payer}
-                            onClick={() => {
-                                onUpdate && onUpdate('payer', member._id || '')
-                            }}
-                        />
+            {data.length === 0
+                ? props.children
+                : data.map(member => (
+                      <Grid data-members-item key={member._id}>
+                          <Grid sm>
+                              <div data-members-name>
+                                  <IconComponet text="user" /> {member.name}
+                              </div>
+                          </Grid>
+                          <Grid className={styles['members-width']}>
+                              {/* payer */}
+                              <MemberItem
+                                  display={display}
+                                  checked={member.payer}
+                                  onClick={() => {
+                                      onUpdate &&
+                                          onUpdate('payer', member._id || '')
+                                  }}
+                              />
 
-                        {/* participation */}
-                        <MemberItem
-                            display={display}
-                            checked={member.participator}
-                            onClick={() => {
-                                onUpdate &&
-                                    onUpdate('participator', member._id || '')
-                            }}
-                        />
+                              {/* participation */}
+                              <MemberItem
+                                  display={display}
+                                  checked={member.participator}
+                                  onClick={() => {
+                                      onUpdate &&
+                                          onUpdate(
+                                              'participator',
+                                              member._id || ''
+                                          )
+                                  }}
+                              />
 
-                        {/* settled */}
-                        <MemberItem
-                            display={display}
-                            checked={member.settled}
-                            onClick={() => {
-                                onUpdate &&
-                                    onUpdate('settled', member._id || '')
-                            }}
-                        />
-                    </Grid>
-                </Grid>
-            ))}
+                              {/* settled */}
+                              <MemberItem
+                                  display={display}
+                                  checked={member.settled}
+                                  onClick={() => {
+                                      onUpdate &&
+                                          onUpdate('settled', member._id || '')
+                                  }}
+                              />
+                          </Grid>
+                      </Grid>
+                  ))}
         </Grid>
     )
 }

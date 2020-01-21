@@ -20,6 +20,7 @@ const Members: React.FC<{
         <display.Members
             id="member"
             display="checkbox"
+            container
             {...other}
             onUpdate={(type, value) => {
                 const target = props[type]

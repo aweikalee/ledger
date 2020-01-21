@@ -17,9 +17,11 @@
 .classify {
     width: 100%;
     overflow: auto;
-    max-height: rem(88) * 2.2;
+    height: rem(88) * 2.2;
     margin-top: $gap;
     -webkit-overflow-scrolling: touch;
+    border: 1px dashed color(grey, 5);
+    border-radius: $border-radius;
     & [data-role='button'] {
         display: block;
         float: left;
@@ -51,5 +53,10 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
+    color: color(grey, 5);
+}
+
+.member-placeholder {
+    @include font(callout);
     color: color(grey, 5);
 }

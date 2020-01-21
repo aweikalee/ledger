@@ -35,7 +35,7 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
         () => ({
             pid: id,
             type: -1,
-            classify: undefined,
+            classify: null,
             timezone: localTimeOffset,
             datetime: timeTransform.toUTC(Date.now()),
             detail: '',
