@@ -7,12 +7,18 @@ export default {
     confirm: '\ue712',
     gear: '\ue722',
     user: '\ue665',
-    plus: '\ue641',
     calendar: '\ue74b',
+
+    plus: '\ue641',
+    minus: '\ue624',
+    mutiplication: '\ue642',
+    division: '\ue608',
+    backspace: '\ue623',
+    equals: '\ue6c7',
 
     success: '\ue604',
     info: '\ue72d',
-    error: '\ue64a',
+    error: '\ue610',
     warn: '\ue610',
 
     /* 商标 */

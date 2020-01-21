@@ -2,17 +2,49 @@
 
 .keyboard {
     display: grid;
+    box-sizing: border-box;
     height: 100%;
     width: 100%;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 2px;
-    padding: 1px;
-    background-color: color(grey, 3);
+    grid-gap: rem(6);
+    padding: rem(6);
+    background-color: color(white);
     outline-color: transparent;
 }
 
 .button {
-    background-color: color(white);
+    border-radius: rem(12);
+
+    & [data-role='icon'] {
+        font-size: 1em;
+    }
+
+    &.button {
+        font-size: 1.6em;
+        color: color(grey, 7);
+        border: 1px solid color(grey, 5);
+        background-color: color(grey, 2);
+    }
+
+    &[data-role='+'],
+    &[data-role='-'],
+    &[data-role='*'],
+    &[data-role='/'] {
+        color: color(white);
+        border-color: color(yellow, 7);
+        background-color: color(yellow, 4);
+    }
+
+    &[data-role='reset'],
+    &[data-role='backspace'] {
+        background-color: color(grey, 1);
+    }
+
+    &[data-role='='] {
+        color: color(white);
+        border-color: color(red, 7);
+        background-color: color(red, 4);
+    }
 
     &[data-role='1'] {
         grid-area: 4 / 1;

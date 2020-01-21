@@ -3,8 +3,8 @@ import clsx from 'clsx'
 import Keyboard, { ICalculatorKeyboardProps } from './Keyboard'
 import Screen from './Screen'
 import { useQueue } from './queue'
-import { CSSTransition } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
+import Modal from '../Modal'
 import styles from './Calculator.module.scss'
 import { SYMBOL, SYMBOL_NUMBER, SYMBOL_OPERATOR } from './config'
 
@@ -68,7 +68,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
             const key = event.key
 
             if (key in SYMBOL) {
-                handler(key as (keyof typeof SYMBOL))
+                handler(key as keyof typeof SYMBOL)
             } else if (key === 'Enter') {
                 handler('=')
             }
@@ -108,12 +108,11 @@ const Calculator: React.FC<ICalculatorProps> = props => {
         }
     })
 
-    const el = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        if (show && el.current) {
-            el.current.focus()
+    const el = useCallback(node => {
+        if (node !== null) {
+            node.focus()
         }
-    }, [el, show])
+    }, [])
 
     const className = clsx(styles.calculator, classNameProp)
     const classnames: CSSTransitionClassNames = {
@@ -137,13 +136,7 @@ const Calculator: React.FC<ICalculatorProps> = props => {
     }
 
     return (
-        <CSSTransition
-            in={show}
-            unmountOnExit
-            timeout={400}
-            classNames={classnames}
-            appear
-        >
+        <Modal show={show} classNames={classnames} timeout={400}>
             <div data-role="calculator" {...bindProps}>
                 <Screen queue={queue} />
                 <Keyboard
@@ -153,11 +146,11 @@ const Calculator: React.FC<ICalculatorProps> = props => {
                             setQueue.isAllClear() || queue.length === 1
                                 ? 'AC'
                                 : '',
-                        '=': queue.length === 1 ? '完成' : ''
+                        '=': queue.length === 1 ? 'OK' : ''
                     }}
                 ></Keyboard>
             </div>
-        </CSSTransition>
+        </Modal>
     )
 }
 

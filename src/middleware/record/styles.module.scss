@@ -19,6 +19,7 @@
 }
 
 .amount {
+    text-align: center;
     &[data-type='-1'] {
         color: color(blue, 5);
     }

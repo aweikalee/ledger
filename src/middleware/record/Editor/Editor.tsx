@@ -86,7 +86,7 @@ const Editor: React.FC<IRecordEditorProps> = props => {
 
             {watch('currency') === undefined ||
             watch('amount') === undefined ? null : (
-                <Grid container alignItems="center">
+                <Grid container alignItems="baseline">
                     {/* currency 货币种类 */}
                     <Grid>
                         <Currency

@@ -4,7 +4,11 @@ import styles from './Modal.module.scss'
 import { CSSTransition } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
 import { useStore } from '@/store'
-import { EnterHandler, ExitHandler } from 'react-transition-group/Transition'
+import {
+    EnterHandler,
+    ExitHandler,
+    TransitionProps
+} from 'react-transition-group/Transition'
 import { Portal } from '../Portal'
 import {
     getScrollBarWidth,
@@ -13,6 +17,8 @@ import {
 } from '../utils/scrollBar'
 
 export interface IModalProps extends React.HTMLAttributes<HTMLElement> {
+    classNames?: CSSTransitionClassNames
+    timeout?: TransitionProps['timeout']
     show?: boolean
     overlayColor?: 'black' | 'white' | 'transparent'
     onClickOverlay?: Function
@@ -136,6 +142,7 @@ const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
     const {
         onEnter: onEnterProp,
         onExited: onExitedProp,
+        classNames: classNamesProp,
         ...other
     }: typeof props = props
 
@@ -161,14 +168,16 @@ const Modal = React.forwardRef<HTMLElement, IModalProps>((props, ref) => {
         return () => {}
     }, [props.show])
 
-    const classNames: CSSTransitionClassNames = {
-        appear: styles['appear'],
-        appearActive: styles['appear-active'],
-        enter: styles['enter'],
-        enterActive: styles['enter-active'],
-        exit: styles['exit'],
-        exitActive: styles['exit-active']
-    }
+    const classNames: CSSTransitionClassNames = classNamesProp
+        ? classNamesProp
+        : {
+              appear: styles['appear'],
+              appearActive: styles['appear-active'],
+              enter: styles['enter'],
+              enterActive: styles['enter-active'],
+              exit: styles['exit'],
+              exitActive: styles['exit-active']
+          }
 
     const onEnter: EnterHandler = (node, isAppearing) => {
         if (show && modalQueue.length === 0) {

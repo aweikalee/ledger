@@ -2,17 +2,29 @@
 
 .calculator {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: z-index(4) + 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
     background-color: color(white);
-    & [data-role="calculator-screen"] {
-        height: 40vh;
+    width: rem(320);
+    height: rem(560);
+    max-height: 100vh;
+    overflow: hidden;
+    margin: 0 auto;
+    border-radius: rem(12);
+
+    & [data-role='calculator-screen'] {
+        height: 40%;
     }
-    & [data-role="calculator-keyboard"] {
-        height: 60vh;
+    & [data-role='calculator-keyboard'] {
+        height: 60%;
+    }
+
+    @media #{screen-media(sm)} {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
     }
 }
 

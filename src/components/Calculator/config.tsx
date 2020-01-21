@@ -1,10 +1,12 @@
+import Icon from '../Icon'
+
 import * as amount from '@/utils/amount'
 
 export const SYMBOL_OPERATOR = {
-    '+': '+',
-    '-': '-',
-    '*': '×',
-    '/': '÷'
+    '+': Icon({ text: 'plus' }),
+    '-': Icon({ text: 'minus' }),
+    '*': Icon({ text: 'mutiplication' }),
+    '/': Icon({ text: 'division' })
 }
 
 export const SYMBOL_NUMBER = {
@@ -22,9 +24,9 @@ export const SYMBOL_NUMBER = {
 }
 
 export const SYMBOL = {
-    backspace: '<=',
+    backspace: Icon({ text: 'backspace' }),
     reset: 'C',
-    '=': '=',
+    '=': Icon({ text: 'equals' }),
     ...SYMBOL_OPERATOR,
     ...SYMBOL_NUMBER
 }
