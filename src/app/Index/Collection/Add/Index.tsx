@@ -2,12 +2,13 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
 import Dialog from '@/components/Dialog'
-import * as Input from '@/components/Input'
+import Grid from '@/components/Grid'
 import notification from '@/components/Notification'
 
 import { onApolloError } from '@/model/error'
 import { useCreateLedger } from '@/model/api/ledger'
 import { useCreateLedgerForm } from '@/model/form/ledger'
+import Editor from '@/middleware/ledger/Editor'
 
 export interface ILedgerAddRouteProps {}
 export interface ILedgerAddProps {
@@ -19,9 +20,13 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
     ILedgerAddProps> = props => {
     const { onClose, onSuccessed } = props
 
-    const form = useCreateLedgerForm({
-        title: ''
-    })
+    const defaultValues = React.useMemo(
+        () => ({
+            title: ''
+        }),
+        []
+    )
+    const form = useCreateLedgerForm(defaultValues)
     const { watch, getValues, setValue, handleSubmit, errors } = form
 
     const [createLedger] = useCreateLedger({
@@ -54,19 +59,9 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
                 onClose && onClose()
             }}
         >
-            <Input.Control error={!!errors.title}>
-                <Input.Input
-                    name="title"
-                    id="title"
-                    value={watch('title')}
-                    placeholder="账簿名称"
-                    onChange={e => setValue('title', e.target.value, true)}
-                    clear
-                />
-                <Input.Helper>
-                    {errors.title && errors.title.message}
-                </Input.Helper>
-            </Input.Control>
+            <Grid gap={0}>
+                <Editor form={form} />
+            </Grid>
         </Dialog>
     )
 }

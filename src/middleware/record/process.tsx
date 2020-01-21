@@ -11,6 +11,8 @@ import { IRecord } from '@/model/types/record'
 import { IClassify } from '@/model/types/classify'
 import { IMember } from '@/model/types/member'
 
+import * as classifyProcess from '../classify/process'
+
 const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 
 /* ======================================== */
@@ -18,12 +20,12 @@ const BigNumber = BigNumberOrigin.clone({ EXPONENTIAL_AT: 1e9 })
 export const defaultClassify: IClassify = {
     _id: null!,
     text: '未分类',
-    icon: 'image',
-    color: 'grey'
+    icon: classifyProcess.getIcon(),
+    color: classifyProcess.getColor()
 }
 
 export const classify = (id: IRecord['classify'], classifies: IClassify[]) => {
-    return classifies.find(v => v._id === id) || defaultClassify
+    return classifyProcess.getClassify(id, classifies)
 }
 
 /* ======================================== */

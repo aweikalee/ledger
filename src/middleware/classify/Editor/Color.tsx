@@ -7,17 +7,8 @@ import Grid from '@/components/Grid'
 
 import { IClassify } from '@/model/types/classify'
 
-import colors from '@/style/colorBg.module.scss'
+import colors from '../Color/colorBg.module.scss'
 import styles from './Editor.module.scss'
-
-const colorMap: (keyof typeof colors)[] = [
-    'red',
-    'yellow',
-    'green',
-    'blue',
-    'purple',
-    'grey'
-]
 
 const Text: React.FC<{
     value: IClassify['color']
@@ -47,27 +38,29 @@ const Text: React.FC<{
                 contentPadding
             >
                 <Grid container gap={2} justify="center">
-                    {colorMap.map(color => (
-                        <Grid key={color}>
-                            <Button
-                                className={styles['color-button']}
-                                type={value === color ? 'outlined' : 'text'}
-                                color="default"
-                                border="round"
-                                onClick={() => {
-                                    onUpdate(color)
-                                    setShow(false)
-                                }}
-                            >
-                                <div
-                                    className={clsx(
-                                        styles['color-block'],
-                                        colors[color]
-                                    )}
-                                ></div>
-                            </Button>
-                        </Grid>
-                    ))}
+                    {(Object.keys(colors) as (keyof typeof colors)[]).map(
+                        color => (
+                            <Grid key={color}>
+                                <Button
+                                    className={styles['color-button']}
+                                    type={value === color ? 'outlined' : 'text'}
+                                    color="default"
+                                    border="round"
+                                    onClick={() => {
+                                        onUpdate(color)
+                                        setShow(false)
+                                    }}
+                                >
+                                    <div
+                                        className={clsx(
+                                            styles['color-block'],
+                                            colors[color]
+                                        )}
+                                    ></div>
+                                </Button>
+                            </Grid>
+                        )
+                    )}
                 </Grid>
             </Popup>
         </>

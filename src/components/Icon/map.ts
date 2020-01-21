@@ -1,25 +1,22 @@
 export default {
-    ledger: '\uf0c9',
-    'angle-left': '\uf053',
-    trash: '\uf1f8',
-    pen: '\uf303',
-    close: '\uf00d',
-    confirm: '\uf00c',
-    gear: '\uf013',
-    user: '\uf007',
-    plus: '\uf067',
-    image: '\uf03e',
-    traffic: '\uf1b9',
-    food: '\uf2e7',
-    lodging: '\uf015',
-    success: '\uf058',
-    info: '\uf06a',
-    error: '\uf057',
-    warn: '\uf071',
-    calendar: '\uf073',
+    ledger: '\ue601',
+    'angle-left': '\ue645',
+    trash: '\ue625',
+    pen: '\ue69b',
+    close: '\ue642',
+    confirm: '\ue712',
+    gear: '\ue722',
+    user: '\ue665',
+    plus: '\ue641',
+    calendar: '\ue74b',
+
+    success: '\ue604',
+    info: '\ue72d',
+    error: '\ue64a',
+    warn: '\ue610',
 
     /* 商标 */
-    qq: '\uf1d6',
-    weibo: '\uf18a',
-    github: '\uf09b'
+    qq: '\ue60a',
+    weibo: '\ue646',
+    github: '\ue64a'
 }

@@ -43,7 +43,10 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
         }
     })
 
-    const form = useUpdateRecordForm((data && data.record) || {})
+    const defaultValues = React.useMemo(() => (data && data.record) || {}, [
+        data
+    ])
+    const form = useUpdateRecordForm(defaultValues)
     const { getValues, handleSubmit } = form
 
     const [updateRecord] = useUpdateRecord({

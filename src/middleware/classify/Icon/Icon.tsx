@@ -1,6 +1,9 @@
 import React from 'react'
 import clsx from 'clsx'
+
+import * as process from '../process'
 import textMap from './map'
+
 import styles from './Icon.module.scss'
 
 export interface IIconProps extends React.HTMLAttributes<HTMLElement> {
@@ -19,11 +22,11 @@ const Icon: React.FC<IIconProps> = props => {
         className,
         ...other
     }
-    const children = text ? textMap[text] : ''
+    const children = textMap[process.getIcon(text)]
 
     return (
-        <span data-role="icon" {...bindProps}>
-            {children || childrenProp}
+        <span data-role="classify-icon" {...bindProps}>
+            {children}
         </span>
     )
 }

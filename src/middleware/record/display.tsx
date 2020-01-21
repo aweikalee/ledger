@@ -2,17 +2,19 @@ import React from 'react'
 import clsx from 'clsx'
 
 import Grid, { IGirdProps } from '@/components/Grid/Grid'
-import IconComponet, { IIconProps } from '@/components/Icon/Icon'
 import Checkbox, { ICheckboxProps } from '@/components/Checkbox/Checkbox'
+import IconComponet from '@/components/Icon'
 
 import { ILedger } from '@/model/types/ledger'
 import { IRecord } from '@/model/types/record'
 import { IClassify } from '@/model/types/classify'
 
 import * as process from './process'
+import ClassifyIcon from '../classify/Icon'
+import * as classifyProcess from '../classify/process'
 
 import styles from './styles.module.scss'
-import colorBg from '@/style/colorBg.module.scss'
+import colorBg from '../classify/Color/colorBg.module.scss'
 
 /* ======================================== */
 
@@ -24,16 +26,12 @@ export const Icon: React.FC<IRecordIconProps> = props => {
     const { className, classify, ...other } = props
     return (
         <Grid
-            className={clsx(
-                styles.icon,
-                colorBg[classify.color!],
-                className
-            )}
+            className={clsx(styles.icon, colorBg[classify.color!], className)}
             justify="center"
             alignItems="center"
             {...other}
         >
-            <IconComponet text={classify.icon as IIconProps['text']} />
+            <ClassifyIcon text={classify.icon} />
         </Grid>
     )
 }

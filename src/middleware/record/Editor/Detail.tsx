@@ -8,7 +8,7 @@ const Classify: React.FC<{
     value: IRecord['detail']
     onUpdate: (value: IRecord['detail']) => void
 }> = props => {
-    const { value, onUpdate } = props
+    const { value = '', onUpdate } = props
 
     return (
         <TextArea

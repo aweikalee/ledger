@@ -12,6 +12,7 @@ import notification from '@/components/Notification'
 import { onApolloError } from '@/model/error'
 import { useLedger, useUpdateLedger } from '@/model/api/ledger'
 import { useUpdateLedgerForm } from '@/model/form/ledger'
+import Editor from '@/middleware/ledger/Editor'
 
 export interface ILedgerEditRouteProps {
     id: string
@@ -35,8 +36,11 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
         onError: onApolloError
     })
 
-    const form = useUpdateLedgerForm((data && data.ledger) || {})
-    const { watch, getValues, setValue, handleSubmit, errors } = form
+    const defaultValues = React.useMemo(() => (data && data.ledger) || {}, [
+        data
+    ])
+    const form = useUpdateLedgerForm(defaultValues)
+    const { getValues, handleSubmit } = form
 
     const [updateLedger] = useUpdateLedger({
         onError: onApolloError,
@@ -76,25 +80,7 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
                 }
             ></NavigationBar>
             <ContentBody maxWidth="sm">
-                <Grid container gap={4} direction="column">
-                    <Grid>
-                        <Input.Control error={!!errors.title}>
-                            <Input.Input
-                                name="title"
-                                id="title"
-                                value={watch('title') || ''}
-                                placeholder="账簿名称"
-                                onChange={e =>
-                                    setValue('title', e.target.value, true)
-                                }
-                                clear
-                            />
-                            <Input.Helper>
-                                {errors.title && errors.title.message}
-                            </Input.Helper>
-                        </Input.Control>
-                    </Grid>
-                </Grid>
+                <Editor form={form} />
             </ContentBody>
         </>
     )

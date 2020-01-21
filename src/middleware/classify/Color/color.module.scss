@@ -1,0 +1,9 @@
+@import '@/style/color.scss';
+@import './color.scss';
+
+@each $v in map-keys($classify-color-map) {
+    $c: map-get($classify-color-map, $v);
+    .#{$v} {
+        color: color-palette($c, 5);
+    }
+}

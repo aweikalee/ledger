@@ -18,7 +18,10 @@ const IndexDatePicker: React.FC = props => {
                 size="small"
                 onClick={() => setShow(true)}
             >
-                <Icon text="calendar"></Icon>
+                <Icon
+                    text="calendar"
+                    style={{ fontSize: '1.3em' }}
+                ></Icon>
                 {format(datetime, 'yyyy年MM月')}
             </Button>
 
