@@ -3,19 +3,19 @@ import { Button } from '../Button'
 import Loading, { ILoadingProps } from './Loading'
 import { useThrottleDelay } from '@/utils/throttle'
 
-export type IStatus = 'ready' | 'complete' | 'error'
-
 export interface ILoadMoreProps extends ILoadingProps {
-    status: IStatus
-    loading: boolean
+    loading?: boolean
+    complete?: boolean
+    error?: boolean
     handler?: Function
 }
 
 const LoadMore: React.FC<ILoadMoreProps> = props => {
     const {
         children: childrenProp,
-        status,
         loading,
+        complete,
+        error,
         handler,
         ...other
     }: typeof props = props
@@ -50,10 +50,15 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
         loadingRef.current = loading
     }, [loading])
 
-    const statusRef = useRef<typeof status>(status)
+    const completeRef = useRef<typeof complete>(complete)
     useEffect(() => {
-        statusRef.current = status
-    }, [status])
+        completeRef.current = complete
+    }, [complete])
+
+    const errorRef = useRef<typeof error>(error)
+    useEffect(() => {
+        errorRef.current = error
+    }, [error])
 
     const handlerRef = useRef<typeof handler>(handler)
     useEffect(() => {
@@ -66,11 +71,12 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
     */
 
     const checkStatus = () => {
-        return loadingRef.current === false && statusRef.current === 'ready'
+        return loadingRef.current === false && completeRef.current === false
     }
 
     const checkSrcoll = () => {
         return (
+            errorRef.current === false &&
             el.current &&
             el.current.getBoundingClientRect().top < screenRef.current.h
         )
@@ -89,10 +95,8 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
     }
 
     useEffect(() => {
-        if (!loading && status === 'ready') {
-            onScroll()
-        }
-    }, [loading, status, onScroll])
+        onScroll()
+    }, [loading, complete, onScroll])
 
     useEffect(() => {
         window.addEventListener('scroll', onScroll)
@@ -106,9 +110,7 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
         ...other
     }
 
-    const children: {
-        [key in IStatus]?: JSX.Element
-    } = {
+    const children = {
         ready: (
             <div data-role="loading-text">
                 <Button
@@ -141,7 +143,11 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
 
     return (
         <Loading data-role="load-more" {...bindProps}>
-            {!loading && children[status]}
+            {!loading && complete
+                ? children.complete
+                : error
+                ? children.error
+                : children.ready}
         </Loading>
     )
 }
