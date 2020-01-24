@@ -59,6 +59,7 @@ const LedgerIndexList: React.FC<RouteComponentProps &
             limit: config.listLimit
         },
         skip: !ledger.id,
+        notifyOnNetworkStatusChange: true,
         onError,
         fetchPolicy: 'cache-and-network',
         onCompleted() {

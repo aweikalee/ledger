@@ -6,34 +6,39 @@ import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
-import { IClassify } from '@/model/types/classify'
-import { useUpdateClassifyForm } from '@/model/form/classify'
-import { useUpdateClassify } from '@/model/api/classify'
-import Editor from '@/middleware/classify/Editor'
+import { ICurrency } from '@/model/types/currency'
+import { useCreateCurrencyForm } from '@/model/form/currency'
+import { useCreateCurrency } from '@/model/api/currency'
+import Editor from '@/middleware/currency/Editor'
 
-export interface IClassifyEditRouteProps {
-    id: string
-}
-export interface IClassifyEditProps {
-    target: IClassify
+export interface ICurrencyAddRouteProps {}
+export interface ICurrencyAddProps {
     onClose?: Function
     onSuccessed?: Function
 }
 
-const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
-    IClassifyEditProps> = props => {
-    const { target, onClose, onSuccessed } = props
+const CurrencyAdd: React.FC<RouteComponentProps<ICurrencyAddRouteProps> &
+    ICurrencyAddProps> = props => {
+    const { onClose, onSuccessed } = props
 
     const [show, setShow] = React.useState(true)
 
-    const form = useUpdateClassifyForm(target)
+    const defaultValues = React.useMemo<ICurrency>(
+        () => ({
+            name: '',
+            cn: ''
+        }),
+        []
+    )
+
+    const form = useCreateCurrencyForm(defaultValues)
     const { getValues, handleSubmit } = form
 
-    const [updateClassify, { loading }] = useUpdateClassify({
+    const [createCurrency, { loading }] = useCreateCurrency({
         onError: onApolloError,
         onCompleted() {
             notification.success({
-                content: '更新成功'
+                content: '创建成功'
             })
             setShow(false)
             onSuccessed && onSuccessed()
@@ -41,12 +46,12 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
     })
 
     const onSubmit = () => {
-        updateClassify({ variables: { data: getValues() } })
+        createCurrency({ variables: { data: getValues() } })
     }
 
     return (
         <Dialog
-            title="编辑分类"
+            title="新增货币种类"
             show={show}
             onConfirm={handleSubmit(onSubmit)}
             confirmDisabled={loading}
@@ -65,9 +70,9 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
                 onClose && onClose()
             }}
         >
-            <Editor form={form} loading={!target} />
+            <Editor form={form} loading={false} />
         </Dialog>
     )
 }
 
-export default ClassifyEdit
+export default CurrencyAdd

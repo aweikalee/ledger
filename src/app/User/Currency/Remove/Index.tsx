@@ -6,30 +6,25 @@ import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
-import { IClassify } from '@/model/types/classify'
-import { useUpdateClassifyForm } from '@/model/form/classify'
-import { useUpdateClassify } from '@/model/api/classify'
-import Editor from '@/middleware/classify/Editor'
+import { ICurrency, IUpdateCurrency } from '@/model/types/currency'
+import { useUpdateCurrency } from '@/model/api/currency'
 
-export interface IClassifyEditRouteProps {
+export interface ICurrencyRemoveRouteProps {
     id: string
 }
-export interface IClassifyEditProps {
-    target: IClassify
+export interface ICurrencyRemoveProps {
+    target: ICurrency
     onClose?: Function
     onSuccessed?: Function
 }
 
-const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
-    IClassifyEditProps> = props => {
+const CurrencyRemove: React.FC<RouteComponentProps<ICurrencyRemoveRouteProps> &
+    ICurrencyRemoveProps> = props => {
     const { target, onClose, onSuccessed } = props
 
     const [show, setShow] = React.useState(true)
 
-    const form = useUpdateClassifyForm(target)
-    const { getValues, handleSubmit } = form
-
-    const [updateClassify, { loading }] = useUpdateClassify({
+    const [updateMember, { loading }] = useUpdateCurrency({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -41,14 +36,25 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
     })
 
     const onSubmit = () => {
-        updateClassify({ variables: { data: getValues() } })
+        if (!target._id) {
+            notification.error({
+                content: 'id不存在'
+            })
+            return
+        }
+
+        const _data: IUpdateCurrency = {
+            _id: target._id,
+            deleted: true
+        }
+        updateMember({ variables: { data: _data } })
     }
 
     return (
         <Dialog
-            title="编辑分类"
+            title="删除确认"
             show={show}
-            onConfirm={handleSubmit(onSubmit)}
+            onConfirm={onSubmit}
             confirmDisabled={loading}
             confirmText={
                 loading ? (
@@ -60,14 +66,13 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
             onClose={() => {
                 setShow(false)
             }}
-            onClickOverlay={() => {}}
             onExited={() => {
                 onClose && onClose()
             }}
         >
-            <Editor form={form} loading={!target} />
+            确认要删除“{target.name}”吗？
         </Dialog>
     )
 }
 
-export default ClassifyEdit
+export default CurrencyRemove

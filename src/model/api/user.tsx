@@ -19,6 +19,7 @@ export const useUser = (options: QueryHookOptions<IUserData, IUserVar>) => {
                     _id
                     nickname
                     profile_picture
+                    admin
                 }
             }
         `,

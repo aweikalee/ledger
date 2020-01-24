@@ -2,6 +2,7 @@ import React from 'react'
 
 import Grid from '@/components/Grid'
 import * as Input from '@/components/Input'
+import Loading from '@/components/Loading'
 
 import {
     useCreateClassifyForm,
@@ -18,13 +19,18 @@ export interface IMemberEditorProps {
     form: ReturnType<
         typeof useCreateClassifyForm | typeof useUpdateClassifyForm
     >
+    loading: boolean
 }
 
 const Editor: React.FC<IMemberEditorProps> = props => {
-    const { form } = props
+    const { form, loading } = props
     const { watch, setValue, errors } = form as ReturnType<
         typeof useCreateClassifyForm & typeof useUpdateClassifyForm
     >
+
+    if (loading) {
+        return <Loading delay={100} />
+    }
 
     return (
         <Grid container direction="column" gap={2}>

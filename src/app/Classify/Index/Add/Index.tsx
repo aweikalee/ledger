@@ -80,7 +80,7 @@ const ClassifyAdd: React.FC<RouteComponentProps<IClassifyAddRouteProps> &
                 onClose && onClose()
             }}
         >
-            <Editor form={form} />
+            <Editor form={form} loading={false} />
         </Dialog>
     )
 }

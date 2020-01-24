@@ -66,7 +66,6 @@ const ClassifyRemove: React.FC<RouteComponentProps<IClassifyRemoveRouteProps> &
             onClose={() => {
                 setShow(false)
             }}
-            onClickOverlay={() => {}}
             onExited={() => {
                 onClose && onClose()
             }}

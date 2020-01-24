@@ -6,30 +6,30 @@ import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
-import { IClassify } from '@/model/types/classify'
-import { useUpdateClassifyForm } from '@/model/form/classify'
-import { useUpdateClassify } from '@/model/api/classify'
-import Editor from '@/middleware/classify/Editor'
+import { ICurrency } from '@/model/types/currency'
+import { useUpdateCurrencyForm } from '@/model/form/currency'
+import { useUpdateCurrency } from '@/model/api/currency'
+import Editor from '@/middleware/currency/Editor'
 
-export interface IClassifyEditRouteProps {
+export interface ICurrencyEditRouteProps {
     id: string
 }
-export interface IClassifyEditProps {
-    target: IClassify
+export interface ICurrencyEditProps {
+    target: ICurrency
     onClose?: Function
     onSuccessed?: Function
 }
 
-const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
-    IClassifyEditProps> = props => {
+const CurrencyEdit: React.FC<RouteComponentProps<ICurrencyEditRouteProps> &
+    ICurrencyEditProps> = props => {
     const { target, onClose, onSuccessed } = props
 
     const [show, setShow] = React.useState(true)
 
-    const form = useUpdateClassifyForm(target)
+    const form = useUpdateCurrencyForm(target)
     const { getValues, handleSubmit } = form
 
-    const [updateClassify, { loading }] = useUpdateClassify({
+    const [updateCurrency, { loading }] = useUpdateCurrency({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -41,12 +41,12 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
     })
 
     const onSubmit = () => {
-        updateClassify({ variables: { data: getValues() } })
+        updateCurrency({ variables: { data: getValues() } })
     }
 
     return (
         <Dialog
-            title="编辑分类"
+            title="编辑货币种类"
             show={show}
             onConfirm={handleSubmit(onSubmit)}
             confirmDisabled={loading}
@@ -70,4 +70,4 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
     )
 }
 
-export default ClassifyEdit
+export default CurrencyEdit

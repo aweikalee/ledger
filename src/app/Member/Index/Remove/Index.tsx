@@ -66,7 +66,6 @@ const MemberRemove: React.FC<RouteComponentProps<IMemberRemoveRouteProps> &
             onClose={() => {
                 setShow(false)
             }}
-            onClickOverlay={() => {}}
             onExited={() => {
                 onClose && onClose()
             }}

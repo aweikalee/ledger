@@ -6,13 +6,13 @@ import Grid from '@/components/Grid'
 import { Button } from '@/components/Button'
 import { PointSpinner } from '@/components/Loading'
 
-import { useUser } from '@/model/api/user'
+import context from '../context'
 
 import styles from './Index.module.scss'
 import Icon from '@/components/Icon'
 
 const UserIndex: React.FC<RouteComponentProps> = props => {
-    const { data, loading } = useUser({})
+    const { user, loading } = React.useContext(context)
 
     return (
         <ContentBody maxWidth="sm">
@@ -26,8 +26,8 @@ const UserIndex: React.FC<RouteComponentProps> = props => {
                         justify="center"
                         alignItems="center"
                     >
-                        {data && data.user && data.user.profile_picture ? (
-                            <img src={data.user.profile_picture} alt="" />
+                        {user && user.profile_picture ? (
+                            <img src={user.profile_picture} alt="" />
                         ) : (
                             <Icon text="user" />
                         )}
@@ -35,11 +35,7 @@ const UserIndex: React.FC<RouteComponentProps> = props => {
 
                     {/* 用户名 */}
                     <Grid gap={4}>
-                        {loading ? (
-                            <PointSpinner />
-                        ) : (
-                            data && data.user && data.user.nickname
-                        )}
+                        {loading ? <PointSpinner /> : user && user.nickname}
                     </Grid>
                 </Grid>
                 <Grid direction="column" className={styles['button-list']}>
@@ -63,6 +59,19 @@ const UserIndex: React.FC<RouteComponentProps> = props => {
                     >
                         设置
                     </Button>
+
+                    {user && user.admin === true && (
+                        <Button
+                            href="/user/currency"
+                            type="outlined"
+                            color="default"
+                            size="large"
+                            border="round"
+                            block
+                        >
+                            货币种类
+                        </Button>
+                    )}
                 </Grid>
                 <Grid>
                     <Button
