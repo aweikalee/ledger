@@ -18,9 +18,9 @@ const Hook: React.FC<RouteComponentProps> = props => {
     }, [token, history])
 
     /* ledger data */
-    const { setData } = ledger
+    const { setData, setLoading } = ledger
 
-    const { data } = useLedger({
+    const { data, loading } = useLedger({
         variables: { id: ledger.id! },
         skip: !ledger.id,
         fetchPolicy: 'cache-and-network'
@@ -33,6 +33,10 @@ const Hook: React.FC<RouteComponentProps> = props => {
             setData(undefined)
         }
     }, [setData, data])
+
+    React.useEffect(() => {
+        setLoading(loading)
+    }, [setLoading, loading])
 
     return <>{props.children}</>
 }

@@ -101,6 +101,8 @@ const LedgerIndexList: React.FC<RouteComponentProps &
         }).catch(onError)
     }
 
+    // FIXME: 需在页面卸载时 取消fetchMore的请求
+
     return (
         <ContentBody maxWidth="sm">
             {data &&
@@ -112,7 +114,6 @@ const LedgerIndexList: React.FC<RouteComponentProps &
                 loading={loading}
                 complete={complete}
                 error={error}
-                delay={100}
                 handler={fetchMorelFn}
             />
         </ContentBody>

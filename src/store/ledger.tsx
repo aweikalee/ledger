@@ -16,13 +16,17 @@ export default () => {
         setLastId(id)
     }, [id, setLastId])
 
+    /* data */
     const [data, setData] = React.useState<ILedger>()
+    const [loading, setLoading] = React.useState(false)
 
     return {
         id,
         lastId,
         setId,
         data,
-        setData
+        setData,
+        loading,
+        setLoading
     }
 }

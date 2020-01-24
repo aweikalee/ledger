@@ -69,7 +69,7 @@ const MemberAdd: React.FC<RouteComponentProps<IMemberAddRouteProps> &
                 onClose && onClose()
             }}
         >
-            <Editor form={form} />
+            <Editor form={form} loading={false} />
         </Dialog>
     )
 }

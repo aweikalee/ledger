@@ -5,6 +5,7 @@ import Button from '@/components/Button'
 import Icon from '@/components/Icon'
 import Drawer from '@/components/Drawer'
 import Grid from '@/components/Grid'
+import { Loading } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { useLedgers } from '@/model/api/ledger'
@@ -35,7 +36,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
         }
     }, [remove, history, url])
 
-    const { data: ledgers, refetch } = useLedgers({
+    const { data: ledgers, refetch, loading } = useLedgers({
         onError: onApolloError
     })
 
@@ -90,6 +91,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
                 {/* 列表 */}
                 <Grid container direction="column" gap={2}>
                     {ledgersList}
+                    <Loading show={loading} delay={100} />
                 </Grid>
 
                 {/* 新增按钮、编辑按钮 */}

@@ -11,11 +11,11 @@ export interface ILedgerIndexProps {}
 
 const LedgerIndex: React.FC<RouteComponentProps &
     ILedgerIndexProps> = props => {
-    const store = useStore()
+    const { ledger } = useStore()
 
     return (
         <>
-            <Route component={store.ledger.id ? List : undefined} />
+            <Route component={ledger.id ? List : undefined} />
 
             <Switch>
                 <Route exact path="/" component={HookRediect} />

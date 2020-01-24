@@ -3,7 +3,7 @@ import { Button } from '../Button'
 import Loading, { ILoadingProps } from './Loading'
 import { useThrottleDelay } from '@/utils/throttle'
 
-export interface ILoadMoreProps extends ILoadingProps {
+export interface ILoadMoreProps extends Omit<ILoadingProps, 'show' | 'delay'> {
     loading?: boolean
     complete?: boolean
     error?: boolean
@@ -110,44 +110,47 @@ const LoadMore: React.FC<ILoadMoreProps> = props => {
         ...other
     }
 
-    const children = {
-        ready: (
-            <div data-role="loading-text">
-                <Button
-                    type="text"
-                    color="primary"
-                    size="medium"
-                    border="round"
-                    onClick={onClick}
-                >
-                    点击加载更多
-                </Button>
-            </div>
-        ),
-        complete: <div data-role="loading-text">没有更多了</div>,
-        error: (
-            <>
-                <Button
-                    type="outlined"
-                    color="primary"
-                    size="medium"
-                    border="round"
-                    onClick={onClick}
-                >
-                    点击重新加载
-                </Button>
-                <div data-role="loading-text">加载失败</div>
-            </>
-        )
-    }
+    const children = (() => {
+        switch (true) {
+            case loading:
+                return null
+            case complete:
+                return <div data-role="loading-text">没有了</div>
+            case error:
+                return (
+                    <>
+                        <Button
+                            type="outlined"
+                            color="primary"
+                            size="medium"
+                            border="round"
+                            onClick={onClick}
+                        >
+                            点击重新加载
+                        </Button>
+                        <div data-role="loading-text">加载失败</div>
+                    </>
+                )
+            default:
+                return (
+                    <div data-role="loading-text">
+                        <Button
+                            type="text"
+                            color="primary"
+                            size="medium"
+                            border="round"
+                            onClick={onClick}
+                        >
+                            点击加载更多
+                        </Button>
+                    </div>
+                )
+        }
+    })()
 
     return (
-        <Loading data-role="load-more" {...bindProps}>
-            {!loading && complete
-                ? children.complete
-                : error
-                ? children.error
-                : children.ready}
+        <Loading data-role="load-more" show={true} {...bindProps}>
+            {children}
         </Loading>
     )
 }

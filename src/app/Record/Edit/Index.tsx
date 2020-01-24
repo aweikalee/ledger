@@ -29,7 +29,7 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
     } = props
 
     const { ledger } = useStore()
-    const { data } = useRecord({
+    const { data, loading } = useRecord({
         variables: {
             id
         },
@@ -87,7 +87,7 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
                 }
             ></NavigationBar>
             <ContentBody>
-                <Editor form={form} />
+                <Editor form={form} loading={loading || ledger.loading} />
             </ContentBody>
         </>
     )

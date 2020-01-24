@@ -4,13 +4,15 @@ import { RouteComponentProps } from 'react-router-dom'
 import ContentBody from '@/components/ContentBody'
 import Grid from '@/components/Grid'
 import { Button } from '@/components/Button'
+import { PointSpinner } from '@/components/Loading'
+
 import { useUser } from '@/model/api/user'
 
 import styles from './Index.module.scss'
 import Icon from '@/components/Icon'
 
 const UserIndex: React.FC<RouteComponentProps> = props => {
-    const { data } = useUser({})
+    const { data, loading } = useUser({})
 
     return (
         <ContentBody maxWidth="sm">
@@ -33,7 +35,11 @@ const UserIndex: React.FC<RouteComponentProps> = props => {
 
                     {/* 用户名 */}
                     <Grid gap={4}>
-                        {data && data.user && data.user.nickname}
+                        {loading ? (
+                            <PointSpinner />
+                        ) : (
+                            data && data.user && data.user.nickname
+                        )}
                     </Grid>
                 </Grid>
                 <Grid direction="column" className={styles['button-list']}>

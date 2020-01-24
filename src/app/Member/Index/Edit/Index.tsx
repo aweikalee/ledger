@@ -56,7 +56,7 @@ const MemberEdit: React.FC<RouteComponentProps<IMemberEditRouteProps> &
                 onClose && onClose()
             }}
         >
-            <Editor form={form} />
+            <Editor form={form} loading={!!target} />
         </Dialog>
     )
 }

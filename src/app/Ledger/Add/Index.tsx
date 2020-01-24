@@ -89,7 +89,7 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
                 }
             ></NavigationBar>
             <ContentBody>
-                <Editor form={form} />
+                <Editor form={form} loading={false} />
             </ContentBody>
             <Route path={path} component={Hook} />
         </>

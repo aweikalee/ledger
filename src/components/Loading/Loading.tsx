@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import clsx from 'clsx'
-import Spinner from './Spinner'
+import PointSpinner from './PointSpinner'
 import styles from './Loading.module.scss'
 import { CSSTransition } from 'react-transition-group'
 import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition'
@@ -30,7 +30,7 @@ const Loading: React.FC<ILoadingProps> = (props, ref) => {
         classNameProp
     )
 
-    const classnames: CSSTransitionClassNames = {
+    const classNames: CSSTransitionClassNames = {
         enter: styles['enter'],
         enterActive: styles['enter-active'],
         exit: styles['exit'],
@@ -41,7 +41,7 @@ const Loading: React.FC<ILoadingProps> = (props, ref) => {
         className,
         ...other
     }
-    const message = messageProp || '加载中'
+    const message = messageProp === undefined ? '加载中' : messageProp
 
     const [delay, setDelay] = useState(delayProp)
     useEffect(() => {
@@ -63,13 +63,17 @@ const Loading: React.FC<ILoadingProps> = (props, ref) => {
         <CSSTransition
             in={!delay && show}
             unmountOnExit
-            timeout={400}
-            classNames={classnames}
+            timeout={{
+                appear: 400,
+                enter: 400,
+                exit: 0
+            }}
+            classNames={classNames}
         >
             <div data-role="loading" {...bindProps}>
                 {children || (
                     <>
-                        <Spinner />
+                        <PointSpinner />
                         <div data-role="loading-text">{message}</div>
                     </>
                 )}

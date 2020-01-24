@@ -4,6 +4,7 @@ import Grid from '@/components/Grid'
 import * as Input from '@/components/Input'
 import { Button } from '@/components/Button'
 import Icon from '@/components/Icon'
+import Loading from '@/components/Loading'
 
 import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
@@ -25,17 +26,18 @@ import styles from './Editor.module.scss'
 
 export interface IRecordEditorProps {
     form: ReturnType<typeof useCreateRecordForm | typeof useUpdateRecordForm>
+    loading: boolean
 }
 
 const Editor: React.FC<IRecordEditorProps> = props => {
-    const { form } = props
+    const { form, loading } = props
     const { watch, setValue, errors } = form as ReturnType<
         typeof useCreateRecordForm & typeof useUpdateRecordForm
     >
 
-    const { data: ledger } = useStore().ledger
+    const { data: ledger, loading: ledgerLoading } = useStore().ledger
 
-    const { data: currencies } = useCurrencies({
+    const { data: currencies, loading: currenciesLoading } = useCurrencies({
         onError: onApolloError,
         fetchPolicy: 'cache-and-network'
     })
@@ -65,6 +67,10 @@ const Editor: React.FC<IRecordEditorProps> = props => {
         setValue('payer', filter(watch('payer')), true)
         setValue('participator', filter(watch('participator')), true)
         setValue('settled', filter(watch('settled')), true)
+    }
+
+    if (loading || ledgerLoading || currenciesLoading) {
+        return <Loading delay={100} />
     }
 
     return (

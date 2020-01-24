@@ -1,4 +1,6 @@
 export { default } from './Loading'
 export { default as Loading } from './Loading'
 export { default as Spinner } from './Spinner'
+export { default as PointSpinner } from './PointSpinner'
+export { default as BlockSpinner } from './BlockSpinner'
 export { default as More } from './More'

@@ -26,7 +26,7 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
         }
     } = props
 
-    const { data } = useLedger({
+    const { data, loading } = useLedger({
         variables: {
             id
         },
@@ -78,7 +78,7 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
                 }
             ></NavigationBar>
             <ContentBody maxWidth="sm">
-                <Editor form={form} />
+                <Editor form={form} loading={loading} />
             </ContentBody>
         </>
     )

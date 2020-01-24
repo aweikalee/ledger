@@ -6,6 +6,7 @@ import Grid from '@/components/Grid'
 import * as Input from '@/components/Input'
 import Button from '@/components/Button'
 import Icon from '@/components/Icon'
+import { Loading } from '@/components/Loading'
 
 import { useStore } from '@/store'
 import { IRecord } from '@/model/types/record'
@@ -117,6 +118,9 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
 
     const [show, setShow] = React.useState(true)
 
+    const {
+        ledger: { loading }
+    } = useStore()
     const record = React.useContext(context).record
     const data = record && record.data
 
@@ -135,32 +139,42 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
                 title="详情"
                 contentPadding
             >
-                {data && data.record && <Detail {...data.record} />}
+                {loading || !(data && data.record) ? (
+                    <Loading delay={100} />
+                ) : (
+                    <>
+                        <Detail {...data.record} />
 
-                <Grid sm={12} justify="space-around" className={styles.toolbar}>
-                    <Grid sm={true}>
-                        <Button
-                            href={`${url}/remove`}
-                            title="删除"
-                            type="text"
-                            color="default"
-                            size="medium"
+                        <Grid
+                            sm={12}
+                            justify="space-around"
+                            className={styles.toolbar}
                         >
-                            <Icon text="trash" />
-                        </Button>
-                    </Grid>
-                    <Grid sm="auto">
-                        <Button
-                            href={`${url}/edit`}
-                            title="编辑"
-                            type="text"
-                            color="primary"
-                            size="medium"
-                        >
-                            <Icon text="pen" /> 编辑
-                        </Button>
-                    </Grid>
-                </Grid>
+                            <Grid sm={true}>
+                                <Button
+                                    href={`${url}/remove`}
+                                    title="删除"
+                                    type="text"
+                                    color="default"
+                                    size="medium"
+                                >
+                                    <Icon text="trash" />
+                                </Button>
+                            </Grid>
+                            <Grid sm="auto">
+                                <Button
+                                    href={`${url}/edit`}
+                                    title="编辑"
+                                    type="text"
+                                    color="primary"
+                                    size="medium"
+                                >
+                                    <Icon text="pen" /> 编辑
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </>
+                )}
             </Popup>
         </>
     )

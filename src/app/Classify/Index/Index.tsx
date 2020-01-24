@@ -6,6 +6,7 @@ import ContentBody from '@/components/ContentBody'
 import Grid from '@/components/Grid'
 import Button from '@/components/Button'
 import Icon from '@/components/Icon'
+import Loading from '@/components/Loading'
 
 import { useStore } from '@/store'
 import { IClassify } from '@/model/types/classify'
@@ -112,7 +113,7 @@ const ClassifyIndex: React.FC<RouteComponentProps<IClassifyIndexRouteProps> &
 
             <ContentBody maxWidth="sm">
                 <Grid container gap={2} direction="column">
-                    {list}
+                    {ledger.loading ? <Loading delay={100} /> : list}
                 </Grid>
             </ContentBody>
 

@@ -3,6 +3,7 @@ import { RouteComponentProps, Route } from 'react-router-dom'
 
 import { useStore } from '@/store'
 import { useRecord } from '@/model/api/record'
+import { onApolloError } from '@/model/error'
 
 import context from './context'
 import Detail from './Detail'
@@ -36,7 +37,8 @@ const RecordIndex: React.FC<RouteComponentProps<
                     ledger.setId(data.record.pid)
                 }
             }
-        }
+        },
+        onError: onApolloError
     })
 
     return (
@@ -55,19 +57,6 @@ const RecordIndex: React.FC<RouteComponentProps<
                     />
                 )}
             />
-{/* 
-            <Route
-                exact
-                path={`${path}/edit`}
-                render={props => (
-                    <Edit
-                        {...props}
-                        onClose={() => {
-                            history.replace(url)
-                        }}
-                    />
-                )}
-            /> */}
 
             <Route
                 path={`${path}/remove`}

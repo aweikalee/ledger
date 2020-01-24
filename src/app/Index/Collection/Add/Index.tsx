@@ -60,7 +60,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
             }}
         >
             <Grid gap={0}>
-                <Editor form={form} />
+                <Editor form={form} loading={false} />
             </Grid>
         </Dialog>
     )

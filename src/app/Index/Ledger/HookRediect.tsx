@@ -1,6 +1,8 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
+import Loading from '@/components/Loading'
+
 import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
 import { useLazyFristLedger, useCreateLedger } from '@/model/api/ledger'
@@ -50,7 +52,7 @@ const LedgerIndexHookRediect: React.FC<RouteComponentProps> = props => {
         /* eslint-disable-next-line */
     }, [])
 
-    return null
+    return <Loading show={true} delay={100} />
 }
 
 export default LedgerIndexHookRediect

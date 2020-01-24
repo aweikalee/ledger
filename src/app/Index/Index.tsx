@@ -5,6 +5,7 @@ import NavigationBar from '@/components/NavigationBar'
 import ToolBar from '@/components/ToolBar'
 import { Button } from '@/components/Button'
 import { Svg } from '@/components/Icon'
+import { PointSpinner } from '@/components/Loading'
 
 import { useStore } from '@/store'
 
@@ -59,7 +60,17 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
                             <rect y="26" width="20" height="8" />
                             <rect y="48" width="20" height="8" />
                         </Svg>
-                        {data.title || '账簿'}
+
+                        {ledger.loading ? (
+                            <PointSpinner
+                                style={{
+                                    fontSize: '0.8em',
+                                    marginLeft: '0.2em'
+                                }}
+                            />
+                        ) : (
+                            data.title || '账簿'
+                        )}
                     </Button>
                 }
                 right={<DatePicker />}
