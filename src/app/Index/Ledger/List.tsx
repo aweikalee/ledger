@@ -48,9 +48,9 @@ const LedgerIndexList: React.FC<RouteComponentProps &
         setLoading(true)
         setComplete(false)
         setError(false)
-    }, [ledger.id])
+    }, [ledger.id, datetime])
 
-    const { data, fetchMore } = useRecords({
+    const { data, fetchMore, networkStatus } = useRecords({
         variables: {
             pid: ledger.id!,
             start,
@@ -105,7 +105,8 @@ const LedgerIndexList: React.FC<RouteComponentProps &
 
     return (
         <ContentBody maxWidth="sm">
-            {data &&
+            {networkStatus !== 2 &&
+                data &&
                 data.records &&
                 data.records.map(item => {
                     return <Item key={item._id} {...item} />

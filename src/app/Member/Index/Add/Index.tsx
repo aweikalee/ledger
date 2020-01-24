@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { IMember } from '@/model/types/member'
@@ -41,7 +42,7 @@ const MemberAdd: React.FC<RouteComponentProps<IMemberAddRouteProps> &
     const form = useCreateMemberForm(defaultValues)
     const { getValues, handleSubmit } = form
 
-    const [createMember] = useCreateMember({
+    const [createMember, { loading }] = useCreateMember({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -61,6 +62,14 @@ const MemberAdd: React.FC<RouteComponentProps<IMemberAddRouteProps> &
             title="新增成员"
             show={show}
             onConfirm={handleSubmit(onSubmit)}
+            confirmDisabled={loading}
+            confirmText={
+                loading ? (
+                    <PointSpinner style={{ fontSize: '0.8em' }} />
+                ) : (
+                    undefined
+                )
+            }
             onClose={() => {
                 setShow(false)
             }}

@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { IMember } from '@/model/types/member'
@@ -28,7 +29,7 @@ const MemberEdit: React.FC<RouteComponentProps<IMemberEditRouteProps> &
     const form = useUpdateMemberForm(target)
     const { getValues, handleSubmit } = form
 
-    const [updateMember] = useUpdateMember({
+    const [updateMember, { loading }] = useUpdateMember({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -48,6 +49,14 @@ const MemberEdit: React.FC<RouteComponentProps<IMemberEditRouteProps> &
             title="编辑成员"
             show={show}
             onConfirm={handleSubmit(onSubmit)}
+            confirmDisabled={loading}
+            confirmText={
+                loading ? (
+                    <PointSpinner style={{ fontSize: '0.8em' }} />
+                ) : (
+                    undefined
+                )
+            }
             onClose={() => {
                 setShow(false)
             }}
@@ -56,7 +65,7 @@ const MemberEdit: React.FC<RouteComponentProps<IMemberEditRouteProps> &
                 onClose && onClose()
             }}
         >
-            <Editor form={form} loading={!!target} />
+            <Editor form={form} loading={!target} />
         </Dialog>
     )
 }

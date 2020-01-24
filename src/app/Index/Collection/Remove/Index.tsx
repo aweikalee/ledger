@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
@@ -23,7 +24,7 @@ const LedgerRemove: React.FC<RouteComponentProps<ILedgerRemoveRouteProps> &
     const store = useStore()
     const [show, setShow] = React.useState(true)
 
-    const [updateLedger] = useUpdateLedger({
+    const [updateLedger, { loading }] = useUpdateLedger({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -58,6 +59,14 @@ const LedgerRemove: React.FC<RouteComponentProps<ILedgerRemoveRouteProps> &
             title="删除确认"
             show={show}
             onConfirm={onSubmit}
+            confirmDisabled={loading}
+            confirmText={
+                loading ? (
+                    <PointSpinner style={{ fontSize: '0.8em' }} />
+                ) : (
+                    undefined
+                )
+            }
             onClose={() => {
                 setShow(false)
             }}

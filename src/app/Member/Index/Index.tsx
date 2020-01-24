@@ -107,7 +107,8 @@ const MemberIndex: React.FC<RouteComponentProps<IMemberIndexRouteProps> &
 
             <ContentBody maxWidth="sm">
                 <Grid container gap={2} direction="column">
-                    {ledger.loading ? <Loading delay={100} /> : list}
+                    {list}
+                    <Loading show={ledger.loading} delay={100} />
                 </Grid>
             </ContentBody>
 

@@ -6,6 +6,7 @@ import ContentBody from '@/components/ContentBody'
 import { Button } from '@/components/Button'
 import Icon from '@/components/Icon'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { useLedger, useUpdateLedger } from '@/model/api/ledger'
@@ -26,7 +27,7 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
         }
     } = props
 
-    const { data, loading } = useLedger({
+    const { data, loading: ledgerLoading } = useLedger({
         variables: {
             id
         },
@@ -40,11 +41,11 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
     const form = useUpdateLedgerForm(defaultValues)
     const { getValues, handleSubmit } = form
 
-    const [updateLedger] = useUpdateLedger({
+    const [updateLedger, { loading }] = useUpdateLedger({
         onError: onApolloError,
         onCompleted() {
             notification.success({
-                content: '创建成功'
+                content: '更新成功'
             })
             history.push('/collection/edit')
         }
@@ -70,15 +71,22 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
                     <Button
                         color="default"
                         size="medium"
-                        style={{ fontSize: '1.6em' }}
                         onClick={handleSubmit(onSubmit)}
+                        disabled={loading}
                     >
-                        <Icon text="confirm"></Icon>
+                        {loading ? (
+                            <PointSpinner style={{ fontSize: '0.8em' }} />
+                        ) : (
+                            <Icon
+                                text="confirm"
+                                style={{ fontSize: '1.6em' }}
+                            />
+                        )}
                     </Button>
                 }
             ></NavigationBar>
             <ContentBody maxWidth="sm">
-                <Editor form={form} loading={loading} />
+                <Editor form={form} loading={ledgerLoading} />
             </ContentBody>
         </>
     )

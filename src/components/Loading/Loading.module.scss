@@ -22,6 +22,7 @@
 }
 
 .spinner {
+    color: color(primary, 2);
     position: relative;
     & [data-role='loading-svg'] {
         height: 1em;
@@ -32,7 +33,7 @@
     & [data-role='loading-circle'] {
         animation: loading-dash 1.5s $ease-in-out infinite;
         stroke-width: 0.15em;
-        stroke: color(primary, 2);
+        stroke: currentColor;
         stroke-linecap: round;
     }
 }
@@ -51,8 +52,9 @@
 }
 
 .point-spinner {
+    color: color(primary, 2);
     & > [data-role='loading-spinner_point'] {
-        background-color: color(primary, 2);
+        background-color: currentColor;
         width: 1em;
         height: 1em;
         border-radius: 50%;
@@ -97,6 +99,7 @@
 }
 
 .block-spinner {
+    color: color(primary, 2);
     display: inline-block;
     padding: 0.3em;
     & > [data-role='loading-spinner_content'] {
@@ -117,7 +120,7 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: color(primary, 2);
+                background-color: currentColor;
                 animation: fold-cube-angle 2.4s infinite linear both;
                 transform-origin: 100% 100%;
             }

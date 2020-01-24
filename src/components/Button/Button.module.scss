@@ -32,9 +32,6 @@
     -webkit-tap-highlight-color: transparent;
 
     &[disabled] {
-        color: rgba(color(grey, 10), 0.5);
-        background-color: color(grey, 1);
-        border-color: color(grey, 3);
         cursor: not-allowed;
     }
 
@@ -70,6 +67,10 @@
     }
     &:active {
         opacity: 0.4;
+    }
+
+    &[disabled] {
+        color: rgba(color(grey, 10), 0.5);
     }
 }
 .contained,
@@ -115,6 +116,12 @@
         color: color(red, 9);
         background-color: color(red, 2);
     }
+
+    &[disabled] {
+        color: rgba(color(grey, 10), 0.5);
+        background-color: color(grey, 1);
+        border-color: color(grey, 3);
+    }
 }
 .outlined {
     &.default {
@@ -152,6 +159,11 @@
                 background-color: color(red, 3);
             }
         }
+    }
+
+    &[disabled] {
+        color: rgba(color(grey, 10), 0.5);
+        border-color: color(grey, 3);
     }
 }
 

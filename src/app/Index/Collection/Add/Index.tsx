@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import Dialog from '@/components/Dialog'
 import Grid from '@/components/Grid'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { useCreateLedger } from '@/model/api/ledger'
@@ -29,7 +30,7 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
     const form = useCreateLedgerForm(defaultValues)
     const { getValues, handleSubmit } = form
 
-    const [createLedger] = useCreateLedger({
+    const [createLedger, { loading }] = useCreateLedger({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -51,6 +52,14 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
             title="新建账簿"
             show={show}
             onConfirm={handleSubmit(onSubmit)}
+            confirmDisabled={loading}
+            confirmText={
+                loading ? (
+                    <PointSpinner style={{ fontSize: '0.8em' }} />
+                ) : (
+                    undefined
+                )
+            }
             onClose={() => {
                 setShow(false)
             }}

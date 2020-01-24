@@ -6,6 +6,7 @@ import ContentBody from '@/components/ContentBody'
 import { Button } from '@/components/Button'
 import Icon from '@/components/Icon'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { useStore } from '@/store'
 import { onApolloError } from '@/model/error'
@@ -79,10 +80,17 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
                     <Button
                         color="default"
                         size="medium"
-                        style={{ fontSize: '1.6em' }}
                         onClick={handleSubmit(onSubmit)}
+                        disabled={loading}
                     >
-                        <Icon text="confirm"></Icon>
+                        {loading ? (
+                            <PointSpinner style={{ fontSize: '0.8em' }} />
+                        ) : (
+                            <Icon
+                                text="confirm"
+                                style={{ fontSize: '1.6em' }}
+                            />
+                        )}
                     </Button>
                 }
             ></NavigationBar>

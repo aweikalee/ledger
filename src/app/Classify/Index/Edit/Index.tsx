@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { IClassify } from '@/model/types/classify'
@@ -28,7 +29,7 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
     const form = useUpdateClassifyForm(target)
     const { getValues, handleSubmit } = form
 
-    const [updateClassify] = useUpdateClassify({
+    const [updateClassify, { loading }] = useUpdateClassify({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -48,6 +49,14 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
             title="编辑分类"
             show={show}
             onConfirm={handleSubmit(onSubmit)}
+            confirmDisabled={loading}
+            confirmText={
+                loading ? (
+                    <PointSpinner style={{ fontSize: '0.8em' }} />
+                ) : (
+                    undefined
+                )
+            }
             onClose={() => {
                 setShow(false)
             }}

@@ -6,6 +6,7 @@ import ContentBody from '@/components/ContentBody'
 import { Button } from '@/components/Button'
 import Icon from '@/components/Icon'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { localTimeOffset, timeTransform } from '@/utils/timeZone'
@@ -51,7 +52,7 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
     const form = useCreateRecordForm(defaultValues)
     const { getValues, handleSubmit } = form
 
-    const [createRecord] = useCreateRecord({
+    const [createRecord, { loading }] = useCreateRecord({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -81,16 +82,25 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
                     <Button
                         color="default"
                         size="medium"
-                        style={{ fontSize: '1.6em' }}
                         onClick={handleSubmit(onSubmit)}
+                        disabled={loading}
                     >
-                        <Icon text="confirm"></Icon>
+                        {loading ? (
+                            <PointSpinner style={{ fontSize: '0.8em' }} />
+                        ) : (
+                            <Icon
+                                text="confirm"
+                                style={{ fontSize: '1.6em' }}
+                            />
+                        )}
                     </Button>
                 }
             ></NavigationBar>
+
             <ContentBody>
                 <Editor form={form} loading={false} />
             </ContentBody>
+
             <Route path={path} component={Hook} />
         </>
     )

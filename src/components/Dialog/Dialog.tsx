@@ -15,8 +15,10 @@ export interface IDialogProps extends IModalProps {
 
     // footer
     footer?: React.ReactNode
-    cancelText?: string
-    confirmText?: string
+    cancelText?: string | JSX.Element
+    confirmText?: string | JSX.Element
+    cancelDisabled?: boolean
+    confirmDisabled?: boolean
     onCancel?: Function
     onConfirm?: Function
 }
@@ -37,6 +39,8 @@ const Component = React.forwardRef<HTMLElement, IDialogProps>((props, ref) => {
         footer,
         cancelText = '取消',
         confirmText = '确定',
+        cancelDisabled = false,
+        confirmDisabled = false,
         onCancel = onCloseProp,
         onConfirm = () => {},
 
@@ -97,6 +101,7 @@ const Component = React.forwardRef<HTMLElement, IDialogProps>((props, ref) => {
                                 size="medium"
                                 border="round"
                                 onClick={() => onCancel()}
+                                disabled={cancelDisabled}
                             >
                                 {cancelText}
                             </Button>
@@ -106,6 +111,7 @@ const Component = React.forwardRef<HTMLElement, IDialogProps>((props, ref) => {
                                 size="medium"
                                 border="round"
                                 onClick={() => onConfirm()}
+                                disabled={confirmDisabled}
                             >
                                 {confirmText}
                             </Button>

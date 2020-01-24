@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
+import { PointSpinner } from '@/components/Loading'
 
 import { onApolloError } from '@/model/error'
 import { IMember, IUpdateMember } from '@/model/types/member'
@@ -23,7 +24,7 @@ const MemberRemove: React.FC<RouteComponentProps<IMemberRemoveRouteProps> &
 
     const [show, setShow] = React.useState(true)
 
-    const [updateMember] = useUpdateMember({
+    const [updateMember, { loading }] = useUpdateMember({
         onError: onApolloError,
         onCompleted() {
             notification.success({
@@ -54,6 +55,14 @@ const MemberRemove: React.FC<RouteComponentProps<IMemberRemoveRouteProps> &
             title="删除确认"
             show={show}
             onConfirm={onSubmit}
+            confirmDisabled={loading}
+            confirmText={
+                loading ? (
+                    <PointSpinner style={{ fontSize: '0.8em' }} />
+                ) : (
+                    undefined
+                )
+            }
             onClose={() => {
                 setShow(false)
             }}
