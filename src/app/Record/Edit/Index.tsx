@@ -9,7 +9,10 @@ import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
 import { useStore } from '@/store'
-import { onApolloError } from '@/model/error'
+import {
+    onApolloServerError,
+    processorServerError
+} from '@/model/error/ApolloError'
 import { useRecord } from '@/model/api/record'
 import { useUpdateRecordForm } from '@/model/form/record'
 import { useUpdateRecord } from '@/model/api/record'
@@ -30,7 +33,7 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
     } = props
 
     const { ledger } = useStore()
-    const { data, loading } = useRecord({
+    const { data, loading: recordLoding } = useRecord({
         variables: {
             id
         },
@@ -48,10 +51,19 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
         data
     ])
     const form = useUpdateRecordForm(defaultValues)
-    const { getValues, handleSubmit } = form
+    const { getValues, handleSubmit, setError } = form
 
-    const [updateRecord] = useUpdateRecord({
-        onError: onApolloError,
+    const [updateRecord, { loading }] = useUpdateRecord({
+        onError: onApolloServerError({
+            ValidationError(extensions) {
+                processorServerError.ValidationError(extensions)
+                const errors = extensions.exception.errors || {}
+                for (const path in errors) {
+                    const { message } = errors[path]
+                    setError(path as any, '', message)
+                }
+            }
+        }),
         onCompleted() {
             notification.success({
                 content: '更新成功'
@@ -95,7 +107,7 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
                 }
             ></NavigationBar>
             <ContentBody>
-                <Editor form={form} loading={loading || ledger.loading} />
+                <Editor form={form} loading={recordLoding || ledger.loading} />
             </ContentBody>
         </>
     )

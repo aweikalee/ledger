@@ -5,7 +5,10 @@ import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
-import { onApolloError } from '@/model/error'
+import {
+    onApolloServerError,
+    processorServerError
+} from '@/model/error/ApolloError'
 import { IMember } from '@/model/types/member'
 import { useCreateMemberForm } from '@/model/form/member'
 import { useCreateMember } from '@/model/api/member'
@@ -40,10 +43,19 @@ const MemberAdd: React.FC<RouteComponentProps<IMemberAddRouteProps> &
     )
 
     const form = useCreateMemberForm(defaultValues)
-    const { getValues, handleSubmit } = form
+    const { getValues, handleSubmit, setError } = form
 
     const [createMember, { loading }] = useCreateMember({
-        onError: onApolloError,
+        onError: onApolloServerError({
+            ValidationError(extensions) {
+                processorServerError.ValidationError(extensions)
+                const errors = extensions.exception.errors || {}
+                for (const path in errors) {
+                    const { message } = errors[path]
+                    setError(path as any, '', message)
+                }
+            }
+        }),
         onCompleted() {
             notification.success({
                 content: '创建成功'

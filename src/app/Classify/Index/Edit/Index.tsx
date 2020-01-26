@@ -5,7 +5,10 @@ import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
-import { onApolloError } from '@/model/error'
+import {
+    onApolloServerError,
+    processorServerError
+} from '@/model/error/ApolloError'
 import { IClassify } from '@/model/types/classify'
 import { useUpdateClassifyForm } from '@/model/form/classify'
 import { useUpdateClassify } from '@/model/api/classify'
@@ -27,10 +30,19 @@ const ClassifyEdit: React.FC<RouteComponentProps<IClassifyEditRouteProps> &
     const [show, setShow] = React.useState(true)
 
     const form = useUpdateClassifyForm(target)
-    const { getValues, handleSubmit } = form
+    const { getValues, handleSubmit, setError } = form
 
     const [updateClassify, { loading }] = useUpdateClassify({
-        onError: onApolloError,
+        onError: onApolloServerError({
+            ValidationError(extensions) {
+                processorServerError.ValidationError(extensions)
+                const errors = extensions.exception.errors || {}
+                for (const path in errors) {
+                    const { message } = errors[path]
+                    setError(path as any, '', message)
+                }
+            }
+        }),
         onCompleted() {
             notification.success({
                 content: '更新成功'

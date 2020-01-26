@@ -8,7 +8,11 @@ import Icon from '@/components/Icon'
 import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
-import { onApolloError } from '@/model/error'
+import {
+    onApolloError,
+    onApolloServerError,
+    processorServerError
+} from '@/model/error/ApolloError'
 import { useLedger, useUpdateLedger } from '@/model/api/ledger'
 import { useUpdateLedgerForm } from '@/model/form/ledger'
 import Editor from '@/middleware/ledger/Editor'
@@ -39,10 +43,19 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
         data
     ])
     const form = useUpdateLedgerForm(defaultValues)
-    const { getValues, handleSubmit } = form
+    const { getValues, handleSubmit, setError } = form
 
     const [updateLedger, { loading }] = useUpdateLedger({
-        onError: onApolloError,
+        onError: onApolloServerError({
+            ValidationError(extensions) {
+                processorServerError.ValidationError(extensions)
+                const errors = extensions.exception.errors || {}
+                for (const path in errors) {
+                    const { message } = errors[path]
+                    setError(path as any, '', message)
+                }
+            }
+        }),
         onCompleted() {
             notification.success({
                 content: '更新成功'

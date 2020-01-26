@@ -5,7 +5,10 @@ import Dialog from '@/components/Dialog'
 import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
-import { onApolloError } from '@/model/error'
+import {
+    onApolloServerError,
+    processorServerError
+} from '@/model/error/ApolloError'
 import { ICurrency } from '@/model/types/currency'
 import { useCreateCurrencyForm } from '@/model/form/currency'
 import { useCreateCurrency } from '@/model/api/currency'
@@ -32,10 +35,19 @@ const CurrencyAdd: React.FC<RouteComponentProps<ICurrencyAddRouteProps> &
     )
 
     const form = useCreateCurrencyForm(defaultValues)
-    const { getValues, handleSubmit } = form
+    const { getValues, handleSubmit, setError } = form
 
     const [createCurrency, { loading }] = useCreateCurrency({
-        onError: onApolloError,
+        onError: onApolloServerError({
+            ValidationError(extensions) {
+                processorServerError.ValidationError(extensions)
+                const errors = extensions.exception.errors || {}
+                for (const path in errors) {
+                    const { message } = errors[path]
+                    setError(path as any, '', message)
+                }
+            }
+        }),
         onCompleted() {
             notification.success({
                 content: '创建成功'

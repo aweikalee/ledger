@@ -6,7 +6,10 @@ import Grid from '@/components/Grid'
 import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
-import { onApolloError } from '@/model/error'
+import {
+    onApolloServerError,
+    processorServerError
+} from '@/model/error/ApolloError'
 import { useCreateLedger } from '@/model/api/ledger'
 import { useCreateLedgerForm } from '@/model/form/ledger'
 import Editor from '@/middleware/ledger/Editor'
@@ -28,10 +31,19 @@ const LedgerAdd: React.FC<RouteComponentProps<ILedgerAddRouteProps> &
         []
     )
     const form = useCreateLedgerForm(defaultValues)
-    const { getValues, handleSubmit } = form
+    const { getValues, handleSubmit, setError } = form
 
     const [createLedger, { loading }] = useCreateLedger({
-        onError: onApolloError,
+        onError: onApolloServerError({
+            ValidationError(extensions) {
+                processorServerError.ValidationError(extensions)
+                const errors = extensions.exception.errors || {}
+                for (const path in errors) {
+                    const { message } = errors[path]
+                    setError(path as any, '', message)
+                }
+            }
+        }),
         onCompleted() {
             notification.success({
                 content: '创建成功'
