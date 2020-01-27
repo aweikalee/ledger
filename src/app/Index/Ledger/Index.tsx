@@ -15,12 +15,14 @@ const LedgerIndex: React.FC<RouteComponentProps &
 
     return (
         <>
-            <Route component={ledger.id ? List : undefined} />
+            <Route component={ledger.data ? List : undefined} />
 
             <Switch>
-                <Route exact path="/" component={HookRediect} />
                 <Route exact path="/ledger" component={HookRediect} />
                 <Route exact path="/ledger/:id" component={Hook} />
+                <Route path="/collection" />
+                <Route path="/record" />
+                <Route component={HookRediect} />
             </Switch>
         </>
     )

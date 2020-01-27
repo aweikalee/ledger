@@ -9,7 +9,6 @@ import notification from '@/components/Notification'
 import { PointSpinner } from '@/components/Loading'
 
 import {
-    onApolloError,
     onApolloServerError,
     processorServerError
 } from '@/model/error/ApolloError'
@@ -36,7 +35,16 @@ const LedgerEdit: React.FC<RouteComponentProps<ILedgerEditRouteProps> &
             id
         },
         skip: !id,
-        onError: onApolloError
+        onError: onApolloServerError({
+            CastError() {
+                history.replace('/404')
+            }
+        }),
+        onCompleted(data) {
+            if (data && data.ledger === null) {
+                history.replace('/404')
+            }
+        }
     })
 
     const defaultValues = React.useMemo(() => (data && data.ledger) || {}, [

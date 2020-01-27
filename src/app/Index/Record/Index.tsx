@@ -3,7 +3,7 @@ import { RouteComponentProps, Route } from 'react-router-dom'
 
 import { useStore } from '@/store'
 import { useRecord } from '@/model/api/record'
-import { onApolloError } from '@/model/error'
+import { onApolloServerError } from '@/model/error/ApolloError'
 
 import context from './context'
 import Detail from './Detail'
@@ -31,14 +31,16 @@ const RecordIndex: React.FC<RouteComponentProps<
             id
         },
         skip: !id,
+        onError: onApolloServerError({
+            CastError() {}
+        }),
         onCompleted(data) {
             if (data && data.record) {
                 if (data.record.pid !== ledger.id) {
                     ledger.setId(data.record.pid)
                 }
             }
-        },
-        onError: onApolloError
+        }
     })
 
     return (
@@ -52,7 +54,7 @@ const RecordIndex: React.FC<RouteComponentProps<
                     <Detail
                         {...props}
                         onClose={() => {
-                            history.push(`/ledger/${ledger.id}`)
+                            history.push('/')
                         }}
                     />
                 )}

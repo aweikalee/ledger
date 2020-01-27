@@ -1,5 +1,5 @@
 import React from 'react'
-import { RouteComponentProps, Route } from 'react-router-dom'
+import { RouteComponentProps, Route, Switch } from 'react-router-dom'
 
 import NavigationBar from '@/components/NavigationBar'
 import ToolBar from '@/components/ToolBar'
@@ -14,6 +14,7 @@ import DatePicker from './DatePicker'
 import CollectionIndex from './Collection/Index'
 import LedgerIndex from './Ledger/Index'
 import RecordIndex from './Record/Index'
+import NotFoundRedirect from '../NotFound/Redirect'
 
 const MainIndex: React.FC<RouteComponentProps> = props => {
     const { ledger } = useStore()
@@ -69,7 +70,7 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
                                 }}
                             />
                         ) : (
-                            data.title || '账簿'
+                            data.title
                         )}
                     </Button>
                 }
@@ -77,12 +78,18 @@ const MainIndex: React.FC<RouteComponentProps> = props => {
             />
 
             <Route component={LedgerIndex} />
-            <Route path="/collection" component={CollectionIndex} />
-            <Route path="/record/:id" component={RecordIndex} />
+
+            <Switch>
+                <Route exact path="/" />
+                <Route path="/ledger" />
+                <Route path="/collection" component={CollectionIndex} />
+                <Route path="/record/:id" component={RecordIndex} />
+                <Route component={NotFoundRedirect} />
+            </Switch>
 
             <ToolBar
                 active={{ main: true }}
-                href={{ main: `/ledger/${ledger.id}/add` }}
+                href={{ main: ledger.id ? `/ledger/${ledger.id}/add` : '/' }}
             />
         </context.Provider>
     )

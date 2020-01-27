@@ -38,10 +38,19 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
             id
         },
         skip: !id,
+        onError: onApolloServerError({
+            CastError() {
+                history.replace('/404')
+            }
+        }),
         onCompleted(data) {
-            if (data && data.record) {
-                if (data.record.pid !== ledger.id) {
-                    ledger.setId(data.record.pid)
+            if (data) {
+                if (data.record === null) {
+                    history.replace('/404')
+                } else {
+                    if (data.record.pid !== ledger.id) {
+                        ledger.setId(data.record.pid)
+                    }
                 }
             }
         }

@@ -12,9 +12,13 @@ export default () => {
         undefined
     )
 
-    React.useEffect(() => {
-        setLastId(id)
-    }, [id, setLastId])
+    const setIdandLast: typeof setId = React.useCallback(
+        value => {
+            setId(value)
+            setLastId(value)
+        },
+        [setId, setLastId]
+    )
 
     /* data */
     const [data, setData] = React.useState<ILedger>()
@@ -23,7 +27,7 @@ export default () => {
     return {
         id,
         lastId,
-        setId,
+        setId: setIdandLast,
         data,
         setData,
         loading,

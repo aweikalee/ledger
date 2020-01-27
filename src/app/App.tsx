@@ -13,12 +13,14 @@ import Classify from './Classify/Index'
 import User from './User/Index'
 import Login from './Login/Index'
 import Token from './Token/Index'
+import NotFound from './NotFound/Index'
 
 import './App.module.scss'
 
 const MainRoute: React.FC = () => {
     return (
         <Switch>
+            <Route exact path="/404" component={NotFound} />
             <Route exact path="/ledger/:id/edit" component={LedgerEdit} />
             <Route exact path="/ledger/:id/add" component={RecordAdd} />
             <Route exact path="/record/:id/edit" component={RecordEdit} />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, Route } from 'react-router-dom'
 
 import Popup from '@/components/Popup'
 import Grid from '@/components/Grid'
@@ -14,6 +14,7 @@ import * as display from '@/middleware/record/display'
 import * as process from '@/middleware/record/process'
 
 import context from './context'
+import NotFound from '../../NotFound/Detail'
 
 import styles from './Detail.module.scss'
 import membersStyles from '@/middleware/record/styles.module.scss'
@@ -119,7 +120,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
     const [show, setShow] = React.useState(true)
 
     const {
-        ledger: { loading }
+        ledger: { loading, id }
     } = useStore()
     const record = React.useContext(context).record
     const data = record && record.data
@@ -139,9 +140,9 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
                 title="详情"
                 contentPadding
             >
-                {loading || !(data && data.record) ? (
+                {loading ? (
                     <Loading delay={100} />
-                ) : (
+                ) : data && data.record ? (
                     <>
                         <Detail {...data.record} />
 
@@ -174,7 +175,10 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
                             </Grid>
                         </Grid>
                     </>
+                ) : (
+                    <Route component={NotFound}/>
                 )}
+                {id}
             </Popup>
         </>
     )

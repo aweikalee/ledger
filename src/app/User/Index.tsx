@@ -8,6 +8,7 @@ import { useUser } from '@/model/api/user'
 import context from './context'
 import Index from './Index/Index'
 import Currency from './Currency/Index'
+import NotFoundRedirect from '../NotFound/Redirect'
 
 const User: React.FC<RouteComponentProps> = props => {
     const {
@@ -29,6 +30,7 @@ const User: React.FC<RouteComponentProps> = props => {
                 {data && data.user && data.user.admin === true && (
                     <Route path={`${path}/currency`} component={Currency} />
                 )}
+                <Route component={NotFoundRedirect} />
             </Switch>
 
             <ToolBar active={{ user: true }} />

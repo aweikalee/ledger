@@ -1,6 +1,7 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
+import { onApolloServerError } from '@/model/error/ApolloError'
 import { useLedger } from '@/model/api/ledger'
 
 import { useStore } from '@/store'
@@ -23,7 +24,19 @@ const Hook: React.FC<RouteComponentProps> = props => {
     const { data, loading } = useLedger({
         variables: { id: ledger.id! },
         skip: !ledger.id,
-        fetchPolicy: 'cache-and-network'
+        fetchPolicy: 'cache-and-network',
+        onError: onApolloServerError({
+            CastError() {
+                ledger.setId(undefined)
+                history.replace('/404')
+            }
+        }),
+        onCompleted(data) {
+            if (data && data.ledger === null) {
+                ledger.setId(undefined)
+                history.replace('/404')
+            }
+        }
     })
 
     React.useEffect(() => {
