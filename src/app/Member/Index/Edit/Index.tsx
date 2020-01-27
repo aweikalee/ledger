@@ -34,9 +34,12 @@ const MemberEdit: React.FC<RouteComponentProps<IMemberEditRouteProps> &
 
     const [updateMember, { loading }] = useUpdateMember({
         onError: onApolloServerError({
-            ValidationError(extensions) {
-                processorServerError.ValidationError(extensions)
-                const errors = extensions.exception.errors || {}
+            ValidationError(error) {
+                const {
+                    extensions: { exception }
+                } = error
+                processorServerError.ValidationError(error)
+                const errors = (exception && exception.errors) || {}
                 for (const path in errors) {
                     const { message } = errors[path]
                     setError(path as any, '', message)

@@ -49,9 +49,12 @@ const ClassifyAdd: React.FC<RouteComponentProps<IClassifyAddRouteProps> &
 
     const [createMember, { loading }] = useCreateClassify({
         onError: onApolloServerError({
-            ValidationError(extensions) {
-                processorServerError.ValidationError(extensions)
-                const errors = extensions.exception.errors || {}
+            ValidationError(error) {
+                const {
+                    extensions: { exception }
+                } = error
+                processorServerError.ValidationError(error)
+                const errors = (exception && exception.errors) || {}
                 for (const path in errors) {
                     const { message } = errors[path]
                     setError(path as any, '', message)

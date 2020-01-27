@@ -1,7 +1,8 @@
 import React from 'react'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { Router, Switch, Route } from 'react-router-dom'
 import { useStore } from '@/store'
 
+import history from './history'
 import Apollo from './Apollo'
 import Hook from './Hook'
 import Index from './Index/Index'
@@ -36,7 +37,7 @@ const App: React.FC = () => {
     return (
         <useStore.Provider>
             <Apollo>
-                <BrowserRouter>
+                <Router history={history}>
                     <Switch>
                         <Route path="/login" component={Login} />
                         <Route path="/token/:token" component={Token} />
@@ -48,7 +49,7 @@ const App: React.FC = () => {
                             )}
                         />
                     </Switch>
-                </BrowserRouter>
+                </Router>
             </Apollo>
         </useStore.Provider>
     )

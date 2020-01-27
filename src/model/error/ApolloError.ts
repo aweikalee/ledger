@@ -1,27 +1,36 @@
 import { notification } from './../../components/Notification/index'
 import { ApolloError } from 'apollo-boost'
 import { GraphQLError } from 'graphql'
+import history from '../../app/history'
 
 export type IErrorProcessors = {
     [key: string]: IErrorProcessor
 }
 
+export type IGraphQLError = Omit<GraphQLError, 'extensions'> & {
+    extensions: Exclude<GraphQLError['extensions'], undefined>
+}
+
 export type IErrorProcessor = (
-    extensions: Exclude<GraphQLError['extensions'], undefined>,
+    error: IGraphQLError,
     processor?: IErrorProcessors
 ) => void
 
 export const processorServerError: IErrorProcessors = {
     /* from Mongoose.SchemaTypes */
-    CastError({ exception }) {
-        notification.error({
-            content: `${exception.path}不是有效的${exception.kind}`
-        })
+    CastError({ extensions }) {
+        if (extensions) {
+            const { exception } = extensions
+            notification.error({
+                content: `${exception.path}不是有效的${exception.kind}`
+            })
+        }
     },
 
     /* from Mongoose.Schema.path.validate */
-    ValidationError({ exception }) {
-        const errors = exception.errors || {}
+    ValidationError({ extensions }) {
+        const { exception } = extensions
+        const errors = (exception && exception.errors) || {}
         for (const path in errors) {
             const error = errors[path]
             notification.error({
@@ -32,12 +41,13 @@ export const processorServerError: IErrorProcessors = {
 }
 
 export const processorGraphQLError: IErrorProcessors = {
-    INTERNAL_SERVER_ERROR(extensions, processor = processorServerError) {
-        if (extensions.exception) {
+    INTERNAL_SERVER_ERROR(error, processor = processorServerError) {
+        const { extensions } = error
+        if (extensions && extensions.exception) {
             const name = extensions.exception.name as string | undefined
 
             if (name && name in processor) {
-                processor[name](extensions)
+                processor[name](error)
                 return
             }
         }
@@ -45,24 +55,41 @@ export const processorGraphQLError: IErrorProcessors = {
         notification.error({
             content: '服务器错误'
         })
+    },
+
+    /* from GraphQL directives auth */
+    UNAUTHENTICATED(error) {
+        notification.error({
+            content: error.message,
+            duration: 0
+        })
+    },
+
+    /* from utils token */
+    INVLID_TOKEN(error) {
+        notification.error({
+            content: error.message
+        })
+        history.push('/login')
     }
 }
 
 const dispenseGraphQLError = (
-    err: GraphQLError,
+    error: GraphQLError,
     processor: IErrorProcessors
 ) => {
-    if (err.extensions) {
-        const code = err.extensions.code as string | undefined
+    const { extensions } = error
+    if (extensions) {
+        const code = extensions.code as string | undefined
 
         if (code && code in processor) {
-            processor[code](err.extensions)
+            processor[code](error as IGraphQLError)
             return
         }
     }
 
     notification.error({
-        content: (err.extensions && err.extensions.message) || err.message
+        content: (extensions && extensions.message) || error.message
     })
 }
 
