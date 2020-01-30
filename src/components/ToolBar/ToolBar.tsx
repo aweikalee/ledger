@@ -47,9 +47,10 @@ const ToolBar: React.FC<IToolBarProps> = props => {
             >
                 <Grid>
                     <ToolBarButton
-                        icon="gear"
-                        title="设置"
+                        icon="chart"
+                        title="图表"
                         active={!!active.option}
+                        disabled
                         href={
                             href.option === undefined ? '/option' : href.option
                         }
@@ -68,7 +69,7 @@ const ToolBar: React.FC<IToolBarProps> = props => {
                 <Grid>
                     <ToolBarButton
                         icon="user"
-                        title="我的"
+                        title="用户中心"
                         active={!!active.user}
                         href={href.user === undefined ? '/user' : href.user}
                     />

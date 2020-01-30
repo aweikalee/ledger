@@ -8,6 +8,7 @@ export default {
     gear: '\ue722',
     user: '\ue665',
     calendar: '\ue74b',
+    chart: '\ue605',
 
     plus: '\ue641',
     minus: '\ue624',

@@ -37,6 +37,7 @@ const CollectionIndex: React.FC<RouteComponentProps<
     }, [remove, history, url])
 
     const { data: ledgers, refetch, loading } = useLedgers({
+        fetchPolicy: 'cache-and-network',
         onError: onApolloError
     })
 
