@@ -104,6 +104,10 @@ const CollectionIndex: React.FC<RouteComponentProps<
                     <Grid>
                         <Button
                             href={`${url}/add`}
+                            onClick={e => {
+                                e.preventDefault()
+                                history.replace(`${url}/add`)
+                            }}
                             type="contained"
                             color="primary"
                             size="medium"

@@ -97,6 +97,10 @@ const ClassifyIndex: React.FC<RouteComponentProps<IClassifyIndexRouteProps> &
                 right={
                     <Button
                         href={`${url}/add`}
+                        onClick={e => {
+                            e.preventDefault()
+                            history.replace(`${url}/add`)
+                        }}
                         type="text"
                         color="primary"
                         size="medium"
