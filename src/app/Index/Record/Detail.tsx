@@ -178,7 +178,6 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
                 ) : (
                     <Route component={NotFound}/>
                 )}
-                {id}
             </Popup>
         </>
     )

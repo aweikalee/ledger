@@ -19,11 +19,19 @@
     }
     &::before {
         top: 0;
-        background-image: linear-gradient(to top, transparent, color(white));
+        background-image: linear-gradient(
+            to top,
+            rgba(color(white, 5), 0),
+            rgba(color(white, 5), 1)
+        );
     }
     &::after {
         bottom: 0;
-        background-image: linear-gradient(to bottom, transparent, color(white));
+        background-image: linear-gradient(
+            to bottom,
+            rgba(color(white, 5), 0),
+            rgba(color(white, 5), 1)
+        );
     }
 
     & > [data-role='full'] {
