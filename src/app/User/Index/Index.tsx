@@ -21,7 +21,6 @@ const UserIndex: React.FC<RouteComponentProps> = props => {
                 <Grid alignItems="center">
                     {/* 头像 */}
                     <Grid
-                        gap={4}
                         className={styles['profile-picture']}
                         justify="center"
                         alignItems="center"
