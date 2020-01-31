@@ -37,7 +37,7 @@ const UserLogin: React.FC<RouteComponentProps> = props => {
                         </Button>
                     </a>
                 </Grid>
-                <Grid>
+                {/* <Grid>
                     <a href="/api/oauth/redirect/weibo" className={styles.link}>
                         <Button
                             type="contained"
@@ -49,7 +49,7 @@ const UserLogin: React.FC<RouteComponentProps> = props => {
                             <Icon text="weibo" /> 微博登录
                         </Button>
                     </a>
-                </Grid>
+                </Grid> */}
                 <Grid>
                     <a
                         href="/api/oauth/redirect/github"
