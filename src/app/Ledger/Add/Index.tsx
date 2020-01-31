@@ -112,7 +112,7 @@ const RecordAdd: React.FC<RouteComponentProps<IRecordAddRouteProps> &
                 }
             ></NavigationBar>
 
-            <ContentBody>
+            <ContentBody maxWidth="sm">
                 <Editor form={form} loading={false} />
             </ContentBody>
 

@@ -118,7 +118,7 @@ const RecordEdit: React.FC<RouteComponentProps<IRecordEditRouteProps> &
                     </Button>
                 }
             ></NavigationBar>
-            <ContentBody>
+            <ContentBody maxWidth="sm">
                 <Editor form={form} loading={recordLoding || ledger.loading} />
             </ContentBody>
         </>
