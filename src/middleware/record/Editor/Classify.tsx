@@ -25,6 +25,7 @@ const Item: React.FC<{
             color="default"
             block
             onClick={() => onUpdate(value._id)}
+            style={{padding: 0}}
         >
             <display.Icon
                 className={clsx(styles.classify__icon)}
