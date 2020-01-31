@@ -9,6 +9,7 @@ import * as display from '@/middleware/record/display'
 import * as process from '@/middleware/record/process'
 
 import indexContext from '../context'
+import history from '../../history'
 
 import styles from './Item.module.scss'
 
@@ -49,7 +50,10 @@ const LedgerIndexItem: React.FC<ILedgerIndexItemProps> = props => {
     })
 
     return (
-        <Link to={`/record/${_id}`} className={styles.record}>
+        <Link to={`/record/${_id}`} className={styles.record} onClick={(e) => {
+            e.preventDefault()
+            history.replace(`/record/${_id}`)
+        }}>
             <Grid container justify="center" alignItems="center">
                 {childIcon}
                 <Grid sm direction="column" className={styles.main}>

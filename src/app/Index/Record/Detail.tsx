@@ -120,7 +120,7 @@ const RecordIndex: React.FC<RouteComponentProps<IRecordIndexDeitalRouteProps> &
     const [show, setShow] = React.useState(true)
 
     const {
-        ledger: { loading, id }
+        ledger: { loading }
     } = useStore()
     const record = React.useContext(context).record
     const data = record && record.data
