@@ -22,7 +22,7 @@ const UserLogin: React.FC<RouteComponentProps> = props => {
 
     return (
         <ContentBody maxWidth="sm">
-            <div className={styles.title}>毛呆手账</div>
+            <div className={styles.title}>毛呆账簿</div>
             <Grid container gap={4} direction="column">
                 <Grid>
                     <a href="/api/oauth/redirect/qq" className={styles.link}>
